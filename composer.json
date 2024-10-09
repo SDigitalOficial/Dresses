@@ -1,0 +1,14 @@
+{
+    "name": "sitedigitaloficial/dresses",
+    "description": "Site Digital S.A.S Usuario Módulo para crear, administrar y gestionar usuarios con diferentes roles dentro de la plataforma",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "SiteDigital",
+            "email": "desarrollo@sitedigital.com.co"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {}
+}
