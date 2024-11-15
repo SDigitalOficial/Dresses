@@ -1,29 +1,10 @@
 @extends ('LayoutDresses.layout')
   @section('ContenidoSite-01')
 
-   <div class="content-header">
-   <ul class="nav-horizontal text-center">
-    <li class="active">
-     <a href="/dresses/factura/crear-facturacion/{{$contenido->id}}"><i class="hi hi-list-alt"></i> Crear factura</a>
-    </li>
-    <li>
-     <a href="/gestion/factura"><i class="fa fa-users"></i> Clientes</a>
-    </li>
-    <li>
-     <a href="/gestion/factura/factura-cliente"><i class="fa fa-user-plus"></i> Crear cliente</a>
-    </li>
-    <li>
-     <a href="/dresses/factura/crear-producto"><i class="fa fa-shopping-basket"></i> Crear producto</a>
-    </li>
-    <li>
-     <a href="/gestion/factura/editar-empresa"><i class="fa fa-building"></i> Configurar empresa</a>
-    </li>
-    <li>
-     <a href="/gestion/factura/control-gastos"><i class="gi gi-money"></i> Gastos</a>
-    </li>
-    <li>
-     <a href="/informe/generar-informe"><i class="fa fa-file-text"></i> Informes</a>
-    </li>
+ 
+
+  <div class="content-header"> 
+   <ul class="nav-horizontal text-center"> <a class="btn btn-primary waves-effect waves-light" href="/dresses/factura/crear-facturacion/{{$contenido->id}}"><i class="fa fa-user-plus"></i> Create Invoice</a>
    </ul>
   </div>
 
@@ -61,7 +42,10 @@
                             <div class="col-sm-12">
                                 <div class="card">
                                     <div class="card-header table-card-header">
-                                        <h5>Registered Orders</h5>
+                                        <h5>Registered Orders  
+
+
+</h5>
                                     </div>
                                     <div class="card-body">
                                         <div class="dt-responsive table-responsive">
@@ -96,15 +80,15 @@
                                             @endif
                                             @endforeach
                                             <td class="text-center">
-                                             <a href="<?=URL::to('Facturacione');?>/{{ $facturacion->id }}"><span  id="tip" data-toggle="tooltip" data-placement="left" title="Crear productos" class="btn btn-warning"><i class="fa fa-list-alt sidebar-nav-icon"></i></span></a>
-         <a href="<?=URL::to('gestion/factura/editar-factura');?>/{{ $facturacion->id }}"><span  id="tip" data-toggle="tooltip" data-placement="top" title="Editar factura" class="btn btn-primary"><i class="fa fa-pencil-square-o sidebar-nav-icon"></i></span></a>
+                                             <a href="<?=URL::to('Facturacione');?>/{{ $facturacion->id }}"><span  id="tip" data-toggle="tooltip" data-placement="left" title="Crear productos" class="btn drp-icon btn-rounded btn-primary"><i class="fas fa-tags"></i></span></a>
+         <a href="<?=URL::to('gestion/factura/editar-factura');?>/{{ $facturacion->id }}"><span  id="tip" data-toggle="tooltip" data-placement="top" title="Editar factura" class="btn drp-icon btn-rounded btn-warning"><i class="fas fa-edit"></i></span></a>
       <script language="JavaScript">
 function confirmar ( mensaje ) {
 return confirm( mensaje );}
 </script>
    
-  <a href="<?=URL::to('dresses/factura/generar-factura/');?>/{{$facturacion->id}}" target="_blank"><span id="tup" data-toggle="tooltip" data-placement="bottom" title="Factura original" class="btn btn-info"><span class="fa fa-file"></span></span></a>
-  <a href="<?=URL::to('gestion/factura/generar-facturacopia/');?>/{{$facturacion->id}}" target="_blank"><span id="tup" data-toggle="tooltip" data-placement="right" title="Factura copia" class="btn btn-info"><span class="fa fa-clipboard"></span></span></a>
+  <a href="<?=URL::to('dresses/factura/generar-factura/');?>/{{$facturacion->id}}" target="_blank"><span id="tup" data-toggle="tooltip" data-placement="bottom" title="Factura original" class="btn drp-icon btn-rounded btn-success"><span class="fas fa-clipboard-list"></span></span></a>
+ 
                                             </td>
                                         </tr>
                                         @endforeach
@@ -116,10 +100,12 @@ return confirm( mensaje );}
                                                 </tbody>
                                                 <tfoot>
                                                     <tr>
-                                                     <th class="text-center">Id Factura</th>
-                                                     <th class="text-center">Dirigido</th>
+                                                     <th class="text-center">Id Order</th>
+                                                     <th class="text-center">Bill To</th>
                                                      <th>Fecha Emisión</th>
                                                      <th>Fecha Vencimiento</th>
+                                                     <th>User</th>
+                                                     <th>Store</th>
                                                      <th class="text-center">Actions</th>
                                                     </tr>
                                                 </tfoot>

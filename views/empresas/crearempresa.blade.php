@@ -13,32 +13,7 @@
 
 @section('ContenidoSite-01')
 
-   <div class="content-header">
-   <ul class="nav-horizontal text-center">
-    <li>
-     <a href="/gestion/factura"><i class="fa fa-users"></i> Clientes</a>
-    </li>
-    <li>
-     <a href="/gestion/factura/factura-cliente"><i class="fa fa-user-plus"></i> Crear cliente</a>
-    </li>
-    <li>
-     <a href="/gestion/factura/crear-producto"><i class="fa fa-shopping-basket"></i> Crear producto</a>
-    </li>
-    <li class="active">
-     <a href="/gestion/factura/editar-empresa"><i class="fa fa-building"></i> Configurar empresa</a>
-    </li>
-    <li>
-     <a href="/gestion/factura/control-gastos"><i class="gi gi-money"></i> Gastos</a>
-    </li>
-    <li>
-     <a href="/informe/generar-informe"><i class="fa fa-file-text"></i> Informes</a>
-    </li>
-   </ul>
-  </div>
-
-
-   
-
+  
 
 
 
@@ -60,46 +35,46 @@
      {{ Form::open(array('method' => 'POST','class' => 'form-horizontal','id' => 'defaultForm', 'url' => array('dresses/factura/crear-empresa'))) }}
                                         
                                         <div class="form-group">
-                                            <label class="col-md-3 control-label" for="example-text-input">Razón Social</label>
-                                            <div class="col-md-9">
-                                              {{Form::text('r_social', '', array('class' => 'form-control','placeholder'=>'Ingrese razon social'))}}
+                                            <label class="col-md-3 control-label" for="example-text-input">Company Name</label>
+                                            <div class="col-md-12">
+                                              {{Form::text('r_social', '', array('class' => 'form-control','placeholder'=>'Enter Company Name'))}}
                                             </div>
                                         </div>
 
                                       
 
                                          <div class="form-group">
-                                            <label class="col-md-3 control-label" for="example-select">Dirección</label>
-                                            <div class="col-md-9">
-                                               {{Form::text('direccion', '', array('class' => 'form-control','placeholder'=>'Ingrese dirección'))}}
+                                            <label class="col-md-3 control-label" for="example-select">Address</label>
+                                            <div class="col-md-12">
+                                               {{Form::text('direccion', '', array('class' => 'form-control','placeholder'=>'Enter Address'))}}
                                             </div>
                                         </div>
 
                                            <div class="form-group">
-                                            <label class="col-md-3 control-label" for="example-select">Teléfono</label>
-                                            <div class="col-md-9">
-                                                {{Form::text('telefono', '', array('class' => 'form-control','placeholder'=>'Ingrese teléfono', ))}}
+                                            <label class="col-md-3 control-label" for="example-select">Phone</label>
+                                            <div class="col-md-12">
+                                                {{Form::text('telefono', '', array('class' => 'form-control','placeholder'=>'Enter Phone', ))}}
                                              </div>
                                         </div>
 
                                         <div class="form-group">
-                                            <label class="col-md-3 control-label" for="example-password-input">Ciudad</label>
-                                            <div class="col-md-9">
-                                                 {{Form::text('ciudad', '', array('class' => 'form-control','placeholder'=>'Ingrese ciudad'))}}
+                                            <label class="col-md-3 control-label" for="example-password-input">City</label>
+                                            <div class="col-md-12">
+                                                 {{Form::text('ciudad', '', array('class' => 'form-control','placeholder'=>'Enter City'))}}
                                             </div>
                                         </div>
 
                                         <div class="form-group">
                                             <label class="col-md-3 control-label" for="example-password-input">Email</label>
-                                            <div class="col-md-9">
-                                               {{Form::text('email', '', array('class' => 'form-control','placeholder'=>'Ingrese email' ))}}
+                                            <div class="col-md-12">
+                                               {{Form::text('email', '', array('class' => 'form-control','placeholder'=>'Enter email' ))}}
                                             </div>
                                         </div>
 
                                         <div class="form-group">
                                             <label class="col-md-3 control-label" for="example-password-input">Website</label>
-                                            <div class="col-md-9">
-                                               {{Form::text('website', '', array('class' => 'form-control','placeholder'=>'Ingrese website' ))}}
+                                            <div class="col-md-12">
+                                               {{Form::text('website', '', array('class' => 'form-control','placeholder'=>'Enter website' ))}}
                                             </div>
                                         </div>
 
@@ -114,29 +89,29 @@
                                   
 
                                         <div class="form-group">
-                                            <label class="col-md-3 control-label" for="example-password-input">Prefijo Factura</label>
-                                            <div class="col-md-9">
-                                                {{Form::text('prefijo', '', array('class' => 'form-control','placeholder'=>'Ingrese resolución factura' ))}}
+                                            <label class="col-md-3 control-label" for="example-password-input">Invoice Prefix</label>
+                                            <div class="col-md-12">
+                                                {{Form::text('prefijo', '', array('class' => 'form-control','placeholder'=>'Enter Invoice Prefix' ))}}
                                             </div>
                                         </div>
 
                                         <div class="form-group">
                                             <label class="col-md-3 control-label" for="example-password-input">Color</label>
-                                            <div class="col-md-9">
+                                            <div class="col-md-12">
                                                 {{Form::text('color', '', array('id' => 'hue-demo', 'class' => 'form-control demo','data-control'=>'hue'))}}
                                             </div>
                                         </div>
 
                                         <div class="form-group">
                                             <label class="col-md-3 control-label" for="example-password-input">Color Secundario</label>
-                                            <div class="col-md-9">
+                                            <div class="col-md-12">
                                                 {{Form::color('coloruno', '', array('id' => 'hue-demo', 'class' => 'form-control demo','data-control'=>'hue'))}}
                                             </div>
                                         </div>
 
                                          <div class="form-group">
                                             <label class="col-md-3 control-label" for="example-password-input">Color fuente</label>
-                                            <div class="col-md-9">
+                                            <div class="col-md-12">
                                                 {{Form::text('colordos', '', array('id' => 'hue-demo', 'class' => 'form-control demo','data-control'=>'hue'))}}
                                             </div>
                                         </div>
@@ -145,7 +120,7 @@
 
                                            <div class="form-group">
                                             <label class="col-md-3 control-label" for="example-password-input">Imagen</label>
-                                            <div class="col-md-9">
+                                            <div class="col-md-12">
                                                  <input type="text" name="FilePath" readonly="readonly" onclick="openKCFinder(this)" value="" class="form-control" />
                                             </div>
                                         </div>

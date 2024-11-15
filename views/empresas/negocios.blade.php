@@ -12,30 +12,6 @@
   @section('ContenidoSite-01')
 
 
-<div class="content-header">
-   <ul class="nav-horizontal text-center">
-    <li>
-     <a href="/gestion/factura"><i class="fa fa-users"></i> Clientes</a>
-    </li>
-    <li>
-     <a href="/gestion/factura/factura-cliente"><i class="fa fa-user-plus"></i> Crear cliente</a>
-    </li>
-    <li class="active">
-     <a href="/gestion/factura/crear-producto"><i class="fa fa-shopping-basket"></i> Crear producto</a>
-    </li>
-    <li>
-     <a href="/gestion/factura/editar-empresa"><i class="fa fa-building"></i> Configurar empresa</a>
-    </li>
-    <li>
-     <a href="/gestion/factura/control-gastos"><i class="gi gi-money"></i> Gastos</a>
-    </li>
-    <li>
-     <a href="/informe/generar-informe"><i class="fa fa-file-text"></i> Informes</a>
-    </li>
-   </ul>
-  </div>
-
-
 
  <div class="container">
   <?php $status=Session::get('status'); ?>
@@ -96,12 +72,12 @@
                                             <td>{{ $facturacion->direccion }}</td>
                                             <td class="text-center">{{ $facturacion->telefono}}</td>
                                             <td class="text-center">
-                                             <a href="<?=URL::to('/dresses/factura/editar-empresa');?>/{{ $facturacion->id }}"><span  id="tip" data-toggle="tooltip" data-placement="left" title="Editar producto" class="btn btn-primary"><i class="fa fa-pencil-square-o sidebar-nav-icon"></i></span></a>
+                                             <a href="<?=URL::to('/dresses/factura/editar-empresa');?>/{{ $facturacion->id }}"><span  id="tip" data-toggle="tooltip" data-placement="left" title="Editar producto" class="btn drp-icon btn-rounded btn-warning"><i class="fas fa-edit"></i></span></a>
                                              <script language="JavaScript">
                                              function confirmar ( mensaje ) {
                                              return confirm( mensaje );}
                                              </script>
-                                             <a href="<?=URL::to('gestion/factura/eliminar-almacen');?>/{{$facturacion->id}}" onclick="return confirmar('¿Está seguro que desea eliminar el registro?')"><span id="tup" data-toggle="tooltip" data-placement="right" title="Eliminar producto" class="btn btn-danger"><i class="hi hi-trash sidebar-nav-icon"></i></span></a>
+                                             <a href="<?=URL::to('gestion/factura/eliminar-almacen');?>/{{$facturacion->id}}" onclick="return confirmar('¿Está seguro que desea eliminar el registro?')"><span id="tup" data-toggle="tooltip" data-placement="right" title="Eliminar producto" class="btn drp-icon btn-rounded btn-danger"><i class="fas fa-trash"></i></span></a>
                                             </td>
                                         </tr>
                                         @endforeach

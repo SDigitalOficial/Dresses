@@ -68,8 +68,8 @@
        <td>{{$user->rol_id}}</td>
        <td class="text-center">
        <div class="btn-group">
-        <a href="<?=URL::to('dresses/editar/');?>/{{ $user->id }}" style="padding: 1px;"><span  id="tip" data-toggle="tooltip" data-placement="top" title="Edit User" class="btn btn-primary"></a>
-        <a href="<?=URL::to('dresses/eliminar/');?>/{{$user->id}}" style="padding: 1px; onclick="return confirm('¿Está seguro que desea eliminar el registro?')"><button class="btn btn-danger" data-toggle="tooltip" data-placement="right" title="Delete User"></button></a>
+        <a href="<?=URL::to('dresses/editar/');?>/{{ $user->id }}" style="padding: 1px;"><span  id="tip" data-toggle="tooltip" data-placement="top" title="Edit User" class="btn drp-icon btn-rounded btn-warning"><span class="fas fa-edit"></span></a>
+        <a href="<?=URL::to('dresses/eliminar/');?>/{{$user->id}}" style="padding: 1px; onclick="return confirm('¿Está seguro que desea eliminar el registro?')"><button class="btn drp-icon btn-rounded btn-danger" data-toggle="tooltip" data-placement="right" title="Delete User"><span class="fas fa-trash-alt"></span></button></a>
        </div>
        </td>
       </tr>

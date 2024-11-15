@@ -7,8 +7,8 @@
   
   <div class="content-header">
    <ul class="nav-horizontal text-center">
-    <a class="btn btn-primary waves-effect waves-light" href="/dafer/usuarios"><i class="gi gi-parents"></i> Usuarios</a>
-    <a class="btn btn-primary waves-effect waves-light" href="/dafer/crear-usuario"><i class="fa fa-user-plus"></i> Crear Usuario</a>
+    <a class="btn btn-primary waves-effect waves-light" href="/dafer/usuarios"><i class="fas fa-users"></i> Users</a>
+ 
    </ul>
   </div>
 
@@ -88,7 +88,8 @@
          '1' => 'Administrador',
          '2' => 'Comprador',
          '3' => 'Fichador',
-         '4' => 'Recepcion'], null, array('class' => 'form-control')) }}
+         '4' => 'Recepcion',
+         '40' => 'Dresses_Admin'], null, array('class' => 'form-control')) }}
         </div>
       </div>
 

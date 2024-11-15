@@ -63,32 +63,23 @@
  </div>
 
 
+<div class="card">
+
+ <div class="card-header">
+  <h5>Product Create </h5>
+ </div>
+
+<div class="card-body">
+    {{Form::open(array('method' => 'POST','oninput' => 'v_total.value=parseInt(v_unitario.value)*parseInt(cantidad.value)', 'class' => 'form-horizontal','id' => 'defaultForm', 'url' => array('/dresses/factura/creacion-producto'))) }}
+ <div class="row g-4">
 
 
-
-<div class="container">
-  <div class="row">
-                            <div class="col-md-12">
-                                <!-- Basic Form Elements Block -->
-                                <div class="block">
-                                    <!-- Basic Form Elements Title -->
-                                    <div class="block-title">
-                                        <div class="block-options pull-right">
-                                            <a href="javascript:void(0)" class="btn btn-alt btn-sm btn-default toggle-bordered enable-tooltip" data-toggle="button" title="Toggles .form-bordered class">No Borders</a>
-                                        </div>
-                                        <h2>Crear producto</h2>
-                                    </div>
-                                    <!-- END Form Elements Title -->
-                                    
-                                    <!-- Basic Form Elements Content -->
-                                      
-                                      {{Form::open(array('method' => 'POST','oninput' => 'v_total.value=parseInt(v_unitario.value)*parseInt(cantidad.value)', 'class' => 'form-horizontal','id' => 'defaultForm', 'url' => array('/dresses/factura/creacion-producto'))) }}
 
                                       <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
                                        <div class="form-group">
-                                            <label for="example-nf-email">Producto</label>
+                                            <label for="example-nf-email">Product</label>
                                                  <select class="form-control input-sm" name="producto" id="producto">
-                                             <option value="" disabled selected style="display: none;">Seleccione producto</option>
+                                             <option value="" disabled selected style="display: none;">Select Product</option>
                                               @foreach($categories as $category)
                                              <option value="{{$category->id}}">{{$category->producto}} - {{$category->identificador}}  </option>
                                               @endforeach
@@ -98,7 +89,7 @@
 
                                         <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
                                          <div class="form-group">
-                                            <label for="example-nf-email">Valor unitario</label>
+                                            <label for="example-nf-email">Unit value</label>
                                                <select class="form-control input-sm" name="v_unitario" id="v_unitario">
                                               <option value=""></option>
                                              </select>
@@ -106,7 +97,7 @@
                                         </div>
                                         <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1">
                                          <div class="form-group">
-                                            <label for="example-nf-email">Iva</label>
+                                            <label for="example-nf-email">Tax</label>
                                                 <select class="form-control input-sm" name="iva" id="iva">
                                               <option value=""></option>
                                              </select>
@@ -115,45 +106,43 @@
 
                                         <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1">
                                         <div class="form-group">
-                                            <label for="example-nf-email">Cantidad</label>
-                                                <input style="padding:0px 10px 0px 10px" type="number" class="form-control input-sm" min="1" name="cantidad" width="100%">   
+                                            <label for="example-nf-email">Quantity</label>
+                                                <input  type="number" class="form-control input-xl" min="1" name="cantidad" width="100%">   
                                         </div>
                                         </div>
 
                                         <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
                                         <div class="form-group">
-                                            <label for="example-nf-email">Descuento</label>
+                                            <label for="example-nf-email">Discount</label>
                                               <input type="text" class="form-control input-sm" name="descuento" placeholder="Ingrese identificador">     
                                         </div>
                                         </div>
 
                                         <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
                                         <div class="form-group">
-                                            <label for="example-nf-email">Valor total</label>
+                                            <label for="example-nf-email">Total value</label>
                                              <input class="form-control input-sm" name="v_total" for="v_unitario cantidad">
                                         </div>
                                          </div> 
 
                                          <div class="col-xs-2 col-sm-2 col-md-12 col-lg-12">
                                         <div class="form-group">
-                                            <label for="example-nf-email">Descripcion</label>
-                                             <input class="form-control input-sm" name="descripcion" placeholder="Ingrese descripcion">
+                                            <label for="example-nf-email">Description</label>
+                                             <textarea class="form-control input-sm" name="descripcion" placeholder="Enter Description"></textarea>
                                         </div>
                                          </div> 
-                                     
-                                        <input type="hidden" name="identificador" value="{{Request::segment(2)}}">
-
-                                        <div class="form-group hidden-sm hidden-xs hidden-md hidden-lg">
+                                     <div class="form-group hidden-sm hidden-xs hidden-md hidden-lg hidden-xl" style="display:none">
                                          <label for="">Product</label>
                                           <select class="form-control input-sm" name="product" id="product">
                                            <option value=""></option>
                                           </select>
                                         </div>
-                                        @foreach($retefuente as $retefuente)
+                                        <input type="hidden" name="identificador" value="{{Request::segment(2)}}">
+                                      
+                                       @foreach($retefuente as $retefuente)
                                          <input type="hidden" name="retefuente" id="input" class="form-control" value="{{$retefuente->retefuente}}">
                                          <input type="hidden" name="cliente" id="input" class="form-control" value="{{$retefuente->cliente_id}}">
                                         @endforeach
-                                        
 
                                           <div class="form-group form-actions">
                                             <div class="col-md-9">
@@ -161,14 +150,13 @@
                                                 <button type="reset" class="btn btn-sm btn-warning"><i class="fa fa-repeat"></i> Reset</button>
                                             </div>
                                         </div>
-                                    {{ Form::close() }}
-                                
-                                </div>
-                                <!-- END Basic Form Elements Block -->
-                            </div>
-                          </div>
-                          
+                                   
+
+                                         
+ </div>
+  {{ Form::close() }}
 </div>
+
 
 
 
@@ -197,12 +185,12 @@
        <td>{{ $facturacion->iva}} %</td>
        <td>$ {{ number_format($facturacion->v_total,  0, ",", ".")}}</td>
       <td>
-       <a href="<?=URL::to('gestion/factura/editar-producto');?>/{{ $facturacion->id }}"><span  id="tip" data-toggle="tooltip" data-placement="left" title="Editar producto" class="btn btn-primary"><span class="fa fa-pencil-square-o sidebar-nav-icon"></span></span></a>
+       <a href="<?=URL::to('gestion/factura/editar-producto');?>/{{ $facturacion->id }}"><span  id="tip" data-toggle="tooltip" data-placement="left" title="Editar producto" class="btn drp-icon btn-rounded btn-warning"><span class="fas fa-edit"></span></span></a>
         <script language="JavaScript">
         function confirmar ( mensaje ) {
         return confirm( mensaje );}
         </script>
-       <a href="<?=URL::to('gestion/factura/eliminar-producto');?>/{{$facturacion->id}}" onclick="return confirmar('¿Está seguro que desea eliminar el registro?')"><span id="tup" data-toggle="tooltip" data-placement="right" title="Eliminar producto" class="btn btn-danger"><span class="hi hi-trash sidebar-nav-icon"></span></span></a>
+       <a href="<?=URL::to('gestion/factura/eliminar-producto');?>/{{$facturacion->id}}" onclick="return confirmar('¿Está seguro que desea eliminar el registro?')"><span id="tup" data-toggle="tooltip" data-placement="right" title="Eliminar producto" class="btn drp-icon btn-rounded btn-danger"><span class="fas fa-trash-alt"></span></span></a>
       </td>
     </tr>
      @endforeach

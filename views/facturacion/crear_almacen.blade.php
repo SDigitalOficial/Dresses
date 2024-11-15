@@ -162,12 +162,12 @@
                                             <td>{{ $facturacion->iva}} %</td>
                                             <td class="text-center">{{ $facturacion->identificador}}</td>
                                             <td class="text-center">
-                                             <a href="<?=URL::to('gestion/factura/editar-almacen');?>/{{ $facturacion->id }}"><span  id="tip" data-toggle="tooltip" data-placement="left" title="Editar producto" class="btn btn-primary"><i class="fa fa-pencil-square-o sidebar-nav-icon"></i></span></a>
+                                             <a href="<?=URL::to('gestion/factura/editar-almacen');?>/{{ $facturacion->id }}"><span  id="tip" data-toggle="tooltip" data-placement="left" title="Editar producto" class="btn drp-icon btn-rounded btn-warning"><i class="fas fa-edit"></i></span></a>
                                              <script language="JavaScript">
                                              function confirmar ( mensaje ) {
                                              return confirm( mensaje );}
                                              </script>
-                                             <a href="<?=URL::to('gestion/factura/eliminar-almacen');?>/{{$facturacion->id}}" onclick="return confirmar('¿Está seguro que desea eliminar el registro?')"><span id="tup" data-toggle="tooltip" data-placement="right" title="Eliminar producto" class="btn btn-danger"><i class="hi hi-trash sidebar-nav-icon"></i></span></a>
+                                             <a href="<?=URL::to('gestion/factura/eliminar-almacen');?>/{{$facturacion->id}}" onclick="return confirmar('¿Está seguro que desea eliminar el registro?')"><span id="tup" data-toggle="tooltip" data-placement="right" title="Eliminar producto" class="btn drp-icon btn-rounded btn-danger"><i class="fas fa-trash"></i></span></a>
                                             </td>
                                         </tr>
                                         @endforeach

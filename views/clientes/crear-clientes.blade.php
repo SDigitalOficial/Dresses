@@ -22,10 +22,8 @@
                                     <div class="content-header">
  <ul class="nav-horizontal text-center">
 
-   <a class="btn btn-primary waves-effect waves-light" href="/dafer/usuarios"><i class="gi gi-parents"></i> Usuarios</a>
+   <a class="btn btn-primary waves-effect waves-light" href="/dresses/clientes"><i class="fas fa-suitcase"></i> Clients</a>
  
-
-   <a class="btn btn-primary waves-effect waves-light" href="/dafer/crear-usuario"><i class="fa fa-user-plus"></i> Crear Usuario</a>
 
  </ul>
 </div>

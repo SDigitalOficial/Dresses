@@ -69,22 +69,22 @@
                                             <td>{{ $facturacion->ciudad }}</td>
                                             <td>{{ $facturacion->ingreso }}</td>
                                             <td class="text-center">
-                                              <a href="<?=URL::to('/dresses/factura/lista-facturas');?>/{{ $facturacion->id }}" class="btn drp-icon btn-rounded btn-secondary"
-                                                type="button"><i class="feather icon-camera"></i></a>
+                                              <a href="<?=URL::to('/dresses/factura/lista-facturas');?>/{{ $facturacion->id }}" class="btn drp-icon btn-rounded btn-primary"
+                                                type="button"><i class="fas fa-receipt"></i></a>
 
                                              @if($facturacion->t_persona =='natural')
                                                <a href="<?=URL::to('/gestion/factura/editar-cliente');?>/{{ $facturacion->id }}" class="btn drp-icon btn-rounded btn-secondary"
-                                                type="button"><i class="feather icon-camera"></i></a>
+                                                type="button"><i class="fas fa-receipt"></i></a>
                                              @elseif($facturacion->t_persona =='juridica')
                                              <a href="<?=URL::to('gestion/factura/editar-cliente/juridica');?>/{{ $facturacion->id }}" class="btn drp-icon btn-rounded btn-secondary"
-                                                type="button"><i class="feather icon-camera"></i></a>
+                                                type="button"><i class="fas fa-receipt"></i></a>
                                              @endif
                                               <script language="JavaScript">
                                               function confirmar ( mensaje ) {
                                               return confirm( mensaje );}
                                               </script>
-                                              <a href="<?=URL::to('/gestion/factura/eliminar-cliente/');?>/{{$facturacion->id}}" class="btn drp-icon btn-rounded btn-secondary"
-                                                type="button"  onclick="return confirmar('¿Está seguro que desea eliminar el registro?')"><i class="feather icon-camera"></i></a>
+                                              <a href="<?=URL::to('/gestion/factura/eliminar-cliente/');?>/{{$facturacion->id}}" class="btn drp-icon btn-rounded btn-warning"
+                                                type="button"  onclick="return confirmar('¿Está seguro que desea eliminar el registro?')"><i class="fas fa-user-edit"></i></a>
 
                                 
                                             </td>

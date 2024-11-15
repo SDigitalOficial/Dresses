@@ -13,28 +13,7 @@
 
 @section('ContenidoSite-01')
 
-   <div class="content-header">
-   <ul class="nav-horizontal text-center">
-    <li>
-     <a href="/gestion/factura"><i class="fa fa-users"></i> Clientes</a>
-    </li>
-    <li>
-     <a href="/gestion/factura/factura-cliente"><i class="fa fa-user-plus"></i> Crear cliente</a>
-    </li>
-    <li>
-     <a href="/gestion/factura/crear-producto"><i class="fa fa-shopping-basket"></i> Crear producto</a>
-    </li>
-    <li class="active">
-     <a href="/gestion/factura/editar-empresa"><i class="fa fa-building"></i> Configurar empresa</a>
-    </li>
-    <li>
-     <a href="/gestion/factura/control-gastos"><i class="gi gi-money"></i> Gastos</a>
-    </li>
-    <li>
-     <a href="/informe/generar-informe"><i class="fa fa-file-text"></i> Informes</a>
-    </li>
-   </ul>
-  </div>
+  
 
 
    
@@ -47,8 +26,8 @@
   
   <div class="content-header">
    <ul class="nav-horizontal text-center">
-    <a class="btn btn-primary waves-effect waves-light" href="/dafer/usuarios"><i class="gi gi-parents"></i> Usuarios</a>
-    <a class="btn btn-primary waves-effect waves-light" href="/dafer/crear-usuario"><i class="fa fa-user-plus"></i> Crear Usuario</a>
+    <a class="btn btn-primary waves-effect waves-light" href="dresses/factura/negocios"><i class="fas fa-building"></i> Companys</a>
+   
    </ul>
   </div>
 
@@ -60,83 +39,75 @@
      {{ Form::open(array('method' => 'POST','class' => 'form-horizontal','id' => 'defaultForm', 'url' => array('/dresses/factura/actualizar-empresa',$facturacion->id))) }}
                                         
                                         <div class="form-group">
-                                            <label class="col-md-3 control-label" for="example-text-input">Razón Social</label>
-                                            <div class="col-md-9">
-                                              {{Form::text('r_social', $facturacion->r_social, array('class' => 'form-control','placeholder'=>'Ingrese razon social'))}}
+                                            <label class="col-md-3 control-label" for="example-text-input">
+Company Name</label>
+                                            <div class="col-md-12">
+                                              {{Form::text('r_social', $facturacion->r_social, array('class' => 'form-control','placeholder'=>'Enter Company Name'))}}
                                             </div>
                                         </div>
 
                                       
 
                                          <div class="form-group">
-                                            <label class="col-md-3 control-label" for="example-select">Dirección</label>
-                                            <div class="col-md-9">
-                                               {{Form::text('direccion', $facturacion->direccion, array('class' => 'form-control','placeholder'=>'Ingrese dirección'))}}
+                                            <label class="col-md-3 control-label" for="example-select">Address</label>
+                                            <div class="col-md-12">
+                                               {{Form::text('direccion', $facturacion->direccion, array('class' => 'form-control','placeholder'=>'Enter Address'))}}
                                             </div>
                                         </div>
 
                                            <div class="form-group">
-                                            <label class="col-md-3 control-label" for="example-select">Teléfono</label>
-                                            <div class="col-md-9">
-                                                {{Form::text('telefono', $facturacion->telefono, array('class' => 'form-control','placeholder'=>'Ingrese teléfono', ))}}
+                                            <label class="col-md-3 control-label" for="example-select">Phone</label>
+                                            <div class="col-md-12">
+                                                {{Form::text('telefono', $facturacion->telefono, array('class' => 'form-control','placeholder'=>'Enter Phone', ))}}
                                              </div>
                                         </div>
 
                                         <div class="form-group">
-                                            <label class="col-md-3 control-label" for="example-password-input">Ciudad</label>
-                                            <div class="col-md-9">
-                                                 {{Form::text('ciudad', $facturacion->ciudad, array('class' => 'form-control','placeholder'=>'Ingrese ciudad'))}}
+                                            <label class="col-md-3 control-label" for="example-password-input">City</label>
+                                            <div class="col-md-12">
+                                                 {{Form::text('ciudad', $facturacion->ciudad, array('class' => 'form-control','placeholder'=>'Enter City'))}}
                                             </div>
                                         </div>
 
                                         <div class="form-group">
                                             <label class="col-md-3 control-label" for="example-password-input">Email</label>
-                                            <div class="col-md-9">
-                                               {{Form::text('email', $facturacion->email, array('class' => 'form-control','placeholder'=>'Ingrese email' ))}}
+                                            <div class="col-md-12">
+                                               {{Form::text('email', $facturacion->email, array('class' => 'form-control','placeholder'=>'Enter email' ))}}
                                             </div>
                                         </div>
 
                                         <div class="form-group">
                                             <label class="col-md-3 control-label" for="example-password-input">Website</label>
-                                            <div class="col-md-9">
-                                               {{Form::text('website', $facturacion->website, array('class' => 'form-control','placeholder'=>'Ingrese website' ))}}
+                                            <div class="col-md-12">
+                                               {{Form::text('website', $facturacion->website, array('class' => 'form-control','placeholder'=>'Enter website' ))}}
                                             </div>
                                         </div>
 
 
-                                     
-                                     
-                                      
-
-
-                                    
-
-                                  
-
                                         <div class="form-group">
-                                            <label class="col-md-3 control-label" for="example-password-input">Prefijo Factura</label>
-                                            <div class="col-md-9">
-                                                {{Form::text('prefijo', $facturacion->prefijo, array('class' => 'form-control','placeholder'=>'Ingrese resolución factura' ))}}
+                                            <label class="col-md-3 control-label" for="example-password-input">Invoice Prefix</label>
+                                            <div class="col-md-12">
+                                                {{Form::text('prefijo', $facturacion->prefijo, array('class' => 'form-control','placeholder'=>'Enter Invoice Prefix' ))}}
                                             </div>
                                         </div>
 
                                         <div class="form-group">
                                             <label class="col-md-3 control-label" for="example-password-input">Color</label>
-                                            <div class="col-md-9">
+                                            <div class="col-md-12">
                                                 {{Form::text('color', $facturacion->color, array('id' => 'hue-demo', 'class' => 'form-control demo','data-control'=>'hue'))}}
                                             </div>
                                         </div>
 
                                         <div class="form-group">
-                                            <label class="col-md-3 control-label" for="example-password-input">Color Secundario</label>
-                                            <div class="col-md-9">
+                                            <label class="col-md-3 control-label" for="example-password-input">Color Secundary</label>
+                                            <div class="col-md-12">
                                                 {{Form::color('coloruno', $facturacion->coloruno, array('id' => 'hue-demo', 'class' => 'form-control demo','data-control'=>'hue'))}}
                                             </div>
                                         </div>
 
                                          <div class="form-group">
-                                            <label class="col-md-3 control-label" for="example-password-input">Color fuente</label>
-                                            <div class="col-md-9">
+                                            <label class="col-md-3 control-label" for="example-password-input">Color font</label>
+                                            <div class="col-md-12">
                                                 {{Form::text('colordos', $facturacion->colordos, array('id' => 'hue-demo', 'class' => 'form-control demo','data-control'=>'hue'))}}
                                             </div>
                                         </div>
@@ -144,15 +115,15 @@
 
 
                                            <div class="form-group">
-                                            <label class="col-md-3 control-label" for="example-password-input">Imagen</label>
-                                            <div class="col-md-9">
+                                            <label class="col-md-3 control-label" for="example-password-input">Image</label>
+                                            <div class="col-md-12">
                                                  <input type="text" name="FilePath" readonly="readonly" onclick="openKCFinder(this)" value="{{$facturacion->image}}" class="form-control" />
                                             </div>
                                         </div>
 
 
                                         <div class="form-group form-actions">
-                                            <div class="col-md-9 col-md-offset-3">
+                                            <div class="col-md-12 col-md-offset-3">
                                                 <button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-angle-right"></i> Submit</button>
                                                 <button type="reset" class="btn btn-sm btn-warning"><i class="fa fa-repeat"></i> Reset</button>
                                             </div>
