@@ -16,12 +16,12 @@ use Hyn\Tenancy\Repositories\HostnameRepository;
 use Hyn\Tenancy\Repositories\WebsiteRepository;
 use DigitalsiteSaaS\Facturacion\Empresa;
 use DigitalsiteSaaS\Facturacion\Notas;
-use Request;
-use Response;
+
+use Illuminate\Http\Request;
 use PDF;
 
 
-class UsuarioController extends Controller{
+class UsuariaController extends Controller{
 
 protected $tenantName = null;
 
@@ -1267,6 +1267,79 @@ public function editarpagos($id){
  $pagos->save();
  return Redirect('/dafer/pagos/'.$pagos->empresa_id)->with('status', 'ok_update');
 }
+
+
+
+
+
+public function special(Request $request){
+
+  $query = $request->input('query');
+
+   if(!$this->tenantName){
+ $empresas = Empresa::all();
+ }else{
+ $user = \DigitalsiteSaaS\Usuario\Tenant\Usuario::all();
+ $empresas = \DigitalsiteSaaS\Facturacion\Tenant\Empresa::where('r_social','LIKE',"%{$query}%")->get();
+ }
+
+  return view('dresses::special')->with('empresas', $empresas)->with('user', $user);
+ }
+
+
+public function search(Request $request){
+       $query = $request->get('query');
+        $products = \DigitalsiteSaaS\Dresses\Tenant\Producto::where('nombre', 'LIKE', "%{$query}%")->get();
+
+        return response()->json($products);
+
+       
+    }
+
+
+    public function client(Request $request){
+       $query = $request->get('query');
+        $products = \DigitalsiteSaaS\Dresses\Tenant\Cliente::where('nombre', 'LIKE', "%{$query}%")->get();
+
+        return response()->json($products);
+
+       
+    }
+
+
+
+     public function store(Request $request)
+    {
+
+
+        // Crear la venta
+        $venta = \DigitalsiteSaaS\Dresses\Tenant\Venta::create([
+            'cliente_id' => $request->cliente_id,
+            'fecha_compra' => $request->fecha_compra,
+            'observaciones' => $request->observaciones,
+            'subtotal' => $request->subtotal,
+            'impuesto_total' => $request->impuesto_total,
+            'total' => $request->total,
+            'adelanto' => $request->adelanto,
+            'monto_adeudado' => $request->monto_adeudado,
+        ]);
+
+        // Guardar los productos asociados a la venta
+        foreach ($request->productos as $producto) {
+            \DigitalsiteSaaS\Dresses\Tenant\Producto::create([
+                'venta_id' => $venta->id,
+                'nombre' => $producto['nombre'],
+                'precio' => $producto['precio'],
+                'cantidad' => $producto['cantidad'],
+                'talla' => $producto['talla'],
+                'color' => $producto['color'],
+                'descuento' => $producto['descuento'],
+                'impuesto' => $producto['impuesto'],
+            ]);
+        }
+
+        return response()->json(['message' => 'Venta guardada correctamente'], 201);
+    }
 
 
 

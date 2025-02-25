@@ -6,11 +6,11 @@ use Hyn\Tenancy\Traits\UsesTenantConnection;
 use Illuminate\Database\Eloquent\Model;
 
 
-class Producto extends Model{
+class Cliente extends Model{
 
 use UsesTenantConnection;
 
-protected $table = 'dresses_productos';
+protected $table = 'dresses_clientes';
 public $timestamps = true;
 
 }
