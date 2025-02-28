@@ -16,9 +16,10 @@ use Hyn\Tenancy\Repositories\HostnameRepository;
 use Hyn\Tenancy\Repositories\WebsiteRepository;
 use DigitalsiteSaaS\Facturacion\Empresa;
 use DigitalsiteSaaS\Facturacion\Notas;
-
+use App\Producto;
 use Illuminate\Http\Request;
 use PDF;
+use App\Cliente;
 
 
 class UsuariaController extends Controller{
@@ -1289,8 +1290,7 @@ public function special(Request $request){
 
 public function search(Request $request){
        $query = $request->get('query');
-        $products = \DigitalsiteSaaS\Dresses\Tenant\Producto::where('nombre', 'LIKE', "%{$query}%")->get();
-
+        $products = Producto::where('nombre', 'LIKE', "%{$query}%")->get();
         return response()->json($products);
 
        
@@ -1299,7 +1299,7 @@ public function search(Request $request){
 
     public function client(Request $request){
        $query = $request->get('query');
-        $products = \DigitalsiteSaaS\Dresses\Tenant\Cliente::where('nombre', 'LIKE', "%{$query}%")->get();
+        $products = Cliente::where('nombre', 'LIKE', "%{$query}%")->get();
 
         return response()->json($products);
 

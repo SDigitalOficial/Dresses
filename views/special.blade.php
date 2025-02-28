@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Autocomplete Search con Popup</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
@@ -130,10 +131,23 @@
         <button id="closeContactPopupBtn">Cancelar</button>
     </div>
 
+
+
+  <script>
+  
+
+    </script>
     <script>
-   $(document).ready(function () {
+  $(document).ready(function () {
     let productList = [];
     let selectedContact = null;
+
+    // Configurar el token CSRF en las solicitudes AJAX
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
 
     // AUTOCOMPLETE SEARCH PARA CLIENTES
     $("#searchClient").on("keyup", function () {
@@ -155,6 +169,45 @@
             $("#contactSuggestions").hide();
         }
     });
+
+
+    // GUARDAR CONTACTO MANUALMENTE
+$("#saveContactBtn").click(function () {
+    let name = $("#contactName").val();
+    let email = $("#contactEmail").val();
+    let phone = $("#contactPhone").val();
+
+    // Enviar los datos del cliente al backend
+    $.ajax({
+        url: "{{ route('clientes.store') }}", // Ruta para guardar clientes
+        type: "POST",
+        data: {
+            nombre: name,
+            email: email,
+            telefono: phone
+        },
+        success: function (response) {
+            // Asignar el cliente seleccionado con el ID generado
+            selectedContact = {
+                id: response.id, // ID del cliente guardado
+                name: response.nombre,
+                email: response.email,
+                phone: response.telefono
+            };
+            // Mostrar el cliente seleccionado en la interfaz
+            $("#selectedContact").text(`${name} - ${email} - ${phone}`);
+            // Ocultar el popup de contacto
+            $("#contactOverlay, #contactPopup").hide();
+            // Limpiar los campos del popup
+            $("#contactName").val("");
+            $("#contactEmail").val("");
+            $("#contactPhone").val("");
+        },
+        error: function (xhr) {
+            alert("Error al guardar el cliente: " + xhr.responseJSON.message);
+        }
+    });
+});
 
     // SELECCIONAR CLIENTE DESDE AUTOCOMPLETE
     $(document).on("click", ".contactSuggestion", function () {
@@ -192,14 +245,14 @@
         let query = $(this).val();
         if (query.length > 1) {
             $.ajax({
-                url: "{{ route('dresses.search') }}",
+                url: "{{ route('dresses.search') }}", // Ruta para buscar productos
                 type: "GET",
                 data: { query: query },
                 success: function (data) {
                     let suggestions = $("#suggestions");
                     suggestions.empty().show();
                     data.forEach(product => {
-                        suggestions.append("<div class='suggestion' data-name='" + product.nombre + "' data-price='" + product.precio + "'>" + product.nombre + "</div>");
+                        suggestions.append("<div class='suggestion' data-id='" + product.id + "' data-name='" + product.nombre + "' data-price='" + product.precio + "'>" + product.nombre + "</div>");
                     });
                 }
             });
@@ -210,9 +263,10 @@
 
     // SELECCIONAR PRODUCTO DESDE AUTOCOMPLETE
     $(document).on("click", ".suggestion", function () {
+        let id = $(this).data("id");
         let name = $(this).data("name");
         let price = $(this).data("price");
-        addProductToTable(name, price);
+        addProductToTable(name, price, id); // Pasar el ID del producto
         $("#suggestions").hide();
     });
 
@@ -227,17 +281,44 @@
     });
 
     // GUARDAR PRODUCTO MANUALMENTE
-    $("#saveProductBtn").click(function () {
-        let name = $("#productName").val();
-        let price = parseFloat($("#productPrice").val()) || 0;
-        addProductToTable(name, price);
-        $("#overlay, #popup").hide();
-    });
+$("#saveProductBtn").click(function () {
+    let name = $("#productName").val();
+    let price = parseFloat($("#productPrice").val()) || 0;
 
-    // FUNCIÓN PARA AGREGAR PRODUCTO A LA TABLA
-    function addProductToTable(name, price) {
-        productList.push({ name, price, quantity: 1, size: "M", color: "#000000", discount: 0, tax: 0 });
-        renderTable();
+    // Agregar el producto manual a la lista
+    addProductToTable(name, price);
+
+    // Ocultar el popup de producto
+    $("#overlay, #popup").hide();
+
+    // Limpiar los campos del popup
+    $("#productName").val("");
+    $("#productPrice").val("");
+});
+
+// FUNCIÓN PARA AGREGAR PRODUCTO A LA TABLA
+function addProductToTable(name, price, id = null) {
+    productList.push({
+        id: id || Date.now(), // Usar un ID temporal si no existe
+        name,
+        price,
+        quantity: 1,
+        size: "M",
+        color: "#000000",
+        discount: 0,
+        tax: 0,
+        total: 0 // Inicializar el total
+    });
+    calculateTotal(productList[productList.length - 1]); // Calcular el total del nuevo producto
+    renderTable();
+}
+
+    // FUNCIÓN PARA CALCULAR EL TOTAL DE UN PRODUCTO
+    function calculateTotal(product) {
+        let priceAfterDiscount = product.price * (1 - product.discount / 100);
+        let total = (product.quantity * priceAfterDiscount * (1 + product.tax / 100)).toFixed(2);
+        product.total = parseFloat(total); // Guardar el total en el objeto producto
+        return total;
     }
 
     // FUNCIÓN PARA RENDERIZAR LA TABLA DE PRODUCTOS
@@ -263,12 +344,6 @@
 
         attachEventListeners();
         updateSummary();
-    }
-
-    // FUNCIÓN PARA CALCULAR EL TOTAL DE UN PRODUCTO
-    function calculateTotal(product) {
-        let priceAfterDiscount = product.price * (1 - product.discount / 100);
-        return (product.quantity * priceAfterDiscount * (1 + product.tax / 100)).toFixed(2);
     }
 
     // FUNCIÓN PARA ACTUALIZAR EL RESUMEN
@@ -297,6 +372,7 @@
             if (field === "quantity" && value < 1) value = 1; // Asegurar que la cantidad sea al menos 1
 
             productList[index][field] = value;
+            calculateTotal(productList[index]); // Recalcular el total
             renderTable();
         });
 
@@ -313,46 +389,68 @@
         });
     }
 
-    // FUNCIÓN PARA ENVIAR LOS DATOS AL BACKEND
     function guardarVenta() {
-        let ventaData = {
-            cliente_id: selectedContact ? selectedContact.id : null,
-            fecha_compra: $("#purchaseDate").val(),
-            observaciones: $("#observations").val(),
-            productos: productList,
-            subtotal: parseFloat($("#subtotal").text()),
-            impuesto_total: parseFloat($("#taxTotal").text()),
-            total: parseFloat($("#grandTotal").text()),
-            adelanto: parseFloat($("#advancePayment").val()),
-            monto_adeudado: parseFloat($("#amountDue").text()),
-        };
+    console.log("selectedContact:", selectedContact); // Depuración: Verificar el valor de selectedContact
 
-        $.ajax({
-            url: "{{ route('dresses.venta') }}",
-            type: "POST",
-            data: JSON.stringify(ventaData),
-            contentType: "application/json",
-            success: function (response) {
-                alert("Venta guardada correctamente");
-                // Limpiar el formulario
-                productList = [];
-                selectedContact = null;
-                $("#selectedContact").text("Ningún cliente seleccionado.");
-                $("#purchaseDate").val("");
-                $("#observations").val("");
-                $("#advancePayment").val(0);
-                renderTable();
-                updateSummary();
-            },
-            error: function (xhr) {
-                alert("Error al guardar la venta: " + xhr.responseJSON.message);
-            }
-        });
+    if (!selectedContact || !selectedContact.id) {
+        alert("Por favor, selecciona o crea un cliente antes de guardar la venta.");
+        return;
     }
+
+    let ventaData = {
+        cliente_id: selectedContact.id,
+        fecha_compra: $("#purchaseDate").val(),
+        observaciones: $("#observations").val(),
+        productos: productList.map(p => ({
+            id: p.id || null,
+            name: p.name,
+            price: p.price,
+            quantity: p.quantity,
+            size: p.size,
+            color: p.color,
+            discount: p.discount,
+            tax: p.tax,
+            total: p.total
+        })),
+        subtotal: parseFloat($("#subtotal").text()),
+        impuesto_total: parseFloat($("#taxTotal").text()),
+        total: parseFloat($("#grandTotal").text()),
+        adelanto: parseFloat($("#advancePayment").val()),
+        monto_adeudado: parseFloat($("#amountDue").text()),
+    };
+
+    console.log("ventaData:", ventaData); // Depuración: Verificar los datos que se enviarán al backend
+
+    $.ajax({
+        url: "{{ route('dresses.venta') }}",
+        type: "POST",
+        data: JSON.stringify(ventaData),
+        contentType: "application/json",
+        success: function (response) {
+            alert("Venta guardada correctamente");
+            // Limpiar el formulario
+            productList = [];
+            selectedContact = null;
+            $("#selectedContact").text("Ningún cliente seleccionado.");
+            $("#purchaseDate").val("");
+            $("#observations").val("");
+            $("#advancePayment").val(0);
+            renderTable();
+            updateSummary();
+        },
+        error: function (xhr) {
+            alert("Error al guardar la venta: " + xhr.responseJSON.message);
+        }
+    });
+}
 
     // EVENTO PARA GUARDAR LA VENTA
     $("#guardarVentaBtn").click(guardarVenta);
 });
     </script>
+
+
+
+
 </body>
 </html>
