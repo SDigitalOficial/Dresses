@@ -13,4 +13,15 @@ use UsesTenantConnection;
 protected $table = 'dresses_productos';
 public $timestamps = true;
 
+   protected $fillable = ['nombre','precio','talla','color'];
+
+    public function ordenes()
+    {
+        return $this->belongsToMany(\DigitalsiteSaaS\Dresses\Tenant\Orden::class)->withPivot('cantidad', 'talla', 'color', 'descuento', 'impuesto', 'precio_unitario', 'total');
+    }
+
 }
+
+
+
+

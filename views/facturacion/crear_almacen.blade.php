@@ -53,7 +53,7 @@
                                         {{ Form::open(array('method' => 'POST','class' => 'row g-3 needs-validation','id' => 'defaultForm', 'url' => array('/productos/create'))) }}
                                             <div class="col-md-6 position-relative">
                                                 <label for="validationTooltip01" class="form-label">Product</label>
-                                                {{Form::text('producto', '', array('class' => 'form-control','placeholder'=>'Enter Product' ))}}
+                                                {{Form::text('nombre', '', array('class' => 'form-control','placeholder'=>'Enter Product' ))}}
                                                 <div class="valid-tooltip"> Looks good! </div>
                                             </div>
 
@@ -68,7 +68,7 @@
 
                                             <div class="col-md-6 position-relative">
                                                 <label for="validationTooltip02" class="form-label">Taxes</label>
-                                                {{Form::text('iva', '', array('class' => 'form-control','placeholder'=>'Enter Taxes' ))}}
+                                                {{Form::text('cantidad', '', array('class' => 'form-control','placeholder'=>'Enter Taxes' ))}}
                                                 <div class="valid-tooltip"> Looks good! </div>
                                             </div>
                                            
@@ -148,19 +148,19 @@
                                                        <th class="text-center">ID</th>
                                             <th class="text-center">Product</th>
                                             <th class="text-center">Price</th>
-                                            <th>Taxes</th>
-                                            <th>Identifier</th>
-                                            <th>Actions</th> 
+                                            <th class="text-center">Size</th>
+                                            <th class="text-center">Color</th>
+                                            <th class="text-center">Actions</th> 
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                      @foreach($facturacion as $facturacion)
                                         <tr>
                                             <td class="text-center">{{ $facturacion->id }}</td>
-                                            <td class="text-center">{{ $facturacion->producto }}</td>
-                                            <td>$ {{  number_format($facturacion->precio,  0, ",", ".")}}</td>
-                                            <td>{{ $facturacion->iva}} %</td>
-                                            <td class="text-center">{{ $facturacion->identificador}}</td>
+                                            <td class="text-center">{{ $facturacion->nombre }}</td>
+                                            <td class="text-center">$ {{  number_format($facturacion->precio,  0, ",", ".")}}</td>
+                                            <td class="text-center">{{ $facturacion->talla}}</td>
+                                            <td class="text-center">{{ $facturacion->color}}</td>
                                             <td class="text-center">
                                              <a href="<?=URL::to('gestion/factura/editar-almacen');?>/{{ $facturacion->id }}"><span  id="tip" data-toggle="tooltip" data-placement="left" title="Editar producto" class="btn drp-icon btn-rounded btn-warning"><i class="fas fa-edit"></i></span></a>
                                              <script language="JavaScript">
@@ -178,9 +178,9 @@
                                                      <th class="text-center">ID</th>
                                             <th class="text-center">Product</th>
                                             <th class="text-center">Price</th>
-                                            <th>Taxes</th>
-                                            <th>Identifier</th>
-                                            <th>Actions</th> 
+                                            <th class="text-center">Size</th>
+                                            <th class="text-center">Color</th>
+                                            <th class="text-center">Actions</th> 
                                                     </tr>
                                                 </tfoot>
                                             </table>

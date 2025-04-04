@@ -16,7 +16,7 @@ use Hyn\Tenancy\Repositories\HostnameRepository;
 use Hyn\Tenancy\Repositories\WebsiteRepository;
 use DigitalsiteSaaS\Facturacion\Empresa;
 use DigitalsiteSaaS\Facturacion\Notas;
-use App\Producto;
+use DigitalsiteSaaS\Dresses\Producto;
 use Illuminate\Http\Request;
 use PDF;
 use App\Cliente;
@@ -46,14 +46,6 @@ public function index() {
 }
 
 
-public function crearusuario() {
- if(!$this->tenantName){
- $empresas = Empresa::all();
- }else{
- $empresas = \DigitalsiteSaaS\Facturacion\Tenant\Empresa::all();
- }
- return View('dresses::usuarios.crear-usuario')->with('empresas',$empresas);
-}
 
 
 public function crear(){
@@ -132,7 +124,7 @@ if(!$this->tenantName){
 $facturacion = Cliente::all();
 }
 else{
-$facturacion = \DigitalsiteSaaS\Facturacion\Tenant\Cliente::all();
+$facturacion = \DigitalsiteSaaS\Dresses\Tenant\Cliente::all();
 }
 return view('dresses::clientes.clientes')->with('facturacion', $facturacion);    
 }
@@ -189,10 +181,11 @@ if(!$this->tenantName){
 
 public function createproducto(){
 if(!$this->tenantName){
-$facturacion = Max::join('categories','categories.id','=','subcategories.category_id')->get();
+
+$facturacion = DigitalsiteSaaS\Dresses\Producto::all();
 $empresas = Empresa::all();
 }else{
-$facturacion = \DigitalsiteSaaS\Facturacion\Tenant\Max::join('categories','categories.id','=','subcategories.category_id')->get();
+$facturacion = \DigitalsiteSaaS\Dresses\Tenant\Producto::all();
 $empresas = \DigitalsiteSaaS\Facturacion\Tenant\Empresa::all();
 }
 return view('dresses::facturacion.crear_almacen')->with('facturacion', $facturacion)->with('empresas', $empresas);
@@ -251,9 +244,9 @@ public function crearempresaweb(){
 public function negocios(){
 
 if(!$this->tenantName){
- $facturacion = Empresa::all();
+ $facturacion = Orden::all();
 }else{
- $facturacion = \DigitalsiteSaaS\Facturacion\Tenant\Empresa::all();
+ $facturacion = \DigitalsiteSaaS\Dresses\Tenant\Orden::all();
 }
  return view('dresses::empresas.negocios')->with('facturacion', $facturacion);
 }
@@ -1290,7 +1283,7 @@ public function special(Request $request){
 
 public function search(Request $request){
        $query = $request->get('query');
-        $products = Producto::where('nombre', 'LIKE', "%{$query}%")->get();
+        $products = \DigitalsiteSaaS\Dresses\Tenant\Producto::where('nombre', 'LIKE', "%{$query}%")->get();
         return response()->json($products);
 
        
@@ -1299,7 +1292,7 @@ public function search(Request $request){
 
     public function client(Request $request){
        $query = $request->get('query');
-        $products = Cliente::where('nombre', 'LIKE', "%{$query}%")->get();
+        $products = \DigitalsiteSaaS\Dresses\Tenant\Cliente::where('nombres', 'LIKE', "%{$query}%")->get();
 
         return response()->json($products);
 
@@ -1313,7 +1306,7 @@ public function search(Request $request){
 
 
         // Crear la venta
-        $venta = \DigitalsiteSaaS\Dresses\Tenant\Venta::create([
+        $venta = \DigitalsiteSaaS\Dresses\Tenant\Orden::create([
             'cliente_id' => $request->cliente_id,
             'fecha_compra' => $request->fecha_compra,
             'observaciones' => $request->observaciones,

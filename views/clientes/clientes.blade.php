@@ -42,11 +42,14 @@
                                                 <thead>
                                                     <tr>
                                                     
-                                                     <th class="text-center">Name</th>
-                                                     <th>Document Type</th>
-                                                     <th># Document</th>
-                                                     <th>City</th>
-                                                     <th>Birthdate</th>
+                                                     <th class="text-center">Names</th>
+                                                     <th class="text-center">Last Names</th>
+                                                     <th class="text-center">Email</th>
+                                                     <th class="text-center">Phone</th>
+                                                     <th class="text-center">City</th>
+                                                     <th class="text-center">Address</th>
+                                                     <th class="text-center">Store</th>
+                                                     <th class="text-center">Event Type</th>
                                                      <th class="text-center">Actions</th>
                                                     </tr>
                                                 </thead>
@@ -55,19 +58,15 @@
                                          @foreach($facturacion as $facturacion)
                                         <tr>
                                            
-                                            <td class="text-center">{{ $facturacion->p_nombre }} {{ $facturacion->p_apellido }}</td>
-                                            <td>
-                                              @if($facturacion->t_documento == 1)
-                                               NIT
-                                              @elseif($facturacion->t_documento == 2)
-                                               Cédula Ciudadania
-                                              @elseif($facturacion->t_documento == 3)
-                                               Cédula  Extranjeria
-                                              @endif
-                                            </td>
-                                            <td>{{ $facturacion->documento}}</td>
+                                            <td class="text-center">{{ $facturacion->nombres }}</td>
+                                            <td>{{ $facturacion->apellidos }}</td>
+                                            <td>{{ $facturacion->email}}</td>
+                                            <td>{{ $facturacion->telefono }}</td>
                                             <td>{{ $facturacion->ciudad }}</td>
-                                            <td>{{ $facturacion->ingreso }}</td>
+                                            <td>{{ $facturacion->direccion}}</td>
+                                            <td>{{ $facturacion->tienda}}</td>
+                                            <td>{{ $facturacion->tipo_evento }}</td>
+                                     
                                             <td class="text-center">
                                               <a href="<?=URL::to('/dresses/factura/lista-facturas');?>/{{ $facturacion->id }}" class="btn drp-icon btn-rounded btn-primary"
                                                 type="button"><i class="fas fa-receipt"></i></a>
@@ -98,15 +97,17 @@
                                                     
                                                 </tbody>
                                                 <tfoot>
-                                                    <tr>
-                                                     
-                                                  <th class="text-center">Name</th>
-                                                     <th>Document Type</th>
-                                                     <th># Document</th>
-                                                     <th>City</th>
-                                                     <th>Birthdate</th>
-                                                     <th class="text-center">Actions</th>
-                                                    </tr>
+                                                <tr>
+                                                 <th class="text-center">Names</th>
+                                                 <th class="text-center">Last Names</th>
+                                                 <th class="text-center">Email</th>
+                                                 <th class="text-center">Phone</th>
+                                                 <th class="text-center">City</th>
+                                                 <th class="text-center">Address</th>
+                                                 <th class="text-center">Store</th>
+                                                 <th class="text-center">Event Type</th>
+                                                 <th class="text-center">Actions</th>
+                                                </tr>
                                                 </tfoot>
                                             </table>
                                         </div>

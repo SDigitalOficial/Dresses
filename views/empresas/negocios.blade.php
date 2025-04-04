@@ -67,12 +67,12 @@
                                                      @foreach($facturacion as $facturacion)
                                         <tr>
                                             <td class="text-center">{{ $facturacion->id }}</td>
-                                            <td class="text-center">{{ $facturacion->r_social }}</td>
-                                            <td>{{ $facturacion->ciudad }}</td>
-                                            <td>{{ $facturacion->direccion }}</td>
-                                            <td class="text-center">{{ $facturacion->telefono}}</td>
+                                            <td class="text-center">{{ $facturacion->cliente_id }}</td>
+                                            <td class="text-center">{{ $facturacion->fecha_compra }}</td>
+                                            <td class="text-center">{{ $facturacion->subtotal }} USD</td>
+                                            <td class="text-center">{{ $facturacion->total }} USD</td>
                                             <td class="text-center">
-                                             <a href="<?=URL::to('/dresses/factura/editar-empresa');?>/{{ $facturacion->id }}"><span  id="tip" data-toggle="tooltip" data-placement="left" title="Editar producto" class="btn drp-icon btn-rounded btn-warning"><i class="fas fa-edit"></i></span></a>
+                                             <a href="<?=URL::to('/dresses/ver-ordenes');?>/{{ $facturacion->id }}"><span  id="tip" data-toggle="tooltip" data-placement="left" title="Ver Orden" class="btn drp-icon btn-rounded btn-warning"><i class="fas fa-edit"></i></span></a>
                                              <script language="JavaScript">
                                              function confirmar ( mensaje ) {
                                              return confirm( mensaje );}

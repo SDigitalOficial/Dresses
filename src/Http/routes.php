@@ -36,6 +36,9 @@ Route::get('dresses/factura/crearempresa', 'DigitalsiteSaaS\Dresses\Http\Usuaria
 Route::get('dresses/factura/negocios', 'DigitalsiteSaaS\Dresses\Http\UsuariaController@negocios');
 
 Route::get('dresses/specialorders', 'DigitalsiteSaaS\Dresses\Http\UsuariaController@special');
+
+Route::get('dresses/ver-ordenes/{id}', 'DigitalsiteSaaS\Dresses\Http\OrdenController@verordenes');
+
 Route::get('/dresses/search', [DigitalsiteSaaS\Dresses\Http\UsuariaController::class, 'search'])->name('dresses.search');
 
 Route::get('/dresses/client', [DigitalsiteSaaS\Dresses\Http\UsuariaController::class, 'client'])->name('dresses.client');
@@ -44,7 +47,7 @@ Route::get('/dresses/client', [DigitalsiteSaaS\Dresses\Http\UsuariaController::c
 Route::post('/dresses/venta', [DigitalsiteSaaS\Dresses\Http\UsuariaController::class, 'store'])->name('dresses.ventaa');
 
 
-Route::post('/guardar-venta', [App\Http\Controllers\OrdenController::class, 'store'])->name('dresses.venta');
-Route::get('/buscar-clientes', [App\Http\Controllers\OrdenController::class, 'searchClientes'])->name('dresses.clients');
-Route::get('/buscar-productos', [App\Http\Controllers\OrdenController::class, 'searchProductos'])->name('dresses.searchs');
-Route::post('/clientes', [App\Http\Controllers\ClienteController::class, 'store'])->name('clientes.store');
+Route::post('/guardar-venta', [DigitalsiteSaaS\Dresses\Http\OrdenController::class, 'store'])->name('dresses.venta');
+Route::get('/buscar-clientes', [DigitalsiteSaaS\Dresses\Http\OrdenController::class, 'searchClientes'])->name('dresses.clients');
+Route::get('/buscar-productos', [DigitalsiteSaaS\Dresses\Http\OrdenController::class, 'searchProductos'])->name('dresses.searchs');
+Route::post('/clientes', [DigitalsiteSaaS\Dresses\Http\ClienteController::class, 'store'])->name('clientes.store');
