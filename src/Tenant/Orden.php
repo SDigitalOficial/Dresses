@@ -17,7 +17,7 @@ use UsesTenantConnection;
    'cliente_id', 'fecha_compra','vendedor','observaciones', 'subtotal', 'impuesto_total', 'total', 'adelanto', 'monto_adeudado'
   ];
 
-  public function cliente(){
+  public function clientes(){
    return $this->belongsTo(\DigitalsiteSaaS\Dresses\Tenant\Cliente::class);
   }
 

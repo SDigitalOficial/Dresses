@@ -41,19 +41,19 @@
   <div class="card">
    <div class="card-body">
     
-    <h4 class="mt-0 header-title"><b>Registered Users</b></h4>
+    <h4 class="mt-0 header-title mb-4"><b>Registered Users</b></h4>
                                            
     <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
 
      <thead>
       <tr>
-       <th><b>NAME</b></th>
-       <th><b>LAST NAME</b></th>
-       <th><b>EMAIL</b></th>
-       <th><b>ADDRESS</b></th>
-       <th><b>PHONE</b></th>
-       <th><b>ROLE</b></th>
-       <th><b>ACTIONS</b></th>
+       <th class="text-center"><b>NAME</b></th>
+       <th class="text-center"><b>LAST NAME</b></th>
+       <th class="text-center"><b>EMAIL</b></th>
+       <th class="text-center"><b>ADDRESS</b></th>
+       <th class="text-center"><b>PHONE</b></th>
+       <th class="text-center"><b>ROLE</b></th>
+       <th class="text-center"><b>ACTIONS</b></th>
       </tr>
      </thead>
      
@@ -65,7 +65,13 @@
        <td>{{$user->email}}</td>
        <td>{{$user->address}}</td>
        <td>{{$user->phone}}</td>
-       <td>{{$user->rol_id}}</td>
+       <td><span class="label label-success">
+        @if($user->rol_id == 40)
+        ADM DRESSES
+        @else
+        OTROS
+        @endif
+       </span></td>
        <td class="text-center">
        <div class="btn-group">
         <a href="<?=URL::to('dresses/editar/');?>/{{ $user->id }}" style="padding: 1px;"><span  id="tip" data-toggle="tooltip" data-placement="top" title="Edit User" class="btn drp-icon btn-rounded btn-warning"><span class="fas fa-edit"></span></a>

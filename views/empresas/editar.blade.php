@@ -37,7 +37,7 @@
                                         <div class="form-group">
                                             <label class="col-md-3 control-label" for="example-text-input">Company Name</label>
                                             <div class="col-md-12">
-                                              {{Form::text('nombre', '', array('class' => 'form-control','placeholder'=>'Enter Company Name'))}}
+                                              {{Form::text('nombre', $store->nombre, array('class' => 'form-control','placeholder'=>'Enter Company Name'))}}
                                             </div>
                                         </div>
 
@@ -46,73 +46,64 @@
                                          <div class="form-group">
                                             <label class="col-md-3 control-label" for="example-select">Address</label>
                                             <div class="col-md-12">
-                                               {{Form::text('direccion', '', array('class' => 'form-control','placeholder'=>'Enter Address'))}}
+                                               {{Form::text('direccion', $store->direccion, array('class' => 'form-control','placeholder'=>'Enter Address'))}}
                                             </div>
                                         </div>
 
                                            <div class="form-group">
                                             <label class="col-md-3 control-label" for="example-select">Phone</label>
                                             <div class="col-md-12">
-                                                {{Form::text('telefono', '', array('class' => 'form-control','placeholder'=>'Enter Phone', ))}}
+                                                {{Form::text('telefono', $store->telefono, array('class' => 'form-control','placeholder'=>'Enter Phone', ))}}
                                              </div>
                                         </div>
 
                                         <div class="form-group">
                                             <label class="col-md-3 control-label" for="example-password-input">City</label>
                                             <div class="col-md-12">
-                                                 {{Form::text('ciudad', '', array('class' => 'form-control','placeholder'=>'Enter City'))}}
+                                                 {{Form::text('ciudad', $store->ciudad, array('class' => 'form-control','placeholder'=>'Enter City'))}}
                                             </div>
                                         </div>
 
                                         <div class="form-group">
                                             <label class="col-md-3 control-label" for="example-password-input">Email</label>
                                             <div class="col-md-12">
-                                               {{Form::text('email', '', array('class' => 'form-control','placeholder'=>'Enter email' ))}}
+                                               {{Form::text('email', $store->email, array('class' => 'form-control','placeholder'=>'Enter email' ))}}
                                             </div>
                                         </div>
 
                                         <div class="form-group">
                                             <label class="col-md-3 control-label" for="example-password-input">Website</label>
                                             <div class="col-md-12">
-                                               {{Form::text('website', '', array('class' => 'form-control','placeholder'=>'Enter website' ))}}
+                                               {{Form::text('website', $store->website, array('class' => 'form-control','placeholder'=>'Enter website' ))}}
                                             </div>
                                         </div>
-
-
-                                     
-                                     
-                                      
-
-
-                                    
-
                                   
 
                                         <div class="form-group">
                                             <label class="col-md-3 control-label" for="example-password-input">Invoice Prefix</label>
                                             <div class="col-md-12">
-                                                {{Form::text('prefijo', '', array('class' => 'form-control','placeholder'=>'Enter Invoice Prefix' ))}}
+                                                {{Form::text('prefijo', $store->prefijo, array('class' => 'form-control','placeholder'=>'Enter Invoice Prefix' ))}}
                                             </div>
                                         </div>
 
                                         <div class="form-group">
                                             <label class="col-md-3 control-label" for="example-password-input">Color</label>
                                             <div class="col-md-12">
-                                                {{Form::text('color', '', array('id' => 'hue-demo', 'class' => 'form-control demo','data-control'=>'hue'))}}
+                                                {{Form::text('color', $store->color, array('id' => 'hue-demo', 'class' => 'form-control demo','data-control'=>'hue'))}}
                                             </div>
                                         </div>
 
                                         <div class="form-group">
-                                            <label class="col-md-3 control-label" for="example-password-input">Secondary Color</label>
+                                            <label class="col-md-3 control-label" for="example-password-input">Secundary Color</label>
                                             <div class="col-md-12">
-                                                {{Form::color('color_uno', '', array('id' => 'hue-demo', 'class' => 'form-control demo','data-control'=>'hue'))}}
+                                                {{Form::color('color_uno', $store->color_uno, array('id' => 'hue-demo', 'class' => 'form-control demo','data-control'=>'hue'))}}
                                             </div>
                                         </div>
 
                                          <div class="form-group">
-                                            <label class="col-md-3 control-label" for="example-password-input">Color Font</label>
+                                            <label class="col-md-3 control-label" for="example-password-input">Font Color</label>
                                             <div class="col-md-12">
-                                                {{Form::text('color_fuente', '', array('id' => 'hue-demo', 'class' => 'form-control demo','data-control'=>'hue'))}}
+                                                {{Form::text('color_fuente', $store->color_fuente, array('id' => 'hue-demo', 'class' => 'form-control demo','data-control'=>'hue'))}}
                                             </div>
                                         </div>
 
@@ -132,6 +123,9 @@
                                                 <button type="reset" class="btn btn-sm btn-warning"><i class="fa fa-repeat"></i> Reset</button>
                                             </div>
                                         </div>
+
+                                        @foreach($store as $store)
+                                        @endforeach
                                     {{ Form::close() }}
                                 
    </div>

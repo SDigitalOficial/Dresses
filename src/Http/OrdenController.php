@@ -25,9 +25,10 @@ public function __construct(){
 
   public function store(Request $request)
     {
+  
         // Validar los datos
         $request->validate([
-            'cliente_id' => 'nullable|exists:clientes,id', // Asegurar que el cliente_id exista en la tabla clientes
+            'cliente_id' => 'nullable', // Asegurar que el cliente_id exista en la tabla clientes
             'fecha_compra' => 'required|date',
             'observaciones' => 'nullable|string',
             'vendedor' => 'nullable|string',
@@ -88,7 +89,8 @@ public function __construct(){
     }
 
 
-    public function verordenes($id){
+
+      public function verordenes($id){
 
     if(!$this->tenantName){
      $facturacion = Orden_Detalle::all();
@@ -98,5 +100,18 @@ public function __construct(){
 
     dd($facturacion);
     return view('dresses::empresas.negocios')->with('facturacion', $facturacion);
+    }
+
+    public function verordenestotal(){
+
+    if(!$this->tenantName){
+     $facturacion = Orden::all();
+     $users = Usuario::all();
+    }else{
+     $facturacion = \DigitalsiteSaaS\Dresses\Tenant\Orden::all();
+     $users = \DigitalsiteSaaS\Usuario\Tenant\Usuario::all();
+     $cliente = \DigitalsiteSaaS\Dresses\Tenant\Cliente::all();
+    }
+    return view('dresses::ordenes.ordenes')->with('facturacion', $facturacion)->with('users', $users)->with('cliente', $cliente);
     }
 }

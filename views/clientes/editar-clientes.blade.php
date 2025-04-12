@@ -1,4 +1,4 @@
-@extends ('LayoutDresses.layout')
+@extends('LayoutDresses.layout')
 
 
     @section('cabecera')
@@ -30,23 +30,23 @@
                                     <div class="card m-b-30">
                                         <div class="card-body">
             
-                                            <h4 class="mt-0 header-title mb-4">Create User</h4>
+                                            <h4 class="mt-0 header-title mb-4">Edit Client</h4>
                                             
     
-   {{ Form::open(array('method' => 'POST','class' => 'form-horizontal','id' => 'defaultForm', 'url' => array('dresses/crear-cliente'))) }}
+   {{ Form::open(array('method' => 'POST','class' => 'form-horizontal','id' => 'defaultForm', 'url' => array('dresses/dresses/eidtar-clienteweb/'.$cliente->id))) }}
 
 
                                          <div class="form-group">
                                             <label class="col-md-3 control-label" for="example-password-input">Name</label>
                                             <div class="col-md-">
-                                                 {{Form::text('nombres', '', array('class' => 'form-control','placeholder'=>'Enter Name' ))}}
+                                                 {{Form::text('nombres', $cliente->nombres, array('class' => 'form-control','placeholder'=>'Enter Name' ))}}
                                             </div>
                                         </div>
 
                                          <div class="form-group">
                                             <label class="col-md-3 control-label" for="example-select">Last Name</label>
                                             <div class="col-md-12">
-                                                {{Form::text('apellidos', '', array('class' => 'form-control','placeholder'=>'Enter Last Name' ))}}
+                                                {{Form::text('apellidos', $cliente->apellidos, array('class' => 'form-control','placeholder'=>'Enter Last Name' ))}}
                                             </div>
                                         </div>
 
@@ -54,21 +54,21 @@
                                         <div class="form-group">
                                             <label class="col-md-3 control-label" for="example-select">Phone</label>
                                             <div class="col-md-12">
-                                                {{Form::text('telefono', '', array('class' => 'form-control','placeholder'=>'Enter Phone' ))}}
+                                                {{Form::text('telefono', $cliente->telefono, array('class' => 'form-control','placeholder'=>'Enter Phone' ))}}
                                             </div>
                                         </div>
 
                                         <div class="form-group">
                                             <label class="col-md-3 control-label" for="example-password-input">Email</label>
                                             <div class="col-md-12">
-                                                  {{Form::text('email', '', array('class' => 'form-control','placeholder'=>'Enter Email' ))}}
+                                                  {{Form::text('email', $cliente->email, array('class' => 'form-control','placeholder'=>'Enter Email' ))}}
                                             </div>
                                         </div>
                                         
                                              <div class="form-group">
                                             <label class="col-md-3 control-label" for="example-password-input">Address</label>
                                             <div class="col-md-12">
-                                                  {{Form::text('direccion', '', array('class' => 'form-control','placeholder'=>'Enter Address' ))}}
+                                                  {{Form::text('direccion', $cliente->direccion, array('class' => 'form-control','placeholder'=>'Enter Address' ))}}
                                             </div>
                                         </div>
 
@@ -76,34 +76,28 @@
                                           <div class="form-group">
                                             <label class="col-md-3 control-label" for="example-password-input">City</label>
                                             <div class="col-md-12">
-                                                  {{Form::text('ciudad', '', array('class' => 'form-control','placeholder'=>'Enter City' ))}}
+                                                  {{Form::text('ciudad', $cliente->ciudad, array('class' => 'form-control','placeholder'=>'Enter City' ))}}
                                             </div>
                                         </div>
 
                                           <div class="form-group">
                                             <label class="col-md-3 control-label" for="example-password-input">Store</label>
                                             <div class="col-md-12 date" id="datetimepicker8">
-                                                 <select name="select" id="contactStore" class="form-control">
-                                                    <option value="">Select Store</option>
-                         @foreach($tienda as $tienda)
-                          <option value="{{$tienda->id}}">{{$tienda->nombre}}</option>
-                         @endforeach
-                     </select>
+                                                  {{Form::text('tienda', $cliente->tienda, array('class' => 'form-control','placeholder'=>'Enter Store'))}}
                                             </div>
                                         </div>
 
                                          <div class="form-group">
-                                            <label class="col-md-3 control-label" for="example-password-input">
-Event Type</label>
+                                            <label class="col-md-3 control-label" for="example-password-input">Event Type</label>
                                             <div class="col-md-12 date" id="datetimepicker8">
-                                                  {{Form::text('tipo_evento','', array('class' => 'form-control','placeholder'=>'Enter Event Type'))}}
+                                                  {{Form::text('tipo_evento', $cliente->tipo_evento, array('class' => 'form-control','placeholder'=>'Enter Event Type'))}}
                                             </div>
                                         </div>
 
                                           <div class="form-group">
                                             <label class="col-md-3 control-label" for="example-password-input">Event Date</label>
                                             <div class="col-md-12">
-                                                    {{Form::date('fecha_evento', '', array('class' => 'form-control','placeholder'=>'Enter Event Date' ))}}
+                                                    {{Form::date('fecha_evento', $cliente->fecha_evento, array('class' => 'form-control','placeholder'=>'Event Date' ))}}
                                             </div>
                                         </div>
 
@@ -116,6 +110,9 @@ Event Type</label>
                                                 <button type="reset" class="btn btn-sm btn-warning"><i class="fa fa-repeat"></i> Reset</button>
                                             </div>
                                         </div>
+ @foreach($cliente as $cliente)
+      @endforeach
+                                      
                                     {{ Form::close() }}
                                 
    </div>

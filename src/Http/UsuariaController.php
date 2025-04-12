@@ -129,8 +129,37 @@ $facturacion = \DigitalsiteSaaS\Dresses\Tenant\Cliente::all();
 return view('dresses::clientes.clientes')->with('facturacion', $facturacion);    
 }
 
+public function editarclientes($id){
+if(!$this->tenantName){
+$cliente = Cliente::find($id);
+}
+else{
+$cliente = \DigitalsiteSaaS\Dresses\Tenant\Cliente::find($id);
+}
+return view('dresses::clientes.editar-clientes')->with('cliente', $cliente);    
+}
+
+public function editarproductosweb($id){
+if(!$this->tenantName){
+$producto = Prodcuto::find($id);
+$tienda = Tienda::all();
+}
+else{
+$producto = \DigitalsiteSaaS\Dresses\Tenant\Producto::find($id);
+$tienda = \DigitalsiteSaaS\Dresses\Tenant\Tienda::all();
+}
+return view('dresses::facturacion.editar-producto')->with('producto', $producto)->with('tienda', $tienda);    
+}
+
+
 public function crearcliente(){
- return view('dresses::clientes.crear-clientes');
+ if(!$this->tenantName){
+$tienda = Tienda::all();
+}
+else{
+$tienda = \DigitalsiteSaaS\Dresses\Tenant\Tienda::all();
+}
+ return view('dresses::clientes.crear-clientes')->with('tienda', $tienda);
 }
 
  public function createcliente() {
@@ -138,25 +167,17 @@ public function crearcliente(){
  $facturacion = new Cliente;
  }
  else{
- $facturacion = new \DigitalsiteSaaS\Facturacion\Tenant\Cliente;  
+ $facturacion = new \DigitalsiteSaaS\Dresses\Tenant\Cliente;  
  }
- $facturacion->terceros = Input::get('terceros');
- $facturacion->t_persona = Input::get('t_persona');
- $facturacion->p_apellido = Input::get('p_apellido');
- $facturacion->s_apellido = Input::get('s_apellido');
- $facturacion->p_nombre = Input:: get ('p_nombre');
- $facturacion->s_nombre = Input:: get ('s_nombre');
- $facturacion->t_documento = Input:: get ('t_documento');
- $facturacion->documento = Input:: get ('documento');
- $facturacion->direccion = Input:: get ('direccion');
- $facturacion->telefono = Input:: get ('telefono');
+ $facturacion->nombres = Input::get('nombres');
+ $facturacion->apellidos = Input::get('apellidos');
+ $facturacion->email = Input::get('email');
+ $facturacion->telefono = Input::get('telefono');
  $facturacion->ciudad = Input:: get ('ciudad');
- $facturacion->email = Input:: get ('email');
- $facturacion->estado = Input:: get ('estado');
- $facturacion->proceso = Input:: get ('situacion');
- $facturacion->ingreso = Input:: get ('start');
- $facturacion->regimen = Input:: get ('regimen');
- $facturacion->retefuente = Input:: get ('retefuente');
+ $facturacion->direccion = Input:: get ('direccion');
+ $facturacion->tienda = Input:: get ('tienda');
+ $facturacion->tipo_evento = Input:: get ('tipo_evento');
+ $facturacion->fecha_evento = Input:: get ('fecha_evento');
  $facturacion->save();
 
   return Redirect('/dresses/clientes')->with('status', 'ok_create');
@@ -202,7 +223,36 @@ public function editarempresa($id){
 }
 
 
+public function crearusuario(){
+ if(!$this->tenantName){
+ $empresas = Empresa::all();
+ }else{
+ $empresas = \DigitalsiteSaaS\Facturacion\Tenant\Empresa::all();
+ }
+ return view('dresses::usuarios.crear-usuario')->with('empresas', $empresas);
+}
 
+
+public function editarclienteweb($id) {
+ $input = Input::all();
+ if(!$this->tenantName){
+ $facturacion = Cliente::find($id);
+ }else{
+ $facturacion = \DigitalsiteSaaS\Dresses\Tenant\Cliente::find($id); 
+ }
+ $facturacion->nombres = Input::get('nombres');
+ $facturacion->apellidos = Input::get('apellidos');
+ $facturacion->email = Input::get('email');
+ $facturacion->telefono = Input::get('telefono');
+ $facturacion->ciudad = Input:: get ('ciudad');
+ $facturacion->direccion = Input:: get ('direccion');
+ $facturacion->tienda = Input:: get ('tienda');
+ $facturacion->tipo_evento = Input:: get ('tipo_evento');
+ $facturacion->fecha_evento = Input:: get ('fecha_evento');
+ $facturacion->save();
+
+ return Redirect('dresses/clientes')->with('status', 'ok_create');
+}
 
 public function update($id) {
  $input = Input::all();
@@ -244,11 +294,45 @@ public function crearempresaweb(){
 public function negocios(){
 
 if(!$this->tenantName){
- $facturacion = Orden::all();
+ $facturacion = Tienda::all();
 }else{
- $facturacion = \DigitalsiteSaaS\Dresses\Tenant\Orden::all();
+ $facturacion = \DigitalsiteSaaS\Dresses\Tenant\Tienda::all();
 }
  return view('dresses::empresas.negocios')->with('facturacion', $facturacion);
+}
+
+
+public function editstore($id){
+
+if(!$this->tenantName){
+ $store = Tienda::find($id);
+}else{
+ $store = \DigitalsiteSaaS\Dresses\Tenant\Tienda::find($id);
+}
+ return view('dresses::empresas.editar')->with('store', $store);
+}
+
+public function editstores() {
+
+ $input = Input::all();
+ if(!$this->tenantName){
+ $facturacion = Empresa::find($id);
+ }else{
+ $facturacion = \DigitalsiteSaaS\Facturacion\Tenant\Empresa::find($id); 
+ }
+ $facturacion->nombre =  Input::get('nombre');
+ $facturacion->direccion = Input::get('direccion');
+ $facturacion->telefono = Input::get('telefono');
+ $facturacion->ciudad = Input:: get ('ciudad');
+ $facturacion->email = Input:: get ('email');
+ $facturacion->website = Input:: get ('website');
+ $facturacion->prefijo = Input:: get ('prefijo');
+ $facturacion->imagen = Input::get('FilePath');
+ $facturacion->color = Input::get('color');
+ $facturacion->color_uno = Input::get('color_uno');
+ $facturacion->color_fuente = Input::get('color_fuente');
+ $facturacion->save();
+ return Redirect('/dresses/factura/negocios')->with('status', 'ok_create');
 }
 
 
@@ -257,30 +341,21 @@ public function createempresa() {
  if(!$this->tenantName){
  $facturacion = new Empresa;
  }else{
- $facturacion = new \DigitalsiteSaaS\Facturacion\Tenant\Empresa;  
+ $facturacion = new \DigitalsiteSaaS\Dresses\Tenant\Tienda;  
  }
- $facturacion->r_social =  Input::get('r_social');
- $facturacion->nit = Input::get('nit');
+ $facturacion->nombre =  Input::get('nombre');
  $facturacion->direccion = Input::get('direccion');
  $facturacion->telefono = Input::get('telefono');
  $facturacion->ciudad = Input:: get ('ciudad');
  $facturacion->email = Input:: get ('email');
- $facturacion->aed = Input:: get ('aed');
- $facturacion->t_ica = Input:: get ('t_ica');
- $facturacion->t_cree = Input:: get ('t_cree');
- $facturacion->regimen = Input:: get ('regimen');
- $facturacion->r_factura = Input:: get ('r_factura');
- $facturacion->n_mercantil = Input:: get ('n_mercantil');
  $facturacion->website = Input:: get ('website');
- $facturacion->c_comercio = Input:: get ('c_comercio');
- $facturacion->f_ingreso = Input:: get ('start');
  $facturacion->prefijo = Input:: get ('prefijo');
- $facturacion->image = Input::get('FilePath');
+ $facturacion->imagen = Input::get('FilePath');
  $facturacion->color = Input::get('color');
- $facturacion->coloruno = Input::get('coloruno');
- $facturacion->colordos = Input::get('colordos');
+ $facturacion->color_uno = Input::get('color_uno');
+ $facturacion->color_fuente = Input::get('color_fuente');
  $facturacion->save();
- return Redirect('gestion/factura')->with('status', 'ok_create');
+ return Redirect('/dresses/factura/negocios')->with('status', 'ok_create');
 }
 
 public function createfactura() {
@@ -321,93 +396,7 @@ if(!$this->tenantName){
  return view('dresses::productos.crear_producto')->with('retefuente', $retefuente)->with('facturacion', $facturacion)->with('contenido', $contenido)->with('product', $product)->with('categories', $categories);
 }
 
-  public function creatproducto() {
-    if(!$this->tenantName){
-    $contenido = Empresa::find(1);
-    $facturacion = new Producto;
-    }else{
-    $contenido = \DigitalsiteSaaS\Facturacion\Tenant\Empresa::find(1);
-    $facturacion = new \DigitalsiteSaaS\Facturacion\Tenant\Producto;
-    }
-  $facturacion->cliente = Input:: get ('cliente');
-  $facturacion->retefuente = Input:: get ('retefuente');
-  $facturacion->reteiva = DB::table('clientes')->where('id', $facturacion->cliente)->value('regimen');
-  $facturacion->factura_id = Input:: get ('identificador');
-  $facturacion->producto = Input:: get ('producto');
-  $facturacion->product = Input:: get ('product');
-  $facturacion->cantidad = Input:: get ('cantidad');
-  $facturacion->v_unitario = Input:: get ('v_unitario');
-  $facturacion->iva = Input:: get ('iva');
-  $facturacion->descuento = Input:: get ('descuento');
-  $facturacion->descripcion = Input:: get ('descripcion');
-  $facturacion->descue = $facturacion->v_unitario*$facturacion->cantidad*$facturacion->descuento/100;
-  $facturacion->v_total = $facturacion->v_unitario*$facturacion->cantidad-$facturacion->descue;
-  $facturacion->rteica = $facturacion->v_total*$contenido->t_ica/1000;
-  $facturacion->rtefte = $facturacion->v_total*$facturacion->retefuente/100;
-  $facturacion->masiva = $facturacion->v_total*$facturacion->iva/100+$facturacion->v_total;
-  $facturacion->costoiva = $facturacion->v_total*$facturacion->iva/100;
-  if($facturacion->reteiva == 1)
-  $facturacion->rteiva = 0;
-  else
-  $facturacion->rteiva = $facturacion->costoiva*15/100;
-    $facturacion->save();
-    return Redirect('Facturacione/'.$facturacion->factura_id)->with('status', 'ok_create');
-    }
 
-
-
-    public function pdf($id){
- if(!$this->tenantName){
- $empresa = Empresa::where('id', 1)->get();
- $users = Factura::count();
- $empresario = Empresa::min('desde');
- $total = $users+$empresario;
- $totalazo = Producto::where('factura_id', '=', $id)->groupBy('factura_id')->sum('v_total');
- $totalseis = Producto::where('factura_id', '=', $id)->where('iva', '=', '16')->sum('costoiva');
- $totaldiez = Producto::where('factura_id', '=', $id)->where('iva', '=', '10')->sum('costoiva');
- $totalnueve = Producto::where('factura_id', '=', $id)->where('iva', '=', '19')->sum('costoiva');
- $descuento = Producto::where('factura_id', '=', $id)->sum('descue');
- $totaliva = $totalazo*16/100;
- $color = Empresa::find(1);
- $grantotal = $totalazo+$totaliva;
- $totalito = Producto::where('factura_id', '=', $id)->sum('masiva');
- $rteica = Producto::where('factura_id', '=', $id)->sum('rteica');
- $rtefte = Producto::where('factura_id', '=', $id)->sum('rtefte');
- $rteiva = Producto::where('factura_id', '=', $id)->sum('rteiva');
- $post = Factura::where('id', $id)->pluck('cliente_id');
- $name = Factura::where('id', '=', $id)->get();
- $prefijo = Empresawhere('id', 1)->get();
- $producto = Producto::where('factura_id', '=', $id)->get();
- $cliente = Cliente::where('id', '=', $post)->get();
- }else{
- $empresa = \DigitalsiteSaaS\Facturacion\Tenant\Empresa::where('id', 1)->get();
- $users = \DigitalsiteSaaS\Facturacion\Tenant\Factura::count();
- $empresario = \DigitalsiteSaaS\Facturacion\Tenant\Empresa::min('desde');
-
- $total = $users;
- $totalazo = \DigitalsiteSaaS\Facturacion\Tenant\Producto::where('factura_id', '=', $id)->groupBy('factura_id')->sum('v_total');
- $totalseis = \DigitalsiteSaaS\Facturacion\Tenant\Producto::where('factura_id', '=', $id)->where('iva', '=', '16')->sum('costoiva');
- $totaldiez = \DigitalsiteSaaS\Facturacion\Tenant\Producto::where('factura_id', '=', $id)->where('iva', '=', '10')->sum('costoiva');
- $totalnueve = \DigitalsiteSaaS\Facturacion\Tenant\Producto::where('factura_id', '=', $id)->where('iva', '=', '19')->sum('costoiva');
- $descuento = \DigitalsiteSaaS\Facturacion\Tenant\Producto::where('factura_id', '=', $id)->sum('descue');
- $totaliva = $totalazo*16/100;
- $color = \DigitalsiteSaaS\Facturacion\Tenant\Empresa::find(1);
- $grantotal = $totalazo+$totaliva;
- $totalito = \DigitalsiteSaaS\Facturacion\Tenant\Producto::where('factura_id', '=', $id)->sum('masiva');
- $rteica = \DigitalsiteSaaS\Facturacion\Tenant\Producto::where('factura_id', '=', $id)->sum('rteica');
- $rtefte = \DigitalsiteSaaS\Facturacion\Tenant\Producto::where('factura_id', '=', $id)->sum('rtefte');
- $rteiva = \DigitalsiteSaaS\Facturacion\Tenant\Producto::where('factura_id', '=', $id)->sum('rteiva');
- $post = \DigitalsiteSaaS\Facturacion\Tenant\Factura::where('id', $id)->pluck('cliente_id');
- $name = \DigitalsiteSaaS\Facturacion\Tenant\Factura::where('id', '=', $id)->get();
- $prefijo = \DigitalsiteSaaS\Facturacion\Tenant\Empresa::where('id', 1)->get();
- $producto = \DigitalsiteSaaS\Facturacion\Tenant\Producto::where('factura_id', '=', $id)->get();
- $cliente = \DigitalsiteSaaS\Facturacion\Tenant\Cliente::where('id', '=', $post)->get();
-
- }
-    
- $pdf = PDF::loadView('facturacion::pdf', compact('empresa','color','cliente','prefijo','producto','name','totalazo','totaliva','grantotal','totalseis','totaldiez','usuarios','total', 'totalnueve', 'iva', 'totalito','descuento','rtefte','rteica','rteiva'));
- return $pdf->stream(); 
-    }
 
 
 public function facturacioneajax($id) {
@@ -451,11 +440,31 @@ if(!$this->tenantName){
  'size' => Input::get('size'),
  'cantidad' => Input::get('cantidad'),
  'store' => Input::get('store'),
+ '' => Input::get('identificador'),
 
   ]);
 
  }
  $category->subcategories()->save($subcategory);
+ return Redirect('dresses/factura/crear-producto')->with('status', 'ok_create');
+}
+
+
+public function editarproductoswebs($id) {
+ $input = Input::all();
+ if(!$this->tenantName){
+ $facturacion = Producto::find($id);
+ }else{
+ $facturacion = \DigitalsiteSaaS\Dresses\Tenant\Producto::find($id); 
+ }
+ $facturacion->nombre = Input::get('nombre');
+ $facturacion->precio = Input::get('precio');
+ $facturacion->cantidad = Input::get('cantidad');
+ $facturacion->talla = Input::get('talla');
+ $facturacion->color = Input::get('color');
+ $facturacion->identificador = Input::get('identificador');
+ $facturacion->save();
+
  return Redirect('dresses/factura/crear-producto')->with('status', 'ok_create');
 }
 
@@ -578,6 +587,28 @@ public function create() {
  $facturacion->save();
 
   return Redirect('/dafer/empresas')->with('status', 'ok_create');
+}
+
+
+
+public function creaproducts() {
+ if(!$this->tenantName){
+ $facturacion = new Producto;
+ }
+ else{
+ $facturacion = new \DigitalsiteSaaS\Dresses\Tenant\Producto;  
+ }
+ $facturacion->nombre = Input::get('nombre');
+ $facturacion->precio = Input::get('precio');
+ $facturacion->cantidad = Input::get('cantidad');
+ $facturacion->talla = Input::get('talla');
+ $facturacion->color = Input::get('color');
+ $facturacion->identificador = Input::get('identificador');
+
+
+ $facturacion->save();
+
+  return Redirect('/dresses/factura/crear-producto')->with('status', 'ok_create');
 }
 
 public function actualizarempresa($id){
@@ -1275,9 +1306,10 @@ public function special(Request $request){
  }else{
  $user = \DigitalsiteSaaS\Usuario\Tenant\Usuario::all();
  $empresas = \DigitalsiteSaaS\Facturacion\Tenant\Empresa::where('r_social','LIKE',"%{$query}%")->get();
+  $tienda = \DigitalsiteSaaS\Dresses\Tenant\Tienda::where('nombre','LIKE',"%{$query}%")->get();
  }
 
-  return view('dresses::special')->with('empresas', $empresas)->with('user', $user);
+  return view('dresses::special')->with('empresas', $empresas)->with('user', $user)->with('tienda', $tienda);
  }
 
 

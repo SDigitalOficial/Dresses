@@ -42,14 +42,13 @@
                                                 <thead>
                                                     <tr>
                                                     
-                                                     <th class="text-center">Name</th>
-                                                     <th class="text-center">Last Name</th>
-                                                     <th class="text-center">Email</th>
-                                                     <th class="text-center">Phone</th>
-                                                     <th class="text-center">City</th>
-                                                     <th class="text-center">Address</th>
-                                                     <th class="text-center">Store</th>
-                                                     <th class="text-center">Event Type</th>
+                                                     <th class="text-center">ID</th>
+                                                     <th class="text-center">Order Date</th>
+                                                     <th class="text-center">Client</th>
+                                                     <th class="text-center">Seller</th>
+                                                     <th class="text-center">Debt</th>
+                                                     <th class="text-center">Total</th>
+                                                  
                                                      <th class="text-center">Actions</th>
                                                     </tr>
                                                 </thead>
@@ -58,20 +57,24 @@
                                          @foreach($facturacion as $facturacion)
                                         <tr>
                                            
-                                            <td class="text-center">{{ $facturacion->nombres }}</td>
-                                            <td>{{ $facturacion->apellidos }}</td>
-                                            <td>{{ $facturacion->email}}</td>
-                                            <td>{{ $facturacion->telefono }}</td>
-                                            <td>{{ $facturacion->ciudad }}</td>
-                                            <td>{{ $facturacion->direccion}}</td>
-                                            <td>{{ $facturacion->tienda}}</td>
-                                            <td>{{ $facturacion->tipo_evento }}</td>
+                                            <td class="text-center">{{ $facturacion->id }}</td>
+                                            <td class="text-center">{{ $facturacion->fecha_compra }}</td>
+                                            @foreach($cliente as $clientes)
+                                            @if($facturacion->cliente_id == $clientes->id)
+                                            <td class="text-center">{{ $clientes->nombres}}</td>
+                                            @endif
+                                            @endforeach
+                                            @foreach($users as $usersa)
+                                            @if($facturacion->cliente_id == $usersa->id)
+                                            <td class="text-center">{{ $usersa->name }}</td>
+                                            @endif
+                                            @endforeach
+                                            <td class="text-center">{{ $facturacion->monto_adeudado }} USD</td>
+                                            <td class="text-center">{{ $facturacion->total}} USD</td>
+                                          
                                      
                                             <td class="text-center">
                                               <a href="<?=URL::to('/dresses/factura/lista-facturas');?>/{{ $facturacion->id }}" class="btn drp-icon btn-rounded btn-primary"
-                                                type="button"><i class="fas fa-receipt"></i></a>
-
-                                             <a href="<?=URL::to('/dresses/editar/cliente');?>/{{ $facturacion->id }}" class="btn drp-icon btn-rounded btn-warning"
                                                 type="button"><i class="fas fa-receipt"></i></a>
 
                                              @if($facturacion->t_persona =='natural')
@@ -101,14 +104,13 @@
                                                 </tbody>
                                                 <tfoot>
                                                 <tr>
-                                                 <th class="text-center">Name</th>
-                                                 <th class="text-center">Last Name</th>
-                                                 <th class="text-center">Email</th>
-                                                 <th class="text-center">Phone</th>
-                                                 <th class="text-center">City</th>
-                                                 <th class="text-center">Address</th>
-                                                 <th class="text-center">Store</th>
-                                                 <th class="text-center">Event Type</th>
+                                                 <th class="text-center">ID</th>
+                                                 <th class="text-center">Order Date</th>
+                                                 <th class="text-center">Client</th>
+                                                 <th class="text-center">Seller</th>
+                                                 <th class="text-center">Debt</th>
+                                                 <th class="text-center">Total</th>
+                                              
                                                  <th class="text-center">Actions</th>
                                                 </tr>
                                                 </tfoot>

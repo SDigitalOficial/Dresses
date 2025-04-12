@@ -50,17 +50,17 @@
                                     </div>
                                     <div class="card-body">
                                        
-                                        {{ Form::open(array('method' => 'POST','class' => 'row g-3 needs-validation','id' => 'defaultForm', 'url' => array('/productos/creates'))) }}
+                                        {{ Form::open(array('method' => 'POST','class' => 'row g-3 needs-validation','id' => 'defaultForm', 'url' => array('/dresses/editar/producto/'.$producto->id))) }}
                                             <div class="col-md-6 position-relative">
                                                 <label for="validationTooltip01" class="form-label">Product</label>
-                                                {{Form::text('nombre', '', array('class' => 'form-control','placeholder'=>'Enter Product' ))}}
+                                                {{Form::text('nombre', $producto->nombre, array('class' => 'form-control','placeholder'=>'Enter Product' ))}}
                                                 <div class="valid-tooltip"> Looks good! </div>
                                             </div>
 
                                              <div class="col-md-6 position-relative">
                                                 <label for="validationTooltip02" class="form-label">Price</label>
                                                 
-                                                    {{Form::text('precio', '', array('class' => 'form-control','placeholder'=>'Enter Price'))}}
+                                                    {{Form::text('precio', $producto->precio, array('class' => 'form-control','placeholder'=>'Enter Price'))}}
                                                     <div class="invalid-tooltip"> Please choose a unique and valid
                                                         username. </div>
                                               
@@ -71,7 +71,7 @@
                                             <div class="col-md-6 position-relative">
                                                 <label for="validationTooltip02" class="form-label">Color</label>
                                                 
-                                                    {{Form::text('color', '', array('class' => 'form-control','placeholder'=>'Enter Color'))}}
+                                                    {{Form::text('color', $producto->color, array('class' => 'form-control','placeholder'=>'Enter Color'))}}
                                                     <div class="invalid-tooltip"> Please choose a unique and valid
                                                         username. </div>
                                               
@@ -80,7 +80,7 @@
                                             <div class="col-md-6 position-relative">
                                                 <label for="validationTooltip02" class="form-label">Size</label>
                                                 
-                                                    {{Form::text('talla', '', array('class' => 'form-control','placeholder'=>'Enter Size'))}}
+                                                    {{Form::text('talla', $producto->talla, array('class' => 'form-control','placeholder'=>'Enter Size'))}}
                                                     <div class="invalid-tooltip"> Please choose a unique and valid
                                                         username. </div>
                                               
@@ -88,15 +88,18 @@
                                             
                                             <div class="col-md-6 position-relative">
                                                 <label for="validationTooltip03" class="form-label">Identifier</label>
-                                                {{Form::text('identificador', '', array('class' => 'form-control','placeholder'=>'Enter Identifier'))}}
+                                                {{Form::text('identificador', $producto->identificador, array('class' => 'form-control','placeholder'=>'Enter Identifier'))}}
                                                 <div class="invalid-tooltip"> Please provide a valid city. </div>
                                             </div>
 
                                              <div class="col-md-6 position-relative">
                                                 <label for="validationTooltip03" class="form-label">Quantity</label>
-                                                {{Form::text('cantidad', '', array('class' => 'form-control','placeholder'=>'Enter Identifier'))}}
+                                                {{Form::text('cantidad', $producto->cantidad, array('class' => 'form-control','placeholder'=>'Enter Identifier'))}}
                                                 <div class="invalid-tooltip"> Please provide a valid city. </div>
                                             </div>
+
+                                         
+
 
                                             
                                             <div class="col-12">
@@ -113,67 +116,6 @@
 
 
 
-<div class="container">
-
-
-<!-- HTML5 Export Buttons table start -->
-                            <div class="col-sm-12">
-                                <div class="card">
-                                    <div class="card-header table-card-header">
-                                        <h5>Registered Products
-</h5>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="dt-responsive table-responsive">
-                                            <table id="basic-btn" class="table table-striped table-bordered nowrap">
-                                                <thead>
-                                                    <tr>
-                                                       <th class="text-center">ID</th>
-                                            <th class="text-center">Product</th>
-                                            <th class="text-center">Price</th>
-                                            <th class="text-center">Size</th>
-                                            <th class="text-center">Color</th>
-                                            <th class="text-center">Actions</th> 
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                     @foreach($facturacion as $facturacion)
-                                        <tr>
-                                            <td class="text-center">{{ $facturacion->id }}</td>
-                                            <td class="text-center">{{ $facturacion->nombre }}</td>
-                                            <td class="text-center">$ {{  number_format($facturacion->precio,  0, ",", ".")}}</td>
-                                            <td class="text-center">{{ $facturacion->talla}}</td>
-                                            <td class="text-center">{{ $facturacion->color}}</td>
-                                            <td class="text-center">
-                                             <a href="<?=URL::to('dresses/editar/producto');?>/{{ $facturacion->id }}"><span  id="tip" data-toggle="tooltip" data-placement="left" title="Editar producto" class="btn drp-icon btn-rounded btn-warning"><i class="fas fa-edit"></i></span></a>
-                                             <script language="JavaScript">
-                                             function confirmar ( mensaje ) {
-                                             return confirm( mensaje );}
-                                             </script>
-                                             <a href="<?=URL::to('gestion/factura/eliminar-almacen');?>/{{$facturacion->id}}" onclick="return confirmar('¿Está seguro que desea eliminar el registro?')"><span id="tup" data-toggle="tooltip" data-placement="right" title="Eliminar producto" class="btn drp-icon btn-rounded btn-danger"><i class="fas fa-trash"></i></span></a>
-                                            </td>
-                                        </tr>
-                                        @endforeach
-                                                    
-                                                </tbody>
-                                                <tfoot>
-                                                    <tr>
-                                                     <th class="text-center">ID</th>
-                                            <th class="text-center">Product</th>
-                                            <th class="text-center">Price</th>
-                                            <th class="text-center">Size</th>
-                                            <th class="text-center">Color</th>
-                                            <th class="text-center">Actions</th> 
-                                                    </tr>
-                                                </tfoot>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- HTML5 Export Buttons end -->
-
-</div>
 
 
 

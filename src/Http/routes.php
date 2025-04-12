@@ -14,13 +14,22 @@ Route::post('dresses/crear-usuario', 'DigitalsiteSaaS\Dresses\Http\UsuariaContro
 Route::post('dresses/actualizar/{id}', 'DigitalsiteSaaS\Dresses\Http\UsuariaController@actualizar');
 
 Route::get('dresses/clientes', 'DigitalsiteSaaS\Dresses\Http\UsuariaController@clientes');
+Route::get('dresses/editar/cliente/{id}', 'DigitalsiteSaaS\Dresses\Http\UsuariaController@editarclientes');
+Route::post('dresses/dresses/eidtar-clienteweb/{id}', 'DigitalsiteSaaS\Dresses\Http\UsuariaController@editarclienteweb');
+
+Route::get('dresses/editar/producto/{id}', 'DigitalsiteSaaS\Dresses\Http\UsuariaController@editarproductosweb');
+Route::post('dresses/editar/producto/{id}', 'DigitalsiteSaaS\Dresses\Http\UsuariaController@editarproductoswebs');
+
+Route::get('dresses/edit/store/{id}', 'DigitalsiteSaaS\Dresses\Http\UsuariaController@editstore');
+Route::post('dresses/edit/store/{id}', 'DigitalsiteSaaS\Dresses\Http\UsuariaController@editstores');
+
 Route::get('dresses/crear-cliente', 'DigitalsiteSaaS\Dresses\Http\UsuariaController@crearcliente');
 Route::post('dresses/crear-cliente', 'DigitalsiteSaaS\Dresses\Http\UsuariaController@createcliente');
 
 Route::get('dresses/factura/lista-facturas/{id}', 'DigitalsiteSaaS\Dresses\Http\UsuariaController@facturaempresa');
 
 Route::get('dresses/factura/crear-producto', 'DigitalsiteSaaS\Dresses\Http\UsuariaController@createproducto');
-Route::post('productos/create', 'DigitalsiteSaaS\Dresses\Http\UsuariaController@creaproduct');
+Route::post('productos/creates', 'DigitalsiteSaaS\Dresses\Http\UsuariaController@creaproducts');
 
 Route::get('dresses/factura/crear-facturacion/{id}', 'DigitalsiteSaaS\Dresses\Http\UsuariaController@crearfactura');
 Route::post('dresses/factura/crear-factura', 'DigitalsiteSaaS\Dresses\Http\UsuariaController@createfactura');
@@ -35,9 +44,13 @@ Route::post('dresses/factura/crear-empresa', 'DigitalsiteSaaS\Dresses\Http\Usuar
 Route::get('dresses/factura/crearempresa', 'DigitalsiteSaaS\Dresses\Http\UsuariaController@crearempresaweb');
 Route::get('dresses/factura/negocios', 'DigitalsiteSaaS\Dresses\Http\UsuariaController@negocios');
 
+
+
 Route::get('dresses/specialorders', 'DigitalsiteSaaS\Dresses\Http\UsuariaController@special');
 
 Route::get('dresses/ver-ordenes/{id}', 'DigitalsiteSaaS\Dresses\Http\OrdenController@verordenes');
+
+Route::get('dresses/ver-ordenes', 'DigitalsiteSaaS\Dresses\Http\OrdenController@verordenestotal');
 
 Route::get('/dresses/search', [DigitalsiteSaaS\Dresses\Http\UsuariaController::class, 'search'])->name('dresses.search');
 

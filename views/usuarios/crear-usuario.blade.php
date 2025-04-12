@@ -15,7 +15,8 @@
   <div class="card m-b-30">
    <div class="card-body">
     
-    <h4 class="mt-0 header-title">Create User</h4>
+    <h4 class="mt-0 header-title mb-4">Create User</h4>
+
                                         
      {{ Form::open(array('method' => 'POST','class' => 'form-horizontal','id' => 'defaultForm', 'url' => array('dresses/crear-usuario'))) }}
 
@@ -84,11 +85,7 @@
       <div class="form-group">
        <label class="col-md-3 control-label" for="example-password-input">User Role</label>
         <div class="col-md-12">
-         {{ Form::select('level', ['' => '-- Seleccione Role --',
-         '1' => 'Administrador',
-         '2' => 'Comprador',
-         '3' => 'Fichador',
-         '4' => 'Recepcion',
+         {{ Form::select('level', ['' => '-- Select Role --',
          '40' => 'Dresses_Admin'], null, array('class' => 'form-control')) }}
         </div>
       </div>

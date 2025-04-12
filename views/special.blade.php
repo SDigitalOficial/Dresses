@@ -28,68 +28,87 @@
         .suggestion:hover, .contactSuggestion:hover {
             background-color: #f0f0f0;
         }
+        .card {
+    border-radius: 2px;
+    box-shadow: 0 0 0 1px #e2e5e8;
+    border: none;
+    margin-bottom: 30px;
+    transition: all 0.5s ease-in-out;
+    --bs-body-color: #686c71;
+    height: 260px !important;
+}
     </style>
 </head>
 <body class="container mt-5">
-    <h1 class="text-center mb-4">Laravel Autocomplete Search</h1>
-    <!-- [ Main Content ] start -->
                    
                                   
-                                    <div class="card-body">
-                        
-                                        <div id="exampleModalLive" class="modal fade"  tabindex="-1" role="dialog"
-                                            aria-labelledby="exampleModalLiveLabel" aria-hidden="true">
-                                            <div class="modal-dialog" role="document">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title" id="exampleModalLiveLabel">Modal Title
-                                                        </h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                            aria-label="Close"></button>
-                                                    </div>
-                                                    <div class="modal-body">
-                    <div class="form-group">
-                        <label>Nombres:</label>
+   <div class="card-body">
+    <div id="exampleModalLive" class="modal fade"  tabindex="-1" role="dialog" aria-labelledby="exampleModalLiveLabel" aria-hidden="true">
+     <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+       <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLiveLabel">Client Creation</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+       </div>
+
+                    <div class="modal-body">
+
+                    <div class="container">  
+                        <div class="row">  
+
+                    <div class="form-group col-md-6">
+                        <label>Name:</label>
                         <input type="text" id="contactName" class="form-control">
                     </div>
-                    <div class="form-group">
-                        <label>Apellidos:</label>
+                    <div class="form-group col-md-6">
+                        <label>Last Name:</label>
                         <input type="text" id="contactLastName" class="form-control">
                     </div>
-                    <div class="form-group">
+                   
+
+                    <div class="form-group col-md-6">
                         <label>Email:</label>
                         <input type="email" id="contactEmail" class="form-control">
                     </div>
-                    <div class="form-group">
-                        <label>Número de Celular:</label>
+                    <div class="form-group col-md-6">
+                        <label>Phone:</label>
                         <input type="text" id="contactPhone" class="form-control">
                     </div>
-                    <div class="form-group">
-                        <label>Ciudad:</label>
+
+                    <div class="form-group col-md-6">
+                        <label>City:</label>
                         <input type="text" id="contactCity" class="form-control">
                     </div>
-                    <div class="form-group">
-                        <label>Dirección:</label>
+                    <div class="form-group col-md-6">
+                        <label>Address:</label>
                         <input type="text" id="contactAddress" class="form-control">
                     </div>
-                    <div class="form-group">
-                        <label>Tienda:</label>
-                        <input type="text" id="contactStore" class="form-control">
+
+                    <div class="form-group col-md-6">
+                        <label>Store:</label>
+                        <select name="select" id="contactStore" class="form-control">
+                         @foreach($tienda as $tienda)
+                          <option value="{{$tienda->id}}">{{$tienda->nombre}}</option>
+                         @endforeach
+                     </select>
                     </div>
-                    <div class="form-group">
-                        <label>Tipo de Evento:</label>
+
+                    <div class="form-group col-md-6">
+                        <label>Event Type:</label>
                         <input type="text" id="contactEventType" class="form-control">
                     </div>
-                    <div class="form-group">
-                        <label>Fecha de Evento:</label>
+
+                    <div class="form-group col-md-6">
+                        <label>Event Date:</label>
                         <input type="date" id="contactEventDate" class="form-control">
                     </div>
                 </div>
-                
+                 </div>
+                    </div>
 
                                                     <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <button type="button" id="saveContactBtn" class="btn btn-primary">Guardar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" id="saveContactBtn" class="btn btn-primary">Save</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -105,38 +124,41 @@
                         
                                         <div id="exampleModalLivec" class="modal fade"  tabindex="-1" role="dialog"
                                             aria-labelledby="exampleModalLiveLabel" aria-hidden="true">
-                                            <div class="modal-dialog" role="document">
+                                            <div class="modal-dialog modal-lg" role="document">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
-                                                        <h5 class="modal-title" id="exampleModalLiveLabel">Modal Title
+                                                        <h5 class="modal-title" id="exampleModalLiveLabel">Create Product
                                                         </h5>
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                             aria-label="Close"></button>
                                                     </div>
                                                   <div class="modal-body">
-                    <div class="form-group">
-                        <label>Nombre:</label>
+                    <div class="container">  
+                        <div class="row">  
+                    <div class="form-group col-lg-6">
+                        <label>Name:</label>
                         <input type="text" id="productName" class="form-control">
                     </div>
-                    <div class="form-group">
+                    <div class="form-group col-lg-6">
                         <label>Color:</label>
                         <input type="text" id="productColor" class="form-control">
                     </div>
-                    <div class="form-group">
-                        <label>Tamaño:</label>
+                    <div class="form-group col-lg-6">
+                        <label>Size:</label>
                         <input type="text" id="productSize" class="form-control">
                     </div>
-                    <div class="form-group">
-                        <label>Precio:</label>
+                    <div class="form-group col-lg-6">
+                        <label>Price:</label>
                         <input type="number" id="productPrice" class="form-control" step="0.01">
                     </div>
                 </div>
-                
+                 </div>
+                </div>
                 
 
                                                     <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <button type="button" id="saveProductBtn" class="btn btn-primary">Guardar</button>
+                    <button type="button" id="saveProductBtn" class="btn btn-primary">Save</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -145,88 +167,113 @@
                                  
                             <!-- [ demo-modal ] end -->
 
-    <!-- Campo de búsqueda de cliente -->
-    <div class="form-group">
-        <label><strong>Buscar Cliente:</strong></label>
-        <input type="text" id="searchClient" class="form-control" placeholder="Buscar cliente..." autocomplete="off">
-        <div id="contactSuggestions"></div>
-        <button  class="btn btn-primary mt-2" data-bs-toggle="modal"
-                                            data-bs-target="#exampleModalLive">Agregar Contacto Manualmente</button>
-    </div>
+    <div class="container">  
+     <div class="row">  
 
     <!-- Espacio para visualizar el contacto seleccionado o creado -->
-    <div id="contactDisplay" class="card mt-3">
-        <div class="card-body">
-            <p><strong>Cliente Seleccionado:</strong></p>
-            <p id="selectedContact">Ningún cliente seleccionado.</p>
-        </div>
-    </div>
+    <div id="contactDisplay" class="p-2 col-lg-4">
+     <div class="card card-body">
+      <p><strong><b>Selected Client:</b></strong></p>
+      <p id="selectedContact" style="color:red">No client selected.</p>
+       <label><strong>Search Client:</strong></label>
+        <input type="text" id="searchClient" class="form-control" placeholder="Buscar cliente..." autocomplete="off">
+         <div id="contactSuggestions" style="color:green;"></div>
+        <button  class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#exampleModalLive">Add Contact Manually</button>
+     </div>
 
-    <!-- Campo de búsqueda de productos -->
-    <div class="form-group mt-4">
-        <input type="text" id="search" class="form-control" placeholder="Buscar producto..." autocomplete="off">
-        <div id="suggestions"></div>
-       
-        <button type="button" id="addProductBtn" class="btn btn-primary mt-2" data-bs-toggle="modal"
-                                            data-bs-target="#exampleModalLivec">Agregar Producto Manualmente</button>
-    </div>
+    </div> 
+    <!-- Campo de búsqueda de cliente -->
 
     <!-- Información de la compra -->
-    <div class="form-group mt-4">
-        <label><strong>Fecha de Compra:</strong></label>
-        <input type="date" id="purchaseDate" class="form-control">
-        <label><strong>Vendedor:</strong></label>
-        <input type="text" id="purchaseVendedor" class="form-control">
-        <label><strong>Observaciones:</strong></label>
-        <textarea id="observations" class="form-control" rows="3" placeholder="Escribe aquí cualquier observación..."></textarea>
+    <div id="contactDisplay" class="p-1 col-lg-4">
+     <div class="card card-body">
+      <div class="form-group  mt-4">
+       <label><strong>Purchase Date:</strong></label>
+       <input type="date" id="purchaseDate" class="form-control">
+       <label><strong>Seller:</strong></label>
+       <select name="select" id="purchaseVendedor" class="form-control">
+        @foreach($user as $user)
+    <option value="{{$user->id}}">{{$user->name}} {{$user->last_name}}</option>
+        @endforeach
+        </select>
+      </div>
+     </div>
+    </div>
+    
+ 
+
+    <div id="contactDisplay" class="p-2 col-lg-4">
+     <div class="card card-body">
+      <div class="form-group mt-4">
+       <input type="text" id="search" class="form-control" placeholder="Buscar producto..." autocomplete="off">
+        <div id="suggestions"></div>
+         <button type="button" id="addProductBtn" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#exampleModalLivec">Add Product Manually</button>
+      </div>
+     </div>
+    </div>
+
+     </div>
     </div>
 
     <!-- Tabla de productos -->
     <table class="table table-bordered mt-4">
         <thead class="thead-dark">
             <tr>
-                <th>Producto</th>
-                <th>Cantidad</th>
-                <th>Talla</th>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Size</th>
                 <th>Color</th>
-                <th>Descuento (%)</th>
-                <th>Impuesto (%)</th>
-                <th>Precio Unitario</th>
+                <th>Discount (%)</th>
+                <th>Tax (%)</th>
+                <th>Unit Price</th>
                 <th>Total</th>
-                <th>Acciones</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody id="productTable"></tbody>
     </table>
+    <div class="container">  
+     <div class="row">  
 
+    <div id="contactDisplay" class="p-2 mt-4 col-lg-6">
+     <div class="card card-body">
+    <label><strong>Observations:</strong></label>
+        <textarea id="observations" class="form-control" rows="3" placeholder="Write any observations here.."></textarea>
+     </div>
+    </div>
     <!-- Resumen de la compra -->
-    <div id="summary" class="card mt-4">
-        <div class="card-body">
+    <div id="summary" class=" p-2 mt-4 col-lg-6">
+        <div class="card card-body">
             <p><strong>Subtotal:</strong> $<span id="subtotal">0.00</span></p>
-            <p><strong>Impuesto Total:</strong> $<span id="taxTotal">0.00</span></p>
+            <p><strong>Total Tax:</strong> $<span id="taxTotal">0.00</span></p>
             <p><strong>Total:</strong> $<span id="grandTotal">0.00</span></p>
-            <label><strong>Adelanto:</strong></label>
+            <label><strong>Advancement:</strong></label>
             <input type="number" id="advancePayment" class="form-control" step="0.01" value="0">
-            <p><strong>Monto Adeudado:</strong> $<span id="amountDue">0.00</span></p>
+            <p><strong>Amount Owed:</strong> $<span id="amountDue">0.00</span></p>
         </div>
     </div>
 
+    
+
+     </div>
+    </div>
+
     <!-- Botón para guardar la venta -->
-    <button id="guardarVentaBtn" class="btn btn-success mt-4">Guardar Venta</button>
+    <button id="guardarVentaBtn" class="btn btn-success mt-0 w-100">Save Sale</button>
 
     <!-- Modal para agregar un producto -->
     <div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="productModalLabel">Agregar Producto Manualmente</h5>
+                    <h5 class="modal-title" id="productModalLabel">Add Product Manually</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label>Nombre:</label>
+                        <label>Name:</label>
                         <input type="text" id="productName" class="form-control">
                     </div>
                     <div class="form-group">
@@ -234,17 +281,17 @@
                         <input type="text" id="productColor" class="form-control">
                     </div>
                     <div class="form-group">
-                        <label>Tamaño:</label>
+                        <label>Size:</label>
                         <input type="text" id="productSize" class="form-control">
                     </div>
                     <div class="form-group">
-                        <label>Precio:</label>
+                        <label>Price:</label>
                         <input type="number" id="productPrice" class="form-control" step="0.01">
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <button type="button" id="saveProductBtn" class="btn btn-primary">Guardar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" id="saveProductBtn" class="btn btn-primary">Save</button>
                 </div>
             </div>
         </div>
@@ -255,18 +302,18 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="contactModalLabel">Agregar Contacto Manualmente</h5>
+                    <h5 class="modal-title" id="contactModalLabel">Add Contact Manually</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label>Nombres:</label>
+                        <label>Name:</label>
                         <input type="text" id="contactName" class="form-control">
                     </div>
                     <div class="form-group">
-                        <label>Apellidos:</label>
+                        <label>Last Name:</label>
                         <input type="text" id="contactLastName" class="form-control">
                     </div>
                     <div class="form-group">
@@ -274,41 +321,39 @@
                         <input type="email" id="contactEmail" class="form-control">
                     </div>
                     <div class="form-group">
-                        <label>Número de Celular:</label>
+                        <label>Phone:</label>
                         <input type="text" id="contactPhone" class="form-control">
                     </div>
                     <div class="form-group">
-                        <label>Ciudad:</label>
+                        <label>City:</label>
                         <input type="text" id="contactCity" class="form-control">
                     </div>
                     <div class="form-group">
-                        <label>Dirección:</label>
+                        <label>Address:</label>
                         <input type="text" id="contactAddress" class="form-control">
                     </div>
                     <div class="form-group">
-                        <label>Tienda:</label>
+                        <label>Store:</label>
                         <input type="text" id="contactStore" class="form-control">
                     </div>
                     <div class="form-group">
-                        <label>Tipo de Evento:</label>
+                        <label>Event Type:</label>
                         <input type="text" id="contactEventType" class="form-control">
                     </div>
                     <div class="form-group">
-                        <label>Fecha de Evento:</label>
+                        <label>Evento Date:</label>
                         <input type="date" id="contactEventDate" class="form-control">
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <button type="button" id="saveContactBtn" class="btn btn-primary">Guardar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" id="saveContactBtn" class="btn btn-primary">Save</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <script>
-        // Tu código JavaScript aquí (sin cambios)
-    </script>
+
 </body>
 </html>
     <script>
@@ -335,7 +380,7 @@
                             let suggestions = $("#contactSuggestions");
                             suggestions.empty().show();
                             data.forEach(client => {
-                                suggestions.append("<div class='contactSuggestion' data-id='" + client.id + "' data-name='" + client.nombres + "' data-email='" + client.email + "' data-phone='" + client.telefono + "'>" + client.nombres + "</div>");
+                                suggestions.append("<div class='contactSuggestion' style='color:green' data-id='" + client.id + "' data-name='" + client.nombres + "' data-email='" + client.email + "' data-phone='" + client.telefono + "'>" + client.nombres + "</div>");
                             });
                         }
                     });
