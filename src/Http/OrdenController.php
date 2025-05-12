@@ -282,7 +282,7 @@ public function generatePDF($id, $download = false)
     $orden = \DigitalsiteSaaS\Dresses\Tenant\Orden::with(['cliente', 'productos', 'vendedor'])->findOrFail($id);
     $totalAdvances = $orden->adelanto1 + $orden->adelanto2 + $orden->adelanto3;
     
-    $pdf = PDF::loadView('orders.pdf', compact('orden', 'totalAdvances'));
+    $pdf = PDF::loadView('dresses::ordenes.pdf', compact('orden', 'totalAdvances'));
     
     if($download) {
         return $pdf->download('orden_'.$orden->id.'.pdf');
