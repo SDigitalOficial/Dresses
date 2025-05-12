@@ -15,6 +15,7 @@ Route::post('dresses/actualizar/{id}', 'DigitalsiteSaaS\Dresses\Http\UsuariaCont
 
 Route::get('dresses/clientes', 'DigitalsiteSaaS\Dresses\Http\UsuariaController@clientes');
 Route::get('dresses/editar/cliente/{id}', 'DigitalsiteSaaS\Dresses\Http\UsuariaController@editarclientes');
+Route::get('dresses/editar/orden/{id}', 'DigitalsiteSaaS\Dresses\Http\OrdenController@editarorden');
 Route::post('dresses/dresses/eidtar-clienteweb/{id}', 'DigitalsiteSaaS\Dresses\Http\UsuariaController@editarclienteweb');
 
 Route::get('dresses/editar/producto/{id}', 'DigitalsiteSaaS\Dresses\Http\UsuariaController@editarproductosweb');
@@ -48,9 +49,17 @@ Route::get('dresses/factura/negocios', 'DigitalsiteSaaS\Dresses\Http\UsuariaCont
 
 Route::get('dresses/specialorders', 'DigitalsiteSaaS\Dresses\Http\UsuariaController@special');
 
+Route::get('dresses/impuestos', 'DigitalsiteSaaS\Dresses\Http\OrdenController@impuestos');
+
+Route::get('dresses/specialorders/{id}', 'DigitalsiteSaaS\Dresses\Http\UsuariaController@specialedit');
+
 Route::get('dresses/ver-ordenes/{id}', 'DigitalsiteSaaS\Dresses\Http\OrdenController@verordenes');
 
 Route::get('dresses/ver-ordenes', 'DigitalsiteSaaS\Dresses\Http\OrdenController@verordenestotal');
+Route::get('orden/delete/{id}', 'DigitalsiteSaaS\Dresses\Http\OrdenController@ordendelete');
+Route::get('gestion/factura/eliminar-almacen/{id}', 'DigitalsiteSaaS\Dresses\Http\OrdenController@productdelete');
+
+
 
 Route::get('/dresses/search', [DigitalsiteSaaS\Dresses\Http\UsuariaController::class, 'search'])->name('dresses.search');
 
@@ -64,3 +73,20 @@ Route::post('/guardar-venta', [DigitalsiteSaaS\Dresses\Http\OrdenController::cla
 Route::get('/buscar-clientes', [DigitalsiteSaaS\Dresses\Http\OrdenController::class, 'searchClientes'])->name('dresses.clients');
 Route::get('/buscar-productos', [DigitalsiteSaaS\Dresses\Http\OrdenController::class, 'searchProductos'])->name('dresses.searchs');
 Route::post('/clientes', [DigitalsiteSaaS\Dresses\Http\ClienteController::class, 'store'])->name('clientes.store');
+
+Route::get('/orders/{id}/edit', [DigitalsiteSaaS\Dresses\Http\OrdenController::class, 'edit'])->name('orders.edit');
+Route::put('/orders/{id}', [DigitalsiteSaaS\Dresses\Http\OrdenController::class, 'update'])->name('orders.update');
+Route::get('/orders/{id}', [DigitalsiteSaaS\Dresses\Http\OrdenController::class, 'show'])->name('orders.show');
+
+
+Route::get('/orders/{id}/pdf', [DigitalsiteSaaS\Dresses\Http\OrdenController::class, 'generatePDF'])->name('orders.pdf');
+
+
+// Para visualizar en navegador
+Route::get('/orders/{id}/view', [DigitalsiteSaaS\Dresses\Http\OrdenController::class, 'generatePDF'])->name('orders.view');
+
+// Para descargar
+Route::get('/orders/{id}/download', function($id) {
+    return app()->call('DigitalsiteSaaS\Dresses\Http\OrdenController@generatePDF', ['id' => $id, 'download' => true]);
+})->name('orders.download');
+

@@ -48,6 +48,8 @@
                                                      <th class="text-center">Seller</th>
                                                      <th class="text-center">Debt</th>
                                                      <th class="text-center">Total</th>
+                                                     <th class="text-center">Amount Owed</th>
+                                                     
                                                   
                                                      <th class="text-center">Actions</th>
                                                     </tr>
@@ -71,10 +73,16 @@
                                             @endforeach
                                             <td class="text-center">{{ $facturacion->monto_adeudado }} USD</td>
                                             <td class="text-center">{{ $facturacion->total}} USD</td>
-                                          
+                                            <td class="text-center">
+                                                @if($facturacion->monto_adeudado == 0)
+                                                <span class="badge bg-success">full payment </span>
+                                                @else
+                                                <span class="badge bg-warning ">{{ $facturacion->monto_adeudado}} USD </span>
+                                                @endif
+                                          </td>
                                      
                                             <td class="text-center">
-                                              <a href="<?=URL::to('/dresses/factura/lista-facturas');?>/{{ $facturacion->id }}" class="btn drp-icon btn-rounded btn-primary"
+                                              <a href="<?=URL::to('orders/'. $facturacion->id.'/edit');?>" class="btn drp-icon btn-rounded btn-primary"
                                                 type="button"><i class="fas fa-receipt"></i></a>
 
                                              @if($facturacion->t_persona =='natural')
@@ -88,8 +96,8 @@
                                               function confirmar ( mensaje ) {
                                               return confirm( mensaje );}
                                               </script>
-                                              <a href="<?=URL::to('/gestion/factura/eliminar-cliente/');?>/{{$facturacion->id}}" class="btn drp-icon btn-rounded btn-warning"
-                                                type="button"  onclick="return confirmar('¿Está seguro que desea eliminar el registro?')"><i class="fas fa-user-edit"></i></a>
+                                              <a href="<?=URL::to('/orden/delete');?>/{{$facturacion->id}}" class="btn drp-icon btn-rounded btn-danger"
+                                                type="button"  onclick="return confirmar('¿Está seguro que desea eliminar la Orden?')"><i class="fas fa-user-edit"></i></a>
 
                                 
                                             </td>
@@ -110,6 +118,7 @@
                                                  <th class="text-center">Seller</th>
                                                  <th class="text-center">Debt</th>
                                                  <th class="text-center">Total</th>
+                                                 <th class="text-center">Amount Owed</th>
                                               
                                                  <th class="text-center">Actions</th>
                                                 </tr>

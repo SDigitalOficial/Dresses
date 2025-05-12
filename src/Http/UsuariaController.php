@@ -129,15 +129,7 @@ $facturacion = \DigitalsiteSaaS\Dresses\Tenant\Cliente::all();
 return view('dresses::clientes.clientes')->with('facturacion', $facturacion);    
 }
 
-public function editarclientes($id){
-if(!$this->tenantName){
-$cliente = Cliente::find($id);
-}
-else{
-$cliente = \DigitalsiteSaaS\Dresses\Tenant\Cliente::find($id);
-}
-return view('dresses::clientes.editar-clientes')->with('cliente', $cliente);    
-}
+
 
 public function editarproductosweb($id){
 if(!$this->tenantName){
@@ -225,9 +217,9 @@ public function editarempresa($id){
 
 public function crearusuario(){
  if(!$this->tenantName){
- $empresas = Empresa::all();
+ $empresas = Tienda::all();
  }else{
- $empresas = \DigitalsiteSaaS\Facturacion\Tenant\Empresa::all();
+ $empresas = \DigitalsiteSaaS\Dresses\Tenant\Tienda::all();
  }
  return view('dresses::usuarios.crear-usuario')->with('empresas', $empresas);
 }
@@ -254,7 +246,7 @@ public function editarclienteweb($id) {
  return Redirect('dresses/clientes')->with('status', 'ok_create');
 }
 
-public function update($id) {
+public function updates($id) {
  $input = Input::all();
  if(!$this->tenantName){
  $facturacion = Empresa::find($id);
@@ -1313,6 +1305,41 @@ public function special(Request $request){
  }
 
 
+
+ public function specialedit($id)
+{
+    // Obtener la orden existente
+    $orden = \DigitalsiteSaaS\Dresses\Tenant\Orden::with(['cliente', 'productos'])->findOrFail($id);
+    
+    // Obtener datos necesarios para los selects
+    $user = \DigitalsiteSaaS\Usuario\Tenant\Usuario::all();
+    $tienda = \DigitalsiteSaaS\Dresses\Tenant\Tienda::all();
+    
+    // Transformar productos para el frontend
+    $productosTransformados = $orden->productos->map(function($producto) {
+        return [
+            'id' => $producto->id,
+            'name' => $producto->nombre,
+            'price' => $producto->pivot->precio_unitario,
+            'quantity' => $producto->pivot->cantidad,
+            'size' => $producto->pivot->talla,
+            'color' => $producto->pivot->color,
+            'discount' => $producto->pivot->descuento,
+            'tax' => $producto->pivot->impuesto,
+            'total' => $producto->pivot->total
+        ];
+    });
+
+    return view('dresses::specialedit', [
+        'orden' => $orden,
+        'user' => $user,
+        'tienda' => $tienda,
+        'productos' => $productosTransformados,
+        'cliente' => $orden->cliente
+    ]);
+}
+
+
 public function search(Request $request){
        $query = $request->get('query');
         $products = \DigitalsiteSaaS\Dresses\Tenant\Producto::where('nombre', 'LIKE', "%{$query}%")->get();
@@ -1366,6 +1393,77 @@ public function search(Request $request){
         return response()->json(['message' => 'Venta guardada correctamente'], 201);
     }
 
+
+
+public function update(Request $request, $id)
+{
+    // Validar los datos
+    $request->validate([
+        'cliente_id' => 'nullable|exists:clientes,id',
+        'fecha_compra' => 'required|date',
+        'observaciones' => 'nullable|string',
+        'vendedor' => 'nullable|string',
+        'productos' => 'required|array',
+        'subtotal' => 'required|numeric',
+        'impuesto_total' => 'required|numeric',
+        'total' => 'required|numeric',
+        'adelanto' => 'required|numeric',
+        'monto_adeudado' => 'required|numeric',
+    ]);
+
+    // Buscar la orden existente
+    $orden = Orden::findOrFail($id);
+
+    // Actualizar la orden
+    $orden->update([
+        'cliente_id' => $request->cliente_id,
+        'fecha_compra' => $request->fecha_compra,
+        'vendedor' => $request->vendedor,
+        'observaciones' => $request->observaciones,
+        'subtotal' => $request->subtotal,
+        'impuesto_total' => $request->impuesto_total,
+        'total' => $request->total,
+        'adelanto' => $request->adelanto,
+        'monto_adeudado' => $request->monto_adeudado,
+    ]);
+
+    // Sincronizar productos
+    $productosParaSync = [];
+    foreach ($request->productos as $producto) {
+        if (isset($producto['id'])) {
+            $productosParaSync[$producto['id']] = [
+                'cantidad' => $producto['quantity'],
+                'talla' => $producto['size'],
+                'color' => $producto['color'],
+                'descuento' => $producto['discount'],
+                'impuesto' => $producto['tax'],
+                'precio_unitario' => $producto['price'],
+                'total' => $producto['total'],
+            ];
+        } else {
+            $nuevoProducto = Producto::create([
+                'nombre' => $producto['name'],
+                'precio' => $producto['price'],
+                'talla' => $producto['size'],
+                'color' => $producto['color'],
+            ]);
+            
+            $productosParaSync[$nuevoProducto->id] = [
+                'cantidad' => $producto['quantity'],
+                'talla' => $producto['size'],
+                'color' => $producto['color'],
+                'descuento' => $producto['discount'],
+                'impuesto' => $producto['tax'],
+                'precio_unitario' => $producto['price'],
+                'total' => $producto['total'],
+            ];
+        }
+    }
+
+    $orden->productos()->sync($productosParaSync);
+
+    return response()->json(['message' => 'Orden actualizada correctamente'], 200);
+}
 
 
 

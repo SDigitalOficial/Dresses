@@ -75,7 +75,7 @@
          <select name="store" class="form-control">
             <option>Select Store</option>
             @foreach($empresas as $empresas)
-          <option value="{{$empresas->id}}">{{$empresas->r_social}}</option>
+          <option value="{{$empresas->id}}">{{$empresas->nombre}}</option>
             @endforeach
          </select>
         </div>

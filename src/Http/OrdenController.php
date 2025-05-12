@@ -8,6 +8,7 @@ use Hyn\Tenancy\Models\Hostname;
 use Hyn\Tenancy\Models\Website;
 use Hyn\Tenancy\Repositories\HostnameRepository;
 use Hyn\Tenancy\Repositories\WebsiteRepository;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class OrdenController extends Controller
 {
@@ -98,9 +99,11 @@ public function __construct(){
      $facturacion = \DigitalsiteSaaS\Dresses\Tenant\Orden_Detalle::where('orden_id','=', $id)->get();
     }
 
-    dd($facturacion);
     return view('dresses::empresas.negocios')->with('facturacion', $facturacion);
     }
+
+
+ 
 
     public function verordenestotal(){
 
@@ -114,4 +117,182 @@ public function __construct(){
     }
     return view('dresses::ordenes.ordenes')->with('facturacion', $facturacion)->with('users', $users)->with('cliente', $cliente);
     }
+
+
+public function edit($id)
+    {
+        $orden = \DigitalsiteSaaS\Dresses\Tenant\Orden::with(['productos', 'cliente'])->findOrFail($id);
+        $tienda =  \DigitalsiteSaaS\Dresses\Tenant\Tienda::all();
+        $vendedores =  \DigitalsiteSaaS\Usuario\Tenant\Usuario::all();
+        
+        return view('dresses::editspecial', compact('orden', 'tienda', 'vendedores'));
+    }
+
+    /**
+     * Actualiza la orden en la base de datos.
+     */
+   public function update(Request $request, $id)
+{
+    // Validación mejorada
+    $validated = $request->validate([
+        'cliente_id' => 'required',
+        'fecha_compra' => 'required|date',
+        'vendedor' => 'required',
+        'observaciones' => 'nullable|string|max:500',
+        'productos' => 'required|array|min:1',
+        'productos.*.name' => 'required|string|max:255',
+        'productos.*.price' => 'required|numeric|min:0',
+        'productos.*.quantity' => 'required|integer|min:1',
+        'subtotal' => 'required|numeric|min:0',
+        'impuesto_total' => 'required|numeric|min:0',
+        'total' => 'required|numeric|min:0',
+        'adelanto' => 'required|numeric|min:0',
+        'adelanto1' => 'required|numeric|min:0',
+        'adelanto2' => 'required|numeric|min:0',
+        'adelanto3' => 'required|numeric|min:0',
+        'date1' => 'string',
+        'date2' => 'string',
+        'date3' => 'string',
+        'user1' => 'string',
+        'user2' => 'string',
+        'user3' => 'string',
+        'monto_adeudado' => 'required|numeric|min:0'
+    ]);
+
+    try {
+        $orden = \DigitalsiteSaaS\Dresses\Tenant\Orden::findOrFail($id);
+        
+        // Actualizar datos principales
+        $orden->update([
+            'cliente_id' => $validated['cliente_id'],
+            'fecha_compra' => $validated['fecha_compra'],
+            'vendedor' => $validated['vendedor'],
+            'observaciones' => $validated['observaciones'],
+            'subtotal' => $validated['subtotal'],
+            'impuesto_total' => $validated['impuesto_total'],
+            'total' => $validated['total'],
+            'adelanto' => $validated['adelanto'],
+            'adelanto1' => $validated['adelanto1'],
+            'adelanto2' => $validated['adelanto2'],
+            'adelanto3' => $validated['adelanto3'],
+            'user1' => $validated['user1'],
+            'user2' => $validated['user2'],
+            'user3' => $validated['user3'],
+            'date1' => $validated['date1'],
+            'date2' => $validated['date2'],
+            'date3' => $validated['date3'],
+            'monto_adeudado' => $validated['monto_adeudado']
+        ]);
+
+        // Sincronizar productos
+        $productosSync = [];
+        foreach ($validated['productos'] as $producto) {
+            $productoId = $producto['id'] ?? null;
+            
+            if ($productoId) {
+                // Actualizar producto existente
+                $productosSync[$productoId] = [
+                    'cantidad' => $producto['quantity'],
+                    'talla' => $producto['size'],
+                    'color' => $producto['color'],
+                    'descuento' => $producto['discount'],
+                    'impuesto' => $producto['tax'],
+                    'precio_unitario' => $producto['price'],
+                    'total' => $producto['total']
+                ];
+            } else {
+                // Crear nuevo producto
+                $nuevoProducto = Producto::create([
+                    'nombre' => $producto['name'],
+                    'precio' => $producto['price'],
+                    'talla' => $producto['size'],
+                    'color' => $producto['color']
+                ]);
+                
+                $productosSync[$nuevoProducto->id] = [
+                    'cantidad' => $producto['quantity'],
+                    'talla' => $producto['size'],
+                    'color' => $producto['color'],
+                    'descuento' => $producto['discount'],
+                    'impuesto' => $producto['tax'],
+                    'precio_unitario' => $producto['price'],
+                    'total' => $producto['total']
+                ];
+            }
+        }
+
+        $orden->productos()->sync($productosSync);
+
+        return response()->json([
+            'message' => 'Orden actualizada correctamente',
+            'orden_id' => $orden->id
+        ], 200);
+
+    } catch (\Exception $e) {
+        return response()->json([
+            'message' => 'Error al actualizar la orden',
+            'error' => $e->getMessage()
+        ], 500);
+    }
+}
+
+    /**
+     * Muestra una orden específica.
+     */
+    public function show($id)
+    {
+        $orden = Orden::with(['productos', 'cliente'])->findOrFail($id);
+        return view('dresses::orders.show', compact('orden'));
+    }
+
+
+
+   public function ordendelete($id) {
+    if(!$this->tenantName){
+     $orden = Orden::find($id);
+    }else{
+     $orden = \DigitalsiteSaaS\Dresses\Tenant\Orden::find($id);
+    }
+     $orden->delete();
+     return Redirect('dresses/ver-ordenes')->with('status', 'ok_delete');
+    }
+
+public function productdelete($id) {
+    if(!$this->tenantName){
+     $producto = Producto::find($id);
+    }else{
+     $producto = \DigitalsiteSaaS\Dresses\Tenant\Producto::find($id);
+    }
+     $producto->delete();
+     return Redirect('dresses/factura/crear-producto')->with('status', 'ok_delete');
+    }
+
+
+
+  public function impuestos()
+    {
+        $impuestos = \DigitalsiteSaaS\Dresses\Tenant\Impuesto::all();
+        return view('dresses::impuestos.index', compact('impuestos'));
+    }
+
+
+
+public function generatePDF($id, $download = false)
+{
+    $orden = \DigitalsiteSaaS\Dresses\Tenant\Orden::with(['cliente', 'productos', 'vendedor'])->findOrFail($id);
+    $totalAdvances = $orden->adelanto1 + $orden->adelanto2 + $orden->adelanto3;
+    
+    $pdf = PDF::loadView('orders.pdf', compact('orden', 'totalAdvances'));
+    
+    if($download) {
+        return $pdf->download('orden_'.$orden->id.'.pdf');
+    }
+    
+    return $pdf->stream('orden_'.$orden->id.'.pdf'); // Muestra en el navegador
+}
+
+
+
+
+
 }
