@@ -67,7 +67,7 @@
                                             @endif
                                             @endforeach
                                             @foreach($users as $usersa)
-                                            @if($facturacion->cliente_id == $usersa->id)
+                                            @if($facturacion->vendedor == $usersa->id)
                                             <td class="text-center">{{ $usersa->name }}</td>
                                             @endif
                                             @endforeach
