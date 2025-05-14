@@ -164,7 +164,7 @@
             <div id="contactDisplay" class="p-1 col-lg-4">
                 <div class="card card-body">
                     <div class="form-group mt-4">
-                        <label><strong>Purchase Date:</strong></label>
+                        <label><strong>Event Date:</strong></label>
                         <input type="date" id="purchaseDate" class="form-control" value="{{ $orden->fecha_compra->format('Y-m-d') }}">
                         <label><strong>Seller:</strong></label>
                         <select name="vendedor" id="purchaseVendedor" class="form-control">

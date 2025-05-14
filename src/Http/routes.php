@@ -1,10 +1,12 @@
 <?php
 
+Route::group(['middleware' => ['auth','usuariodresses']], function (){
 
 Route::get('dresses/empresa', function () {
     return view('indexdresses');
 });
 
+});
 
 Route::get('dresses/usuarios', 'DigitalsiteSaaS\Dresses\Http\UsuariaController@index');
 Route::get('dresses/crear-usuario', 'DigitalsiteSaaS\Dresses\Http\UsuariaController@crearusuario');

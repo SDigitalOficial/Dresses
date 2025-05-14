@@ -60,7 +60,7 @@
                                         <tr>
                                            
                                             <td class="text-center">{{ $facturacion->id }}</td>
-                                            <td class="text-center">{{ $facturacion->fecha_compra }}</td>
+                                            <td class="text-center">{{ $facturacion->created_at }}</td>
                                             @foreach($cliente as $clientes)
                                             @if($facturacion->cliente_id == $clientes->id)
                                             <td class="text-center">{{ $clientes->nombres}}</td>

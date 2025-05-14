@@ -125,7 +125,7 @@ public function __construct(){
     if(!$this->tenantName){
      $impuestos = Impuesto::all(); 
     }else{
-     $impuestos = \DigitalsiteSaaS\Dresses\Tenant\impuesto::all();
+     $impuestos = \DigitalsiteSaaS\Dresses\Tenant\Impuesto::all();
     }
     return view('dresses::impuestos.index')->with('impuestos', $impuestos);
     }
