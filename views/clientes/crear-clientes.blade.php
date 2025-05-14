@@ -59,6 +59,13 @@
                                         </div>
 
                                         <div class="form-group">
+                                            <label class="col-md-3 control-label" for="example-select">Phone2</label>
+                                            <div class="col-md-12">
+                                                {{Form::text('telefono2', '', array('class' => 'form-control','placeholder'=>'Enter Phone' ))}}
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
                                             <label class="col-md-3 control-label" for="example-password-input">Email</label>
                                             <div class="col-md-12">
                                                   {{Form::text('email', '', array('class' => 'form-control','placeholder'=>'Enter Email' ))}}

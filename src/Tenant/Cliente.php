@@ -13,7 +13,7 @@ use UsesTenantConnection;
  protected $table = 'dresses_clientes';
  public $timestamps = true;
 
- protected $fillable = ['nombres','apellidos', 'email','telefono','ciudad','direccion','tienda','tipo_evento','fecha_evento'];
+ protected $fillable = ['nombres','apellidos', 'email','telefono','telefono2','ciudad','direccion','tienda','tipo_evento','fecha_evento'];
 
     public function ordenes()
     {

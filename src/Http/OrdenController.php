@@ -9,6 +9,7 @@ use Hyn\Tenancy\Models\Website;
 use Hyn\Tenancy\Repositories\HostnameRepository;
 use Hyn\Tenancy\Repositories\WebsiteRepository;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Input;
 
 class OrdenController extends Controller
 {
@@ -119,13 +120,25 @@ public function __construct(){
     }
 
 
+     public function vertaxes(){
+
+    if(!$this->tenantName){
+     $impuestos = Impuesto::all(); 
+    }else{
+     $impuestos = \DigitalsiteSaaS\Dresses\Tenant\impuesto::all();
+    }
+    return view('dresses::impuestos.index')->with('impuestos', $impuestos);
+    }
+
+
 public function edit($id)
     {
         $orden = \DigitalsiteSaaS\Dresses\Tenant\Orden::with(['productos', 'cliente'])->findOrFail($id);
         $tienda =  \DigitalsiteSaaS\Dresses\Tenant\Tienda::all();
         $vendedores =  \DigitalsiteSaaS\Usuario\Tenant\Usuario::all();
+        $impuestos = \DigitalsiteSaaS\Dresses\Tenant\Impuesto::all();
         
-        return view('dresses::editspecial', compact('orden', 'tienda', 'vendedores'));
+        return view('dresses::editspecial', compact('orden', 'tienda', 'vendedores', 'impuestos'));
     }
 
     /**
@@ -275,6 +288,28 @@ public function productdelete($id) {
         return view('dresses::impuestos.index', compact('impuestos'));
     }
 
+
+    public function creartaxes()
+    {
+        return view('dresses::impuestos.crear');
+    }
+
+
+public function createimpuesto() {
+
+ if(!$this->tenantName){
+ $facturacion = new Impuesto;
+ }else{
+ $facturacion = new \DigitalsiteSaaS\Dresses\Tenant\Impuesto;  
+ }
+ $facturacion->ciudad =  Input::get('ciudad');
+ $facturacion->sufijo = Input::get('sufijo');
+ $facturacion->valor = Input::get('porcentaje');
+ $facturacion->save();
+ return Redirect('/dresses/ver-taxes')->with('status', 'ok_create');
+}
+
+   
 
 
 public function generatePDF($id, $download = false)

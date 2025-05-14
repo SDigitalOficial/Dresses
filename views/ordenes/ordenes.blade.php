@@ -46,8 +46,8 @@
                                                      <th class="text-center">Order Date</th>
                                                      <th class="text-center">Client</th>
                                                      <th class="text-center">Seller</th>
-                                                     <th class="text-center">Debt</th>
                                                      <th class="text-center">Total</th>
+                                                     <th class="text-center">Advance</th>
                                                      <th class="text-center">Amount Owed</th>
                                                      
                                                   
@@ -71,8 +71,9 @@
                                             <td class="text-center">{{ $usersa->name }}</td>
                                             @endif
                                             @endforeach
-                                            <td class="text-center">{{ $facturacion->monto_adeudado }} USD</td>
+                                           
                                             <td class="text-center">{{ $facturacion->total}} USD</td>
+                                             <td class="text-center">{{ $facturacion->adelanto + $facturacion->adelanto1 + $facturacion->adelanto2 + $facturacion->adelanto3 }} USD</td>
                                             <td class="text-center">
                                                 @if($facturacion->monto_adeudado == 0)
                                                 <span class="badge bg-success">full payment </span>

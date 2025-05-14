@@ -213,9 +213,19 @@
                     <td><input type="number" class="quantity" id="quantity" value="{{ $producto->pivot->cantidad }}" min="1" data-index="{{ $loop->index }}"></td>
                     <td><input type="text" class="size" id="size" value="{{ $producto->pivot->size }}" data-index="{{ $loop->index }}">
                     </td>
-                    <td><input type="color" class="color" id="color" value="{{ $producto->pivot->color }}" data-index="{{ $loop->index }}"></td>
+                    <td><input type="text" class="color" id="color" value="{{ $producto->pivot->color }}" data-index="{{ $loop->index }}"></td>
                     <td><input type="number" class="discount" id="discount" value="{{ $producto->pivot->descuento }}" min="0" data-index="{{ $loop->index }}"></td>
-                    <td><input type="number" class="tax" id="tax" value="{{ $producto->pivot->impuesto }}" min="0" data-index="{{ $loop->index }}"></td>
+                    <td>
+                         <select class="form-control tax" data-index="{{ $loop->index }}">
+                        <option value="0" {{ $producto->pivot->impuesto_total == 0 ? 'selected' : '' }}>Sin Taxes (0%)</option>
+                        @foreach($impuestos as $impuesto)
+                            <option value="{{ $impuesto->id }}" {{ $producto->pivot->impuesto_total == $impuesto->id ? 'selected' : '' }}>
+                                {{ $impuesto->ciudad }} {{ $impuesto->sufijo }} ({{ $impuesto->valor }}%)
+                            </option>
+                        @endforeach
+                    </select>
+
+                    </td>
                     <td>{{ number_format($producto->pivot->precio_unitario, 2) }}</td>
                     <td class="total">{{ number_format($producto->pivot->total, 2) }}</td>
                     <td><button class="delete" data-index="{{ $loop->index }}">❌</button></td>
@@ -367,6 +377,7 @@ $(document).ready(function () {
     let color = $("#productColor").val();
     let size = $("#productSize").val();
     let price = parseFloat($("#productPrice").val()) || 0;
+    let tax = parseFloat($("#productTax").val()) || 0;
 
     // Enviar el producto al servidor para crearlo
     $.ajax({
@@ -380,7 +391,7 @@ $(document).ready(function () {
         },
         success: function (response) {
             // Agregar el producto con el ID real de la base de datos
-            addProductToTable(name, price, response.id, color, size);
+            addProductToTable(name, price, response.id, color, size, tax);
             
             // Ocultar el modal
             var modal = bootstrap.Modal.getInstance(document.getElementById('exampleModalLivec'));
@@ -399,6 +410,13 @@ $(document).ready(function () {
 
             // FUNCIÓN PARA AGREGAR PRODUCTO A LA TABLA
 function addProductToTable(name, price, id = null, color = "#000000", size = "0") {
+    let tax = 0; // Valor predeterminado
+
+     // Si es un producto nuevo, obtener el tax del modal
+    if (id === null) {
+        tax = parseFloat($("#productTax").val()) || 0;
+    }
+    
     productList.push({
         id: id || Date.now(), // Usar un ID temporal si no existe
         name,
@@ -407,7 +425,7 @@ function addProductToTable(name, price, id = null, color = "#000000", size = "0"
         size,
         color,
         discount: 0,
-        tax: 0,
+        tax: tax,
         total: 0 // Inicializar el total
     });
     calculateTotals(); // Recalcular todos los totales
@@ -496,26 +514,38 @@ function addProductToTable(name, price, id = null, color = "#000000", size = "0"
 
     // Función para renderizar la tabla de productos
     function renderProductTable() {
-        let tableBody = $("#productTable");
-        tableBody.empty();
+    let tableBody = $("#productTable");
+    tableBody.empty();
+    
+    productList.forEach((product, index) => {
+        let taxOptions = `
+            <option value="0" ${product.tax == 0 ? 'selected' : ''}>Sin Taxes (0%)</option>
+            ${@json($impuestos).map(imp => `
+                <option value="${imp.valor}" ${product.tax == imp.valor ? 'selected' : ''}>
+                    ${imp.ciudad} ${imp.sufijo} (${imp.valor}%)
+                </option>
+            `).join('')}
+        `;
         
-        productList.forEach((product, index) => {
-            let row = `
-                <tr data-index="${index}">
-                    <td>${product.name}</td>
-                    <td><input type="number" class="form-control quantity" value="${product.quantity}" min="1" data-index="${index}"></td>
-                    <td><input type="text" class="form-control size" value="${product.size}" data-index="${index}"></td>
-                    </td>
-                    <td><input type="text" class="form-control color" value="${product.color}" data-index="${index}"></td>
-                    <td><input type="number" class="form-control discount" value="${product.discount}" min="0" max="100" step="0.01" data-index="${index}"></td>
-                    <td><input type="number" class="form-control tax" value="${product.tax}" min="0" max="100" step="0.01" data-index="${index}"></td>
-                    <td>${parseFloat(product.price).toFixed(2)}</td>
-                    <td class="total">${product.total}</td>
-                    <td><button class="btn btn-danger delete" data-index="${index}">Eliminar</button></td>
-                </tr>`;
-            tableBody.append(row);
-        });
-    }
+        let row = `
+            <tr data-index="${index}">
+                <td>${product.name}</td>
+                <td><input type="number" class="form-control quantity" value="${product.quantity}" min="1" data-index="${index}"></td>
+                <td><input type="text" class="form-control size" value="${product.size}" data-index="${index}"></td>
+                <td><input type="text" class="form-control color" value="${product.color}" data-index="${index}"></td>
+                <td><input type="number" class="form-control discount" value="${product.discount}" min="0" max="100" step="0.01" data-index="${index}"></td>
+                <td>
+                    <select class="form-control tax" data-index="${index}">
+                        ${taxOptions}
+                    </select>
+                </td>
+                <td>${parseFloat(product.price).toFixed(2)}</td>
+                <td class="total">${product.total}</td>
+                <td><button class="btn btn-danger delete" data-index="${index}">Eliminar</button></td>
+            </tr>`;
+        tableBody.append(row);
+    });
+}
 
     // Eventos para actualización automática
     $(document).on('input', '.quantity, .discount, .tax, #advancePayment, #advancePayment1, #advancePayment2, #advancePayment3', function() {

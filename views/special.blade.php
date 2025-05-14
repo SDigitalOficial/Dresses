@@ -68,6 +68,10 @@
                                     <input type="text" id="contactPhone" class="form-control">
                                 </div>
                                 <div class="form-group col-md-6">
+                                    <label>Phone 2:</label>
+                                    <input type="text" id="contactPhone2" class="form-control">
+                                </div>
+                                <div class="form-group col-md-6">
                                     <label>City:</label>
                                     <input type="text" id="contactCity" class="form-control">
                                 </div>
@@ -278,6 +282,10 @@
                                 <label>Phone:</label>
                                 <input type="text" id="contactPhone" class="form-control">
                             </div>
+                            <div class="form-group col-md-6">
+                                    <label>Phone 2:</label>
+                                    <input type="text" id="contactPhone2" class="form-control">
+                                </div>
                             <div class="form-group">
                                 <label>City:</label>
                                 <input type="text" id="contactCity" class="form-control">
@@ -347,6 +355,7 @@
                 let name = $("#contactName").val();
                 let lastName = $("#contactLastName").val();
                 let phone = $("#contactPhone").val();
+                let phone2 = $("#contactPhone2").val();
                 let email = $("#contactEmail").val();
                 let city = $("#contactCity").val();
                 let address = $("#contactAddress").val();
@@ -361,6 +370,7 @@
                         nombres: name,
                         apellidos: lastName,
                         telefono: phone,
+                        telefono2: phone2,
                         ciudad: city,
                         email: email,
                         direccion: address,
@@ -372,12 +382,13 @@
                         selectedContact = {
                             id: response.id,
                             name: response.nombres + " " + response.apellidos,
-                            phone: response.telefono
+                            phone: response.telefono,
+                            phone2: response.telefono2
                         };
                         $("#selectedContact").text(`${selectedContact.name} - ${selectedContact.phone}`);
                         var modal = bootstrap.Modal.getInstance(document.getElementById('exampleModalLive'));
                         modal.hide();
-                        $("#contactName, #contactLastName, #contactPhone, #contactCity, #contactAddress, #contactStore, #contactEventType, #contactEventDate").val("");
+                        $("#contactName, #contactLastName, #contactPhone, #contactPhone2, #contactCity, #contactAddress, #contactStore, #contactEventType, #contactEventDate").val("");
                     },
                     error: function (xhr) {
                         alert("Error al guardar el cliente: " + xhr.responseJSON.message);
@@ -390,8 +401,9 @@
                 let id = $(this).data("id");
                 let name = $(this).data("name");
                 let phone = $(this).data("phone");
-                selectedContact = { id, name, phone };
-                $("#selectedContact").text(`${name} - ${phone}`);
+                let phone2 = $(this).data("phone2");
+                selectedContact = { id, name, phone, phone2 };
+                $("#selectedContact").text(`${name} - ${phone} - ${phone2}`);
                 $("#contactSuggestions").hide();
             });
 
@@ -443,6 +455,16 @@
             // FUNCIÓN PARA AGREGAR PRODUCTO A LA TABLA
             function addProductToTable(name, price, id = null, color = "#000000", size = "0") {
                 let existingProduct = productList.find(p => p.id === id); // Check if product exists
+                let tax = 0; // Valor predeterminado
+
+                if (id === null) {
+        tax = parseFloat($("#productTax").val()) || 0;
+    }
+    // Si es un producto existente seleccionado del autocomplete
+    else {
+        // Puedes establecer un impuesto predeterminado para productos existentes si lo deseas
+        tax = 0; // O podrías usar el valor que viene de la base de datos
+    }
 
                 if (existingProduct) {
                     existingProduct.quantity += 1; // Increment quantity if it exists
@@ -456,7 +478,7 @@
                         size,
                         color,
                         discount: 0,
-                        tax: 0,
+                        tax: tax,
                         total: 0
                     });
                     calculateTotal(productList[productList.length - 1]);
@@ -471,28 +493,47 @@
                 return total;
             }
 
-            function renderTable() {
-                let tableBody = $("#productTable");
-                tableBody.empty();
-                productList.forEach((product, index) => {
-                    let total = calculateTotal(product);
-                    tableBody.append(`
-                        <tr data-index="${index}">
-                            <td>${product.name}</td>
-                            <td><input type="number" class="quantity" value="${product.quantity}" min="1" data-index="${index}"></td>
-                            <td><input type="text" class="size" value="${product.size}" data-index="${index}"></td></td>
-                            <td><input type="text" class="color" value="${product.color}" data-index="${index}"></td>
-                            <td><input type="number" class="discount" value="${product.discount}" min="0" data-index="${index}"></td>
-                            <td><input type="number" class="tax" value="${product.tax}" min="0" data-index="${index}"></td>
-                            <td>${product.price.toFixed(2)}</td>
-                            <td class="total">${total}</td>
-                            <td><button class="delete" data-index="${index}">❌</button></td>
-                        </tr>
-                    `);
-                });
-                attachEventListeners();
-                updateSummary();
-            }
+
+
+
+function renderTable() {
+    let tableBody = $("#productTable");
+    tableBody.empty();
+    
+    $.get("{{ route('dresses.impuestos') }}", function(impuestos) {
+        productList.forEach((product, index) => {
+            let total = calculateTotal(product);
+            let selectOptions = `
+                <option value="0" ${product.tax == 0 ? 'selected' : ''}>Sin Taxes (0%)</option>
+                ${impuestos.map(imp => 
+                    `<option value="${imp.valor}" ${product.tax == imp.valor ? 'selected' : ''}>
+                        ${imp.ciudad} ${imp.sufijo} (${imp.valor}%)
+                    </option>`
+                ).join('')}
+            `;
+            
+            tableBody.append(`
+                 <tr data-index="${index}">
+                    <td>${product.name}</td>
+                    <td><input type="number" class="quantity form-control" value="${product.quantity}" min="1" data-index="${index}"></td>
+                    <td><input type="text" class="size form-control" value="${product.size}" data-index="${index}"></td>
+                    <td><input type="text" class="color form-control" value="${product.color}" data-index="${index}"></td>
+                    <td><input type="number" class="discount form-control" value="${product.discount}" min="0" data-index="${index}"></td>
+                    <td>
+                        <select class="tax form-control" data-index="${index}">
+                            ${selectOptions}
+                        </select>
+                    </td>
+                    <td>${product.price.toFixed(2)}</td>
+                    <td class="total">${total}</td>
+                    <td><button class="btn btn-danger delete" data-index="${index}">Eliminar</button></td>
+                </tr>
+            `);
+        });
+        attachEventListeners();
+        updateSummary();
+    });
+}
 
             function updateSummary() {
                 let subtotal = productList.reduce((sum, p) => sum + (p.quantity * p.price * (1 - p.discount / 100)), 0);

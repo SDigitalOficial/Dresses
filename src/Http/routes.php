@@ -35,6 +35,8 @@ Route::post('productos/creates', 'DigitalsiteSaaS\Dresses\Http\UsuariaController
 Route::get('dresses/factura/crear-facturacion/{id}', 'DigitalsiteSaaS\Dresses\Http\UsuariaController@crearfactura');
 Route::post('dresses/factura/crear-factura', 'DigitalsiteSaaS\Dresses\Http\UsuariaController@createfactura');
 
+Route::post('dresses/crear-impuesto', 'DigitalsiteSaaS\Dresses\Http\OrdenController@createimpuesto');
+
 Route::get('Facturacione/{id}', 'DigitalsiteSaaS\Dresses\Http\UsuariaController@facturacione');
 Route::get('Facturacione/{id}/ajax-subcat', 'DigitalsiteSaaS\Dresses\Http\UsuariaController@facturacioneajax');
 Route::post('dresses/factura/creacion-producto', 'DigitalsiteSaaS\Dresses\Http\UsuariaController@creatproducto');
@@ -56,6 +58,10 @@ Route::get('dresses/specialorders/{id}', 'DigitalsiteSaaS\Dresses\Http\UsuariaCo
 Route::get('dresses/ver-ordenes/{id}', 'DigitalsiteSaaS\Dresses\Http\OrdenController@verordenes');
 
 Route::get('dresses/ver-ordenes', 'DigitalsiteSaaS\Dresses\Http\OrdenController@verordenestotal');
+
+Route::get('dresses/ver-taxes', 'DigitalsiteSaaS\Dresses\Http\OrdenController@vertaxes');
+Route::get('dresses/crear-taxes', 'DigitalsiteSaaS\Dresses\Http\OrdenController@creartaxes');
+
 Route::get('orden/delete/{id}', 'DigitalsiteSaaS\Dresses\Http\OrdenController@ordendelete');
 Route::get('gestion/factura/eliminar-almacen/{id}', 'DigitalsiteSaaS\Dresses\Http\OrdenController@productdelete');
 
@@ -89,4 +95,8 @@ Route::get('/orders/{id}/view', [DigitalsiteSaaS\Dresses\Http\OrdenController::c
 Route::get('/orders/{id}/download', function($id) {
     return app()->call('DigitalsiteSaaS\Dresses\Http\OrdenController@generatePDF', ['id' => $id, 'download' => true]);
 })->name('orders.download');
+
+Route::get('/dresses/impuestos', function() {
+    return \DigitalsiteSaaS\Dresses\Tenant\Impuesto::all();
+})->name('dresses.impuestos');
 

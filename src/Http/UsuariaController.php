@@ -92,10 +92,10 @@ public function eliminar($id) {
 public function editar($id){
  if(!$this->tenantName){
  $usuario = Usuario::find($id);
- $empresas = Empresa::all();
+ $empresas = Tienda::all();
  }else{
  $usuario = \DigitalsiteSaaS\Usuario\Tenant\Usuario::find($id);
- $empresas = \DigitalsiteSaaS\Facturacion\Tenant\Empresa::all();
+ $empresas = \DigitalsiteSaaS\Dresses\Tenant\Tienda::all();
  }
  return view('dresses::usuarios.editar')->with('usuario', $usuario)->with('empresas', $empresas);
 }
@@ -165,6 +165,7 @@ $tienda = \DigitalsiteSaaS\Dresses\Tenant\Tienda::all();
  $facturacion->apellidos = Input::get('apellidos');
  $facturacion->email = Input::get('email');
  $facturacion->telefono = Input::get('telefono');
+ $facturacion->telefono2 = Input::get('telefono2');
  $facturacion->ciudad = Input:: get ('ciudad');
  $facturacion->direccion = Input:: get ('direccion');
  $facturacion->tienda = Input:: get ('tienda');
@@ -215,6 +216,18 @@ public function editarempresa($id){
 }
 
 
+public function editarclientes($id){
+ if(!$this->tenantName){
+ $cliente = Cliente::find($id);
+ $tienda = Tienda::all();
+ }else{
+ $cliente = \DigitalsiteSaaS\Dresses\Tenant\Cliente::find($id);
+ $tienda = \DigitalsiteSaaS\Dresses\Tenant\Tienda::all();
+ }
+ return view('dresses::clientes.editar-clientes')->with('cliente', $cliente)->with('tienda', $tienda);
+}
+
+
 public function crearusuario(){
  if(!$this->tenantName){
  $empresas = Tienda::all();
@@ -236,6 +249,7 @@ public function editarclienteweb($id) {
  $facturacion->apellidos = Input::get('apellidos');
  $facturacion->email = Input::get('email');
  $facturacion->telefono = Input::get('telefono');
+ $facturacion->telefono2 = Input::get('telefono2');
  $facturacion->ciudad = Input:: get ('ciudad');
  $facturacion->direccion = Input:: get ('direccion');
  $facturacion->tienda = Input:: get ('tienda');

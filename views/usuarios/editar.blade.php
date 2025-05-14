@@ -60,9 +60,9 @@
          <select name="store" class="form-control">
             @foreach($empresas as $empresasa)
             @if($usuario->region == $empresasa->id)
-            <option value="{{$empresasa->id}}" selected>{{$empresasa->r_social}}</option>
+            <option value="{{$empresasa->id}}" selected>{{$empresasa->nombre}}</option>
             @endif
-            <option value="{{$empresasa->id}}">{{$empresasa->r_social}}</option>
+            <option value="{{$empresasa->id}}">{{$empresasa->nombre}}</option>
             @endforeach
          </select>
         </div>

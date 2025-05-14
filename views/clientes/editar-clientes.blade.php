@@ -59,6 +59,13 @@
                                         </div>
 
                                         <div class="form-group">
+                                            <label class="col-md-3 control-label" for="example-select">Phone2</label>
+                                            <div class="col-md-12">
+                                                {{Form::text('telefono2', $cliente->telefono2, array('class' => 'form-control','placeholder'=>'Enter Phone' ))}}
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
                                             <label class="col-md-3 control-label" for="example-password-input">Email</label>
                                             <div class="col-md-12">
                                                   {{Form::text('email', $cliente->email, array('class' => 'form-control','placeholder'=>'Enter Email' ))}}
@@ -83,7 +90,14 @@
                                           <div class="form-group">
                                             <label class="col-md-3 control-label" for="example-password-input">Store</label>
                                             <div class="col-md-12 date" id="datetimepicker8">
-                                                  {{Form::text('tienda', $cliente->tienda, array('class' => 'form-control','placeholder'=>'Enter Store'))}}
+                                                  <select name="store" class="form-control">
+                                             @foreach($tienda as $tienda)
+                                              @if($tienda->id == $cliente->tienda)
+                                                <option value="{{$tienda->id}}" selected>{{$tienda->nombre}}</option>
+                                              @endif
+                                              <option value="{{$tienda->id}}">{{$tienda->nombre}}</option>
+                                             @endforeach
+                                            </select>
                                             </div>
                                         </div>
 
