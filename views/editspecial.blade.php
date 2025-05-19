@@ -772,7 +772,7 @@ $(document).ready(function () {
                                   <b>Total:</b> $${ventaData.total.toFixed(2)}`,
                             icon: 'success'
                         }).then(() => {
-                            window.location.href = "/orders/" + {{ $orden->id }};
+                            window.location.href = "/orders/" + {{ $orden->id }} + "/view/";
                         });
                     },
                     error: function (xhr) {
