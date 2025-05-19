@@ -252,9 +252,15 @@ public function edit($id)
     /**
      * Muestra una orden específica.
      */
-    public function show($id)
+  
+     public function show($id)
     {
+
+        if(!$this->tenantName){
         $orden = Orden::with(['productos', 'cliente'])->findOrFail($id);
+        }else{
+         $orden = \DigitalsiteSaaS\Dresses\Tenant\Orden::with(['productos', 'cliente'])->findOrFail($id); 
+        }
         return view('dresses::orders.show', compact('orden'));
     }
 
