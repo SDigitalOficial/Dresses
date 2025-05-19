@@ -44,6 +44,7 @@
                                                     
                                                      <th class="text-center">ID</th>
                                                      <th class="text-center">Order Date</th>
+                                                     <th class="text-center">Event Date</th>
                                                      <th class="text-center">Client</th>
                                                      <th class="text-center">Seller</th>
                                                      <th class="text-center">Total</th>
@@ -61,6 +62,7 @@
                                            
                                             <td class="text-center">{{ $facturacion->id }}</td>
                                             <td class="text-center">{{ $facturacion->created_at }}</td>
+                                            <td class="text-center"><span class="badge bg-info ">{{ $facturacion->fecha_compra }}</span></td>
                                             @foreach($cliente as $clientes)
                                             @if($facturacion->cliente_id == $clientes->id)
                                             <td class="text-center">{{ $clientes->nombres}}</td>
@@ -115,6 +117,7 @@
                                                 <tr>
                                                  <th class="text-center">ID</th>
                                                  <th class="text-center">Order Date</th>
+                                                 <th class="text-center">Event Date</th>
                                                  <th class="text-center">Client</th>
                                                  <th class="text-center">Seller</th>
                                                  <th class="text-center">Debt</th>

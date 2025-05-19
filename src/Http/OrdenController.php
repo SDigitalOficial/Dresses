@@ -318,6 +318,7 @@ public function generatePDF($id, $download = false)
     $totalAdvances = $orden->adelanto1 + $orden->adelanto2 + $orden->adelanto3;
     
     $pdf = PDF::loadView('dresses::ordenes.pdf', compact('orden', 'totalAdvances'));
+    $pdf->setOption('jpegQuality', 100); // Máxima calidad
     
     if($download) {
         return $pdf->download('orden_'.$orden->id.'.pdf');

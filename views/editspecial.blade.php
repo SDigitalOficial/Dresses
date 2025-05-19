@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Editar Orden #{{ $orden->id }}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
         /* Estilos personalizados adicionales */
@@ -36,6 +37,19 @@
             --bs-body-color: #686c71;
             height: 260px !important;
         }
+           .suggestion.bloqueado {
+        opacity: 0.6;
+        background-color: #f8f9fa;
+        cursor: not-allowed;
+    }
+    
+    .suggestion.bloqueado:hover {
+        background-color: #f8f9fa !important;
+    }
+    
+    .fa-check-circle {
+        font-size: 14px;
+    }
     </style>
 </head>
 <body class="container mt-5">
@@ -128,6 +142,10 @@
                                         <label>Price:</label>
                                         <input type="number" id="productPrice" class="form-control" step="0.01">
                                     </div>
+
+<!-- En el formulario de producto -->
+<div class="invalid-feedback product-error" id="productNameError"></div>
+<div class="invalid-feedback product-error" id="productPriceError"></div>
                                 </div>
                             </div>
                         </div>
@@ -329,108 +347,188 @@
     </a>
 </div>
 
-  <script>
+ <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
 $(document).ready(function () {
+    // Función para mostrar notificación
+    function showNotification(title, text, icon) {
+        Swal.fire({
+            title: title,
+            text: text,
+            icon: icon,
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true
+        });
+    }
 
- // AUTOCOMPLETE SEARCH PARA PRODUCTOS
-            $("#search").on("keyup", function () {
-                let query = $(this).val();
-                if (query.length > 1) {
-                    $.ajax({
-                        url: "{{ route('dresses.search') }}", // Ruta para buscar productos
-                        type: "GET",
-                        data: { query: query },
-                        success: function (data) {
-                            let suggestions = $("#suggestions");
-                            suggestions.empty().show();
-                            data.forEach(product => {
-                                suggestions.append("<div class='suggestion' data-id='" + product.id + "' data-name='" + product.nombre + "' data-price='" + product.precio + "'>" + product.nombre + "</div>");
-                            });
-                        }
-                    });
-                } else {
-                    $("#suggestions").hide();
+    // AUTOCOMPLETE SEARCH PARA PRODUCTOS
+    // AUTOCOMPLETE SEARCH PARA PRODUCTOS (MODIFICADO)
+    $("#search").on("keyup", function () {
+        let query = $(this).val();
+        if (query.length > 1) {
+            $.ajax({
+                url: "{{ route('dresses.search') }}",
+                type: "GET",
+                data: { query: query },
+                success: function (data) {
+                    let suggestions = $("#suggestions");
+                    suggestions.empty().show();
+                    
+                    if (data.length === 0) {
+                        suggestions.append("<div class='suggestion'>No se encontraron productos</div>");
+                    } else {
+                        data.forEach(product => {
+                            // Verificar si el producto ya está en la orden
+                            const yaAgregado = productList.some(p => p.id === product.id);
+                            const bloqueadoClass = yaAgregado ? 'bloqueado' : '';
+                            const iconoBloqueado = yaAgregado ? '<i class="fas fa-check-circle ms-2 text-success"></i>' : '';
+                            
+                            suggestions.append(`
+                                <div class='suggestion ${bloqueadoClass}' 
+                                     data-id='${product.id}' 
+                                     data-name='${product.nombre}' 
+                                     data-price='${product.precio}'
+                                     ${yaAgregado ? 'title="Este producto ya está en la orden"' : ''}>
+                                    ${product.nombre} - $${product.precio} ${iconoBloqueado}
+                                </div>
+                            `);
+                        });
+                    }
                 }
             });
-
-            // SELECCIONAR PRODUCTO DESDE AUTOCOMPLETE
-            $(document).on("click", ".suggestion", function () {
-                let id = $(this).data("id");
-                let name = $(this).data("name");
-                let price = $(this).data("price");
-                addProductToTable(name, price, id); // Pasar el ID del producto
-                $("#suggestions").hide();
-            });
-
-            // MOSTRAR POPUP PARA NUEVO PRODUCTO
-            $("#addProductBtn").click(function () {
-                $("#overlay, #popup").show();
-            });
-
-            // OCULTAR POPUP DE PRODUCTO
-            $("#closePopupBtn").click(function () {
-                $("#overlay, #popup").hide();
-            });
-
-            $("#saveProductBtn").click(function () {
-    let name = $("#productName").val();
-    let color = $("#productColor").val();
-    let size = $("#productSize").val();
-    let price = parseFloat($("#productPrice").val()) || 0;
-    let tax = parseFloat($("#productTax").val()) || 0;
-
-    // Enviar el producto al servidor para crearlo
-    $.ajax({
-        url: "{{ route('dresses.venta') }}", // Ajusta esta ruta según tu API
-        type: "POST",
-        data: {
-            nombre: name,
-            precio: price,
-            color: color,
-            talla: size
-        },
-        success: function (response) {
-            // Agregar el producto con el ID real de la base de datos
-            addProductToTable(name, price, response.id, color, size, tax);
-            
-            // Ocultar el modal
-            var modal = bootstrap.Modal.getInstance(document.getElementById('exampleModalLivec'));
-            modal.hide();
-
-            // Limpiar los campos
-            $("#productName, #productColor, #productSize, #productPrice").val("");
-        },
-        error: function (xhr) {
-            alert("Error al crear el producto: " + xhr.responseJSON.message);
+        } else {
+            $("#suggestions").hide();
         }
     });
-});
 
-
-
-            // FUNCIÓN PARA AGREGAR PRODUCTO A LA TABLA
-function addProductToTable(name, price, id = null, color = "#000000", size = "0") {
-    let tax = 0; // Valor predeterminado
-
-     // Si es un producto nuevo, obtener el tax del modal
-    if (id === null) {
-        tax = parseFloat($("#productTax").val()) || 0;
-    }
-    
-    productList.push({
-        id: id || Date.now(), // Usar un ID temporal si no existe
-        name,
-        price,
-        quantity: 1,
-        size,
-        color,
-        discount: 0,
-        tax: tax,
-        total: 0 // Inicializar el total
+    // SELECCIONAR PRODUCTO DESDE AUTOCOMPLETE (MODIFICADO)
+    $(document).on("click", ".suggestion:not(.bloqueado)", function () {
+        let id = $(this).data("id");
+        let name = $(this).data("name");
+        let price = $(this).data("price");
+        addProductToTable(name, price, id);
+        $("#suggestions").hide();
     });
-    calculateTotals(); // Recalcular todos los totales
-    renderProductTable(); // Renderizar la tabla de productos
-}
+
+    // MOSTRAR POPUP PARA NUEVO PRODUCTO
+    $("#addProductBtn").click(function () {
+        $("#overlay, #popup").show();
+    });
+
+    // OCULTAR POPUP DE PRODUCTO
+    $("#closePopupBtn").click(function () {
+        $("#overlay, #popup").hide();
+    });
+
+    // Validar campos del producto
+    function validateProductFields() {
+        let isValid = true;
+        let missingFields = [];
+        let name = $("#productName").val().trim();
+        let price = $("#productPrice").val().trim();
+        
+        // Resetear mensajes de error
+        $(".product-error").text("").hide();
+        
+        // Validar nombre
+        if (name.length < 2) {
+            missingFields.push("Nombre del producto (mínimo 2 caracteres)");
+            $("#productNameError").text("El nombre del producto debe tener al menos 2 caracteres").show();
+            isValid = false;
+        }
+        
+        // Validar precio
+        if (!price || isNaN(price) || parseFloat(price) <= 0) {
+            missingFields.push("Precio (debe ser mayor que 0)");
+            $("#productPriceError").text("Ingrese un precio válido mayor que 0").show();
+            isValid = false;
+        }
+        
+        if (!isValid) {
+            showNotification('Faltan datos', 'Por favor complete: ' + missingFields.join(', '), 'warning');
+        }
+        
+        return isValid;
+    }
+
+    $("#saveProductBtn").click(function () {
+        if (!validateProductFields()) {
+            return;
+        }
+
+        let name = $("#productName").val();
+        let color = $("#productColor").val();
+        let size = $("#productSize").val();
+        let price = parseFloat($("#productPrice").val()) || 0;
+        let tax = parseFloat($("#productTax").val()) || 0;
+
+        $.ajax({
+            url: "{{ route('dresses.venta') }}",
+            type: "POST",
+            data: {
+                nombre: name,
+                precio: price,
+                color: color,
+                talla: size
+            },
+            success: function (response) {
+                addProductToTable(name, price, response.id, color, size, tax);
+                $("#overlay, #popup").hide();
+                $("#productName, #productColor, #productSize, #productPrice").val("");
+                
+                showNotification('Éxito', 'Producto creado correctamente', 'success');
+            },
+            error: function (xhr) {
+                let errorMessage = "Error al crear el producto";
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    errorMessage += ": " + xhr.responseJSON.message;
+                }
+                showNotification('Error', errorMessage, 'error');
+            }
+        });
+    });
+
+    // FUNCIÓN PARA AGREGAR PRODUCTO A LA TABLA
+    // FUNCIÓN PARA AGREGAR PRODUCTO A LA TABLA (MODIFICADA)
+    function addProductToTable(name, price, id = null, color = "#000000", size = "0", tax = 0) {
+        // Verificar si el producto ya existe en la orden
+        if (id !== null) {
+            const productoExistente = productList.find(p => p.id === id);
+            if (productoExistente) {
+                showNotification('Producto duplicado', `${name} ya está en la orden. Modifica la cantidad si necesitas más.`, 'warning');
+                return;
+            }
+        }
+
+        let existingProduct = productList.find(p => 
+            p.id === id || (p.name === name && p.size === size && p.color === color)
+        );
+        
+        if (existingProduct) {
+            existingProduct.quantity += 1;
+            calculateTotals();
+            showNotification('Cantidad actualizada', `${name} - Cantidad aumentada a ${existingProduct.quantity}`, 'info');
+        } else {
+            productList.push({
+                id: id || Date.now(),
+                name,
+                price,
+                quantity: 1,
+                size,
+                color,
+                discount: 0,
+                tax: tax,
+                total: 0
+            });
+            showNotification('Producto agregado', `${name} - $${price}`, 'success');
+        }
+        
+        calculateTotals();
+        renderProductTable();
+    }
 
     // Preparar los datos en PHP primero
     <?php
@@ -456,23 +554,20 @@ function addProductToTable(name, price, id = null, color = "#000000", size = "0"
     ] : null;
     ?>
 
-    // Usar los datos preparados
     let productList = @json($productosArray);
     let selectedContact = @json($contactoArray);
 
-    // Configurar el token CSRF en las solicitudes AJAX
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
 
-    // Función para calcular totales
+    // Función para calcular totales con descuentos e impuestos
     function calculateTotals() {
         let subtotal = 0;
         let taxTotal = 0;
         
-        // Recalcular todos los productos
         productList.forEach(product => {
             const price = parseFloat(product.price) || 0;
             const quantity = parseInt(product.quantity) || 0;
@@ -482,14 +577,16 @@ function addProductToTable(name, price, id = null, color = "#000000", size = "0"
             // Calcular precio con descuento
             const priceAfterDiscount = price * (1 - discount / 100);
             
-            // Calcular subtotal y tax
+            // Calcular subtotal (precio con descuento * cantidad)
             const productSubtotal = quantity * priceAfterDiscount;
+            
+            // Calcular impuestos sobre el subtotal con descuento
             const productTax = productSubtotal * (tax / 100);
             
             subtotal += productSubtotal;
             taxTotal += productTax;
             
-            // Actualizar total del producto
+            // Actualizar total del producto (subtotal + impuestos)
             product.total = (productSubtotal + productTax).toFixed(2);
         });
         
@@ -500,13 +597,11 @@ function addProductToTable(name, price, id = null, color = "#000000", size = "0"
         const advance3 = parseFloat($("#advancePayment3").val()) || 0;
         const amountDue = grandTotal - advance - advance1 - advance2 - advance3;
         
-        // Actualizar la UI
         $("#subtotal").text(subtotal.toFixed(2));
         $("#taxTotal").text(taxTotal.toFixed(2));
         $("#grandTotal").text(grandTotal.toFixed(2));
         $("#amountDue").text(amountDue.toFixed(2));
         
-        // Actualizar los totales en la tabla
         $(".total").each(function(index) {
             $(this).text(productList[index].total);
         });
@@ -514,38 +609,38 @@ function addProductToTable(name, price, id = null, color = "#000000", size = "0"
 
     // Función para renderizar la tabla de productos
     function renderProductTable() {
-    let tableBody = $("#productTable");
-    tableBody.empty();
-    
-    productList.forEach((product, index) => {
-        let taxOptions = `
-            <option value="0" ${product.tax == 0 ? 'selected' : ''}>Sin Taxes (0%)</option>
-            ${@json($impuestos).map(imp => `
-                <option value="${imp.valor}" ${product.tax == imp.valor ? 'selected' : ''}>
-                    ${imp.ciudad} ${imp.sufijo} (${imp.valor}%)
-                </option>
-            `).join('')}
-        `;
+        let tableBody = $("#productTable");
+        tableBody.empty();
         
-        let row = `
-            <tr data-index="${index}">
-                <td>${product.name}</td>
-                <td><input type="number" class="form-control quantity" value="${product.quantity}" min="1" data-index="${index}"></td>
-                <td><input type="text" class="form-control size" value="${product.size}" data-index="${index}"></td>
-                <td><input type="text" class="form-control color" value="${product.color}" data-index="${index}"></td>
-                <td><input type="number" class="form-control discount" value="${product.discount}" min="0" max="100" step="0.01" data-index="${index}"></td>
-                <td>
-                    <select class="form-control tax" data-index="${index}">
-                        ${taxOptions}
-                    </select>
-                </td>
-                <td>${parseFloat(product.price).toFixed(2)}</td>
-                <td class="total">${product.total}</td>
-                <td><button class="btn btn-danger delete" data-index="${index}">Eliminar</button></td>
-            </tr>`;
-        tableBody.append(row);
-    });
-}
+        productList.forEach((product, index) => {
+            let taxOptions = `
+                <option value="0" ${product.tax == 0 ? 'selected' : ''}>Sin Taxes (0%)</option>
+                ${@json($impuestos).map(imp => `
+                    <option value="${imp.valor}" ${product.tax == imp.valor ? 'selected' : ''}>
+                        ${imp.ciudad} ${imp.sufijo} (${imp.valor}%)
+                    </option>
+                `).join('')}
+            `;
+            
+            let row = `
+                <tr data-index="${index}">
+                    <td>${product.name}</td>
+                    <td><input type="number" class="form-control quantity" value="${product.quantity}" min="1" data-index="${index}"></td>
+                    <td><input type="text" class="form-control size" value="${product.size}" data-index="${index}"></td>
+                    <td><input type="text" class="form-control color" value="${product.color}" data-index="${index}"></td>
+                    <td><input type="number" class="form-control discount" value="${product.discount}" min="0" max="100" step="0.01" data-index="${index}"></td>
+                    <td>
+                        <select class="form-control tax" data-index="${index}">
+                            ${taxOptions}
+                        </select>
+                    </td>
+                    <td>$${parseFloat(product.price).toFixed(2)}</td>
+                    <td class="total">$${product.total}</td>
+                    <td><button class="btn btn-danger delete" data-index="${index}">Eliminar</button></td>
+                </tr>`;
+            tableBody.append(row);
+        });
+    }
 
     // Eventos para actualización automática
     $(document).on('input', '.quantity, .discount, .tax, #advancePayment, #advancePayment1, #advancePayment2, #advancePayment3', function() {
@@ -576,9 +671,12 @@ function addProductToTable(name, price, id = null, color = "#000000", size = "0"
 
     $(document).on('click', '.delete', function() {
         const index = $(this).data('index');
+        const productName = productList[index].name;
         productList.splice(index, 1);
         renderProductTable();
         calculateTotals();
+        
+        showNotification('Eliminado', `${productName} fue removido`, 'warning');
     });
 
     // Inicializar la tabla y los totales
@@ -591,21 +689,25 @@ function addProductToTable(name, price, id = null, color = "#000000", size = "0"
         const vendedorId1 = $("#advanceReceivedBy1").val();
         
         if (!vendedorId || isNaN(vendedorId)) {
-            alert('Por favor selecciona un vendedor válido');
+            showNotification('Error', 'Por favor selecciona un vendedor válido', 'error');
             return;
         }
 
-         if (!vendedorId1 || isNaN(vendedorId1)) {
-            alert('Por favor selecciona un vendedor válido');
+        if (!vendedorId1 || isNaN(vendedorId1)) {
+            showNotification('Error', 'Por favor selecciona un vendedor válido para el primer pago', 'error');
             return;
         }
 
         if (!selectedContact || !selectedContact.id) {
-            alert("Por favor, selecciona o crea un cliente antes de guardar la venta.");
+            showNotification('Error', 'Por favor, selecciona o crea un cliente antes de guardar la venta.', 'error');
             return;
         }
 
-        // Preparar los datos de productos
+        if (productList.length === 0) {
+            showNotification('Error', 'Por favor, agrega al menos un producto a la venta.', 'error');
+            return;
+        }
+
         let productosData = productList.map(p => ({
             id: p.id || null,
             name: p.name,
@@ -618,7 +720,6 @@ function addProductToTable(name, price, id = null, color = "#000000", size = "0"
             total: parseFloat(p.total)
         }));
 
-        // Crear objeto de datos para enviar
         let ventaData = {
             cliente_id: selectedContact.id,
             fecha_compra: $("#purchaseDate").val(),
@@ -641,24 +742,51 @@ function addProductToTable(name, price, id = null, color = "#000000", size = "0"
             monto_adeudado: parseFloat($("#amountDue").text())
         };
 
-        // Configurar AJAX correctamente
-        $.ajax({
-            url: "/orders/" + {{ $orden->id }},
-            type: "PUT",
-            data: JSON.stringify(ventaData),
-            contentType: "application/json",
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
-                'Accept': 'application/json'
-            },
-            success: function (response) {
-                alert("Venta actualizada correctamente");
-                window.location.href = "/orders/" + {{ $orden->id }};
-            },
-            error: function (xhr) {
-                console.error(xhr.responseJSON);
-                alert("Error al actualizar: " + 
-                    (xhr.responseJSON.message || xhr.responseJSON.error || 'Error desconocido'));
+        Swal.fire({
+            title: 'Confirmar actualización',
+            html: `¿Estás seguro de actualizar esta orden?<br><br>
+                  <b>Cliente:</b> ${selectedContact.name}<br>
+                  <b>Total:</b> $${ventaData.total.toFixed(2)}<br>
+                  <b>Productos:</b> ${productosData.length}`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, actualizar',
+            cancelButtonText: 'Cancelar',
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "/orders/" + {{ $orden->id }},
+                    type: "PUT",
+                    data: JSON.stringify(ventaData),
+                    contentType: "application/json",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                        'Accept': 'application/json'
+                    },
+                    success: function (response) {
+                        Swal.fire({
+                            title: '¡Actualización exitosa!',
+                            html: `Orden #${response.id} actualizada correctamente<br>
+                                  <b>Total:</b> $${ventaData.total.toFixed(2)}`,
+                            icon: 'success'
+                        }).then(() => {
+                            window.location.href = "/orders/" + {{ $orden->id }};
+                        });
+                    },
+                    error: function (xhr) {
+                        let errorMessage = "Error al actualizar la orden";
+                        if (xhr.responseJSON) {
+                            if (xhr.responseJSON.message) {
+                                errorMessage += ": " + xhr.responseJSON.message;
+                            } else if (xhr.responseJSON.error) {
+                                errorMessage += ": " + xhr.responseJSON.error;
+                            }
+                        }
+                        showNotification('Error', errorMessage, 'error');
+                    }
+                });
             }
         });
     });
