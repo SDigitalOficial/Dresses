@@ -261,7 +261,7 @@ public function edit($id)
         }else{
          $orden = \DigitalsiteSaaS\Dresses\Tenant\Orden::with(['productos', 'cliente'])->findOrFail($id); 
         }
-        return view('dresses::orders.show', compact('orden'));
+        return view('dresses::ordenes.show', compact('orden'));
     }
 
 
