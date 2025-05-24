@@ -225,7 +225,16 @@
                         <div class="card card-body">
                             <label><strong>Observations:</strong></label>
                             <textarea id="observations" class="form-control" rows="3" placeholder="Write any observations here.."></textarea>
+                             <label>Status</label>
+                    <select name="payment_status" id="paymentStatus" class="form-control">
+                     <option value="open">Open</option>
+                     <option value="storage">Storage</option>
+                     <option value="closed">Closed</option>
+                     <option value="cancel">Cancel</option>
+                    </select>
                         </div>
+
+
                     </div>
                     <div id="summary" class=" p-2 mt-4 col-lg-6">
                         <div class="card card-body">
@@ -762,6 +771,7 @@
                 fecha_compra: $("#purchaseDate").val(),
                 vendedor: $("#purchaseVendedor").val(),
                 observaciones: $("#observations").val(),
+                paymentStatus: $("#paymentStatus").val(),
                 productos: productList.map(p => ({
                     id: p.id || null,
                     name: p.name,

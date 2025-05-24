@@ -67,6 +67,12 @@ Route::get('dresses/crear-taxes', 'DigitalsiteSaaS\Dresses\Http\OrdenController@
 Route::get('orden/delete/{id}', 'DigitalsiteSaaS\Dresses\Http\OrdenController@ordendelete');
 Route::get('gestion/factura/eliminar-almacen/{id}', 'DigitalsiteSaaS\Dresses\Http\OrdenController@productdelete');
 
+Route::get('gestion/factura/eliminar-taxes/{id}', 'DigitalsiteSaaS\Dresses\Http\OrdenController@impuestodelete');
+
+
+Route::get('gestion/factura/eliminar-tienda/{id}', 'DigitalsiteSaaS\Dresses\Http\OrdenController@negociodelete');
+
+
 
 
 Route::get('/dresses/search', [DigitalsiteSaaS\Dresses\Http\UsuariaController::class, 'search'])->name('dresses.search');

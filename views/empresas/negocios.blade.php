@@ -77,7 +77,10 @@
                                              function confirmar ( mensaje ) {
                                              return confirm( mensaje );}
                                              </script>
-                                             <a href="<?=URL::to('gestion/factura/eliminar-almacen');?>/{{$facturacion->id}}" onclick="return confirmar('¿Está seguro que desea eliminar el registro?')"><span id="tup" data-toggle="tooltip" data-placement="right" title="Eliminar producto" class="btn drp-icon btn-rounded btn-danger"><i class="fas fa-trash"></i></span></a>
+                                             @if($facturacion->id == 1)
+                                             @else
+                                             <a href="<?=URL::to('gestion/factura/eliminar-tienda');?>/{{$facturacion->id}}" onclick="return confirmar('¿Está seguro que desea eliminar el registro?')"><span id="tup" data-toggle="tooltip" data-placement="right" title="Eliminar producto" class="btn drp-icon btn-rounded btn-danger"><i class="fas fa-trash"></i></span></a>
+                                             @endif
                                             </td>
                                         </tr>
                                         @endforeach

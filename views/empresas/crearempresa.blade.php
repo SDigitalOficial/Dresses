@@ -77,16 +77,7 @@
                                                {{Form::text('website', '', array('class' => 'form-control','placeholder'=>'Enter website' ))}}
                                             </div>
                                         </div>
-
-
-                                     
-                                     
-                                      
-
-
-                                    
-
-                                  
+                  
 
                                         <div class="form-group">
                                             <label class="col-md-3 control-label" for="example-password-input">Invoice Prefix</label>
@@ -95,36 +86,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="form-group">
-                                            <label class="col-md-3 control-label" for="example-password-input">Color</label>
-                                            <div class="col-md-12">
-                                                {{Form::text('color', '', array('id' => 'hue-demo', 'class' => 'form-control demo','data-control'=>'hue'))}}
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label class="col-md-3 control-label" for="example-password-input">Secondary Color</label>
-                                            <div class="col-md-12">
-                                                {{Form::color('color_uno', '', array('id' => 'hue-demo', 'class' => 'form-control demo','data-control'=>'hue'))}}
-                                            </div>
-                                        </div>
-
-                                         <div class="form-group">
-                                            <label class="col-md-3 control-label" for="example-password-input">Color Font</label>
-                                            <div class="col-md-12">
-                                                {{Form::text('color_fuente', '', array('id' => 'hue-demo', 'class' => 'form-control demo','data-control'=>'hue'))}}
-                                            </div>
-                                        </div>
-
-
-
-                                           <div class="form-group">
-                                            <label class="col-md-3 control-label" for="example-password-input">Image</label>
-                                            <div class="col-md-12">
-                                                 <input type="text" name="FilePath" readonly="readonly" onclick="openKCFinder(this)" value="" class="form-control" />
-                                            </div>
-                                        </div>
-
+                                        
 
                                         <div class="form-group form-actions">
                                             <div class="col-md-9 col-md-offset-3">

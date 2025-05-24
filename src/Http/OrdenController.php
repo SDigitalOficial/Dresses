@@ -40,9 +40,15 @@ public function __construct(){
             'total' => 'required|numeric',
             'adelanto' => 'required|numeric',
             'monto_adeudado' => 'required|numeric',
+            'prefijo' => 'string',
+            'status' => 'string',
         ]);
 
         // Crear la orden
+        $tienda = \DigitalsiteSaaS\Dresses\Tenant\Orden::latest()->first();
+        $prefijo = $tienda ? $tienda->prefijo : 0;
+        $prefijoIncrementado = $prefijo + 1;
+
         $orden = \DigitalsiteSaaS\Dresses\Tenant\Orden::create([
             'cliente_id' => $request->cliente_id, // Guardar el cliente_id
             'fecha_compra' => $request->fecha_compra,
@@ -52,7 +58,9 @@ public function __construct(){
             'impuesto_total' => $request->impuesto_total,
             'total' => $request->total,
             'adelanto' => $request->adelanto,
+            'prefijo' => $prefijoIncrementado,
             'monto_adeudado' => $request->monto_adeudado,
+            'status' => $request->paymentStatus,
         ]);
 
         // Guardar los productos de la orden
@@ -169,6 +177,11 @@ public function edit($id)
         'user1' => 'string',
         'user2' => 'string',
         'user3' => 'string',
+        'method' => 'string',
+        'method1' => 'string',
+        'method2' => 'string',
+        'method3' => 'string',
+        'status' => 'string',
         'monto_adeudado' => 'required|numeric|min:0'
     ]);
 
@@ -194,6 +207,11 @@ public function edit($id)
             'date1' => $validated['date1'],
             'date2' => $validated['date2'],
             'date3' => $validated['date3'],
+            'method' => $validated['method'],
+            'method1' => $validated['method1'],
+            'method2' => $validated['method2'],
+            'method3' => $validated['method3'],
+            'status' => $validated['status'],
             'monto_adeudado' => $validated['monto_adeudado']
         ]);
 
@@ -286,7 +304,26 @@ public function productdelete($id) {
      return Redirect('dresses/factura/crear-producto')->with('status', 'ok_delete');
     }
 
+public function impuestodelete($id) {
+    if(!$this->tenantName){
+     $producto = Impuesto::find($id);
+    }else{
+     $producto = \DigitalsiteSaaS\Dresses\Tenant\Impuesto::find($id);
+    }
+     $producto->delete();
+     return Redirect('/dresses/ver-taxes')->with('status', 'ok_delete');
+    }
 
+
+    public function negociodelete($id) {
+    if(!$this->tenantName){
+     $producto = Tienda::find($id);
+    }else{
+     $producto = \DigitalsiteSaaS\Dresses\Tenant\Tienda::find($id);
+    }
+     $producto->delete();
+     return Redirect('/dresses/factura/negocios')->with('status', 'ok_delete');
+    }
 
   public function impuestos()
     {
@@ -321,9 +358,10 @@ public function createimpuesto() {
 public function generatePDF($id, $download = false)
 {
     $orden = \DigitalsiteSaaS\Dresses\Tenant\Orden::with(['cliente', 'productos', 'vendedor'])->findOrFail($id);
-    $totalAdvances = $orden->adelanto1 + $orden->adelanto2 + $orden->adelanto3;
+    $tienda = \DigitalsiteSaaS\Dresses\Tenant\Tienda::find(1);
+    $totalAdvances = $orden->adelanto + $orden->adelanto1 + $orden->adelanto2 + $orden->adelanto3;
     
-    $pdf = PDF::loadView('dresses::ordenes.pdf', compact('orden', 'totalAdvances'));
+    $pdf = PDF::loadView('dresses::ordenes.pdf', compact('orden', 'totalAdvances', 'tienda'));
     $pdf->setOption('jpegQuality', 100); // Máxima calidad
     
     if($download) {

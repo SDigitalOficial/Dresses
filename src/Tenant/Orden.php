@@ -28,6 +28,12 @@ class Orden extends Model
         'date1',
         'date2',
         'date3',
+        'method',
+        'method1',
+        'method2',
+        'method3',
+        'status',
+        'prefijo',
         'monto_adeudado',
 
     ];

@@ -35,7 +35,7 @@
             margin-bottom: 30px;
             transition: all 0.5s ease-in-out;
             --bs-body-color: #686c71;
-            height: 260px !important;
+            height: 340px !important;
         }
            .suggestion.bloqueado {
         opacity: 0.6;
@@ -259,6 +259,14 @@
                 <div class="card card-body">
                     <label><strong>Observations:</strong></label>
                     <textarea id="observations" class="form-control" rows="3" placeholder="Write any observations here..">{{ $orden->observaciones }}</textarea>
+
+                    <label>Status</label>
+                    <select name="payment_status" id="paymentStatus" class="form-control">
+                     <option value="open" {{ $orden->status == 'open' ? 'selected' : '' }}>Open</option>
+                     <option value="storage" {{ $orden->status == 'storage' ? 'selected' : '' }}>Storage</option>
+                     <option value="closed" {{ $orden->status == 'closed' ? 'selected' : '' }}>Closed</option>
+                     <option value="cancel" {{ $orden->status == 'cancel' ? 'selected' : '' }}>Cancel</option>
+                    </select>
                 </div>
             </div>
 
@@ -270,7 +278,14 @@
                     <p><strong>Total:</strong> $<span id="grandTotal">{{ number_format($orden->total, 2) }}</span></p>
                     <label><strong>Advancement:</strong></label>
                     <input type="number" id="advancePayment" class="form-control" step="0.01" value="{{ $orden->adelanto }}">
-                    <p><strong>Amount Owed:</strong> $<span id="amountDue">{{ number_format($orden->monto_adeudado, 2) }}</span></p>
+                    <label>Method Payment:</label>
+                    <select name="payment_method" id="paymentMethod" class="form-control">
+                     <option value="efectivo" {{ $orden->method == 'cash' ? 'selected' : '' }}>Cash</option>
+                     <option value="credito" {{ $orden->method == 'credit' ? 'selected' : '' }}>Credit</option>
+                     <option value="cheque" {{ $orden->method == 'cheque' ? 'selected' : '' }}>Cheque</option>
+                    </select>
+                    <br>
+                    <h3><strong>Amount Owed:</strong> $<span id="amountDue">{{ number_format($orden->monto_adeudado, 2) }}</span></h3>
                 </div>
             </div>
 
@@ -296,7 +311,14 @@
                       </option>
                      @endforeach
                     </select>
-               
+
+                    <label>Method Payment1:</label>
+                    <select name="payment_method" id="paymentMethod1" class="form-control">
+                     <option value="cash" {{ $orden->method1 == 'cash' ? 'selected' : '' }}>Efectivo</option>
+                     <option value="debit" {{ $orden->method1 == 'debit' ? 'selected' : '' }}>Debit</option>
+                     <option value="credit" {{ $orden->method1 == 'credit' ? 'selected' : '' }}>Credit</option>
+                     <option value="zelle" {{ $orden->method1 == 'zelle' ? 'selected' : '' }}>Zelle</option>
+                    </select>
                     </div>
 
                      <div class="form-group col-md-4">
@@ -312,10 +334,20 @@
                       </option>
                      @endforeach
                     </select>
+
+                    <label>Method Payment2:</label>
+                    <select name="payment_method" id="paymentMethod2" class="form-control">
+                     <option value="cash" {{ $orden->method2 == 'cash' ? 'selected' : '' }}>Efectivo</option>
+                     <option value="debit" {{ $orden->method2 == 'debit' ? 'selected' : '' }}>Debit</option>
+                     <option value="credit" {{ $orden->method2 == 'credit' ? 'selected' : '' }}>Credit</option>
+                     <option value="zelle" {{ $orden->method2 == 'zelle' ? 'selected' : '' }}>Zelle</option>
+                    </select>
+                    
                     </div>
 
                      <div class="form-group col-md-4">
                     <label><strong>Advancement3:</strong></label>
+
                     <input type="number" id="advancePayment3" class="form-control" step="0.01" value="{{ $orden->adelanto3 ?? '0'}}">
                     <label>Date:</label>
                     <input type="date" id="advanceDate3" class="form-control" value="{{ $orden->date3 ?? '0000-00-00' }}">
@@ -326,6 +358,14 @@
                       {{ $vendedor->name }} {{ $vendedor->last_name }}
                       </option>
                      @endforeach
+                    </select>
+
+                    <label>Method Payment3:</label>
+                    <select name="payment_method" id="paymentMethod3" class="form-control">
+                     <option value="cash" {{ $orden->method3 == 'cash' ? 'selected' : '' }}>Efectivo</option>
+                     <option value="debit" {{ $orden->method3 == 'debit' ? 'selected' : '' }}>Debit</option>
+                     <option value="credit" {{ $orden->method3 == 'credit' ? 'selected' : '' }}>Credit</option>
+                     <option value="zelle" {{ $orden->method3 == 'zelle' ? 'selected' : '' }}>Zelle</option>
                     </select>
                 </div>
                    </div>
@@ -687,6 +727,7 @@ $(document).ready(function () {
     $("#guardarVentaBtn").click(function () {
         const vendedorId = $("#purchaseVendedor").val();
         const vendedorId1 = $("#advanceReceivedBy1").val();
+
         
         if (!vendedorId || isNaN(vendedorId)) {
             showNotification('Error', 'Por favor selecciona un vendedor válido', 'error');
@@ -731,6 +772,12 @@ $(document).ready(function () {
             user1: $("#advanceReceivedBy1").val() || 0,
             user2: $("#advanceReceivedBy2").val() || 0,
             user3: $("#advanceReceivedBy3").val() || 0,
+            method: $("#paymentMethod").val() || 0,
+            meth: $("#paymentMethod1").val() || 0,
+            method1: $("#paymentMethod1").val() || 0,
+            method2: $("#paymentMethod2").val() || 0,
+            method3: $("#paymentMethod3").val() || 0,
+            status: $("#paymentStatus").val() || 0,
             productos: productosData,
             subtotal: parseFloat($("#subtotal").text()),
             impuesto_total: parseFloat($("#taxTotal").text()),

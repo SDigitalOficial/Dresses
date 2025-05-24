@@ -65,15 +65,19 @@
 <body>
     <!-- Encabezado de la empresa -->
     <div class="header">
-
+    
         <div style="float: left; width: 70%;">
-            <h1>Quince Dresses NJ | QuinceDresses.com</h1>
-            <p class="compact">727 Franklin Blvd. Ste #9</p>
-            <p class="compact">Somerset, NJ 08873</p>
-            <p class="compact">Phone: 732-485-4886</p>
-            <p class="compact">www.QuinceDresses.com</p>
-            <p class="compact">info@quincedresses.com</p>
+            <h1 style="color: #ea2205; font-size: 25px">#Order - {{$orden->prefijo}}</h1>
+            <br>
+            <h1>{{$tienda->nombre}} | {{$tienda->website}}</h1>
+            <p class="compact">{{$tienda->direccion}}</p>
+            <p class="compact">Phone: {{$tienda->telefono}}</p>
+            <p class="compact">{{$tienda->website}}</p>
+            <p class="compact">{{$tienda->email}}</p>
+            @foreach($tienda as $tienda)
+            @endforeach
         </div>
+
         <div style="float: right; width: 30%; text-align: right;">
     @if(file_exists(public_path('images/logo.jpg')))
     <img src="{{ public_path('images/logo.jpg') }}" class="logo" style="filter: none !important;">
@@ -83,16 +87,17 @@
         Quince Dresses NJ
     </div>
     @endif
+     <div class="bill-to">
+        <h2>Bill To: {{ $orden->cliente->nombres }} {{ $orden->cliente->apellidos }}</h2>
+        <p class="compact">Phone: {{ $orden->cliente->telefono }}</p>
+        <p class="compact">Event Date: {{ $orden->fecha_compra ? $orden->fecha_compra->format('m/d/Y') : 'N/A' }}</p>
+    </div>
 </div>
         <div style="clear: both;"></div>
     </div>
 
     <!-- Información del cliente -->
-    <div class="bill-to">
-        <h2>Bill To: {{ $orden->cliente->nombres }} {{ $orden->cliente->apellidos }}</h2>
-        <p class="compact">Phone: {{ $orden->cliente->telefono }}</p>
-        <p class="compact">Event Date: {{ $orden->fecha_compra ? $orden->fecha_compra->format('m/d/Y') : 'N/A' }}</p>
-    </div>
+   
 
     <hr>
 
@@ -144,29 +149,30 @@
         </tr>
         
         <!-- Anticipos -->
-        @if($orden->adelanto1 > 0)
+        <tr>
+            
+            <td class="text-right">Advancement</td>
+            <td class="text-right">${{ number_format($orden->adelanto, 2) }}</td>
+        </tr>
+
         <tr>
             
             <td class="text-right">Advancement 1</td>
             <td class="text-right">${{ number_format($orden->adelanto1, 2) }}</td>
         </tr>
-        @endif
-        
-        @if($orden->adelanto2 > 0)
+      
         <tr>
            
             <td class="text-right">Advancement 2</td>
             <td class="text-right">${{ number_format($orden->adelanto2, 2) }}</td>
         </tr>
-        @endif
-        
-        @if($orden->adelanto3 > 0)
+      
         <tr>
           
             <td class="text-right">Advancement 3</td>
             <td class="text-right">${{ number_format($orden->adelanto3, 2) }}</td>
         </tr>
-        @endif
+     
         
         <tr>
             <td colspan="1" class="text-right"><strong>Payments</strong></td>

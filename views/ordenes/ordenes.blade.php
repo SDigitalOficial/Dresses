@@ -47,6 +47,7 @@
                                                      <th class="text-center">Event Date</th>
                                                      <th class="text-center">Client</th>
                                                      <th class="text-center">Seller</th>
+                                                     <th class="text-center">Status</th>
                                                      <th class="text-center">Total</th>
                                                      <th class="text-center">Advance</th>
                                                      <th class="text-center">Amount Owed</th>
@@ -61,8 +62,8 @@
                                         <tr>
                                            
                                             <td class="text-center">{{ $facturacion->id }}</td>
-                                            <td class="text-center">{{ $facturacion->created_at }}</td>
-                                            <td class="text-center"><span class="badge bg-info ">{{ $facturacion->fecha_compra }}</span></td>
+                                            <td class="text-center">{{ $facturacion->created_at->format('Y-m-d h:i A') }}</td>
+                                            <td class="text-center"><span class="badge bg-info ">{{ $facturacion->fecha_compra->format('Y-m-d') }}</span></td>
                                             @foreach($cliente as $clientes)
                                             @if($facturacion->cliente_id == $clientes->id)
                                             <td class="text-center">{{ $clientes->nombres}}</td>
@@ -73,7 +74,18 @@
                                             <td class="text-center">{{ $usersa->name }}</td>
                                             @endif
                                             @endforeach
-                                           
+                                            <td class="text-center">
+                                             @if($facturacion->status == 'cancel')
+                                               <span class="badge bg-danger"> Cancel</span>
+                                             @elseif($facturacion->status == 'closed')
+                                             <span class="badge bg-succes"> Closed</span> 
+                                             @elseif($facturacion->status == 'storage') 
+                                             <span class="badge bg-info"> Storage</span>
+                                             @elseif($facturacion->status == 'open') 
+                                             <span class="badge bg-warning"> Open</span>
+                                             @endif 
+
+                                            </td>
                                             <td class="text-center">{{ $facturacion->total}} USD</td>
                                              <td class="text-center">{{ $facturacion->adelanto + $facturacion->adelanto1 + $facturacion->adelanto2 + $facturacion->adelanto3 }} USD</td>
                                             <td class="text-center">
@@ -120,6 +132,7 @@
                                                  <th class="text-center">Event Date</th>
                                                  <th class="text-center">Client</th>
                                                  <th class="text-center">Seller</th>
+                                                 <th class="text-center">Status</th>
                                                  <th class="text-center">Debt</th>
                                                  <th class="text-center">Total</th>
                                                  <th class="text-center">Amount Owed</th>
