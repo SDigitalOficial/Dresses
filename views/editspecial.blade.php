@@ -263,6 +263,7 @@
                     <label>Status</label>
                     <select name="payment_status" id="paymentStatus" class="form-control">
                      <option value="open" {{ $orden->status == 'open' ? 'selected' : '' }}>Open</option>
+                     <option value="ordered" {{ $orden->method == 'ordered' ? 'selected' : '' }}>Ordered</option>
                      <option value="storage" {{ $orden->status == 'storage' ? 'selected' : '' }}>Storage</option>
                      <option value="closed" {{ $orden->status == 'closed' ? 'selected' : '' }}>Closed</option>
                      <option value="cancel" {{ $orden->status == 'cancel' ? 'selected' : '' }}>Cancel</option>
@@ -283,6 +284,7 @@
                      <option value="efectivo" {{ $orden->method == 'cash' ? 'selected' : '' }}>Cash</option>
                      <option value="credito" {{ $orden->method == 'credit' ? 'selected' : '' }}>Credit</option>
                      <option value="cheque" {{ $orden->method == 'cheque' ? 'selected' : '' }}>Cheque</option>
+                     <option value="zelle" {{ $orden->method == 'zelle' ? 'selected' : '' }}>Zelle</option>
                     </select>
                     <br>
                     <h3><strong>Amount Owed:</strong> $<span id="amountDue">{{ number_format($orden->monto_adeudado, 2) }}</span></h3>

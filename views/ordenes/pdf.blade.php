@@ -133,56 +133,71 @@
         </tbody>
     </table>
 
-    <!-- Resumen de pagos -->
-    <table class="totals-table">
+    <table style="width: 100%;">
+  <tr>
+    <!-- Columna izquierda: Observaciones -->
+    <td style="width: 50%; vertical-align: top; padding-right: 10px;">
+      <strong>Observations:</strong><br><br>
+      {{ $orden->observaciones }}
+    </td>
+
+    <!-- Columna derecha: Resumen de pagos -->
+    <td style="width: 50%; vertical-align: top; padding-left: 10px; border: 0px solid red">
+      <table style="width: 100%; border: 1px solid blue" class="totals-table">
         <tr>
-            <td colspan="1" class="text-right"><strong>Subtotal</strong></td>
-            <td class="text-right">${{ number_format($orden->subtotal, 2) }}</td>
+          <td class="text-right"><strong>Subtotal</strong></td>
+          <td class="text-right">${{ number_format($orden->subtotal, 2) }}</td>
         </tr>
         <tr>
-            <td colspan="1" class="text-right">(+) Sales Tax</td>
-            <td class="text-right">${{ number_format($orden->impuesto_total, 2) }}</td>
+          <td class="text-right">(+) Sales Tax</td>
+          <td class="text-right">${{ number_format($orden->impuesto_total, 2) }}</td>
         </tr>
         <tr>
-            <td colspan="1" class="text-right"><strong>Grand Total</strong></td>
-            <td class="text-right"><strong>${{ number_format($orden->total, 2) }}</strong></td>
-        </tr>
-        
-        <!-- Anticipos -->
-        <tr>
-            
-            <td class="text-right">Advancement</td>
-            <td class="text-right">${{ number_format($orden->adelanto, 2) }}</td>
+          <td class="text-right"><strong>Grand Total</strong></td>
+          <td class="text-right"><strong>${{ number_format($orden->total, 2) }}</strong></td>
         </tr>
 
-        <tr>
-            
+        @if($orden->adelanto > 0)
+          <tr>
+            <td class="text-right">Advancement</td>
+            <td class="text-right">${{ number_format($orden->adelanto, 2) }}</td>
+          </tr>
+        @endif
+
+        @if($orden->adelanto1 > 0)
+          <tr>
             <td class="text-right">Advancement 1</td>
             <td class="text-right">${{ number_format($orden->adelanto1, 2) }}</td>
-        </tr>
-      
-        <tr>
-           
+          </tr>
+        @endif
+
+        @if($orden->adelanto2 > 0)
+          <tr>
             <td class="text-right">Advancement 2</td>
             <td class="text-right">${{ number_format($orden->adelanto2, 2) }}</td>
-        </tr>
-      
-        <tr>
-          
+          </tr>
+        @endif
+
+        @if($orden->adelanto3 > 0)
+          <tr>
             <td class="text-right">Advancement 3</td>
             <td class="text-right">${{ number_format($orden->adelanto3, 2) }}</td>
-        </tr>
-     
-        
+          </tr>
+        @endif
+
         <tr>
-            <td colspan="1" class="text-right"><strong>Payments</strong></td>
-            <td class="text-right"><strong>${{ number_format($totalAdvances, 2) }}</strong></td>
+          <td class="text-right"><strong>Payments</strong></td>
+          <td class="text-right"><strong>${{ number_format($totalAdvances, 2) }}</strong></td>
         </tr>
         <tr>
-            <td colspan="1" class="text-right"><strong>AMOUNT DUE</strong></td>
-            <td class="text-right"><strong>${{ number_format($orden->total - $totalAdvances, 2) }}</strong></td>
+          <td class="text-right"><strong>AMOUNT DUE</strong></td>
+          <td class="text-right"><strong>${{ number_format($orden->total - $totalAdvances, 2) }}</strong></td>
         </tr>
-    </table>
+      </table>
+    </td>
+  </tr>
+</table>
+
 
     <div style="clear: both;"></div>
 

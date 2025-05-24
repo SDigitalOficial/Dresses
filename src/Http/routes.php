@@ -43,7 +43,7 @@ Route::get('Facturacione/{id}', 'DigitalsiteSaaS\Dresses\Http\UsuariaController@
 Route::get('Facturacione/{id}/ajax-subcat', 'DigitalsiteSaaS\Dresses\Http\UsuariaController@facturacioneajax');
 Route::post('dresses/factura/creacion-producto', 'DigitalsiteSaaS\Dresses\Http\UsuariaController@creatproducto');
 Route::get('dresses/factura/generar-factura/{id}', 'DigitalsiteSaaS\Dresses\Http\UsuariaController@pdf');
-Route::get('dresses/factura/editar-empresa/{id}', 'DigitalsiteSaaS\Dresses\Http\UsuariaController@editarempresa');
+Route::post('dresses/factura/editar-empresa/{id}', 'DigitalsiteSaaS\Dresses\Http\UsuariaController@editarempresa');
 Route::post('dresses/factura/actualizar-empresa/{id}', 'DigitalsiteSaaS\Dresses\Http\UsuariaController@update');
 Route::post('dresses/factura/crear-empresa', 'DigitalsiteSaaS\Dresses\Http\UsuariaController@createempresa');
 Route::get('dresses/factura/crearempresa', 'DigitalsiteSaaS\Dresses\Http\UsuariaController@crearempresaweb');

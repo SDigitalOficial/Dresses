@@ -35,7 +35,7 @@
             margin-bottom: 30px;
             transition: all 0.5s ease-in-out;
             --bs-body-color: #686c71;
-            height: 260px !important;
+            height: 340px !important;
         }
         /* Estilo para productos bloqueados */
     .suggestion.bloqueado {
@@ -228,6 +228,7 @@
                              <label>Status</label>
                     <select name="payment_status" id="paymentStatus" class="form-control">
                      <option value="open">Open</option>
+                     <option value="ordered">Ordered</option>
                      <option value="storage">Storage</option>
                      <option value="closed">Closed</option>
                      <option value="cancel">Cancel</option>
@@ -243,7 +244,15 @@
                             <p><strong>Total:</strong> $<span id="grandTotal">0.00</span></p>
                             <label><strong>Advancement:</strong></label>
                             <input type="number" id="advancePayment" class="form-control" step="0.01" value="0">
-                            <p><strong>Amount Owed:</strong> $<span id="amountDue">0.00</span></p>
+                            <label>Method Payment:</label>
+                    <select name="payment_method" id="paymentMethod" class="form-control">
+                     <option value="efectivo">Cash</option>
+                     <option value="credito">Credit</option>
+                     <option value="cheque">Cheque</option>
+                      <option value="zelle">Zelle</option>
+                    </select>
+                    <br>
+                            <h3><strong>Amount Owed:</strong> $<span id="amountDue">0.00</span></h3>
                         </div>
                     </div>
                 </div>
@@ -772,6 +781,7 @@
                 vendedor: $("#purchaseVendedor").val(),
                 observaciones: $("#observations").val(),
                 paymentStatus: $("#paymentStatus").val(),
+                paymentMethod: $("#paymentMethod").val(),
                 productos: productList.map(p => ({
                     id: p.id || null,
                     name: p.name,

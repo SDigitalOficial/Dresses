@@ -83,8 +83,9 @@
            <div class="btn-group">
            
        <a href="<?=URL::to('dafer/editar-producto');?>/{{$productos->id}}" style="padding: 1px;"><span  id="tip" data-toggle="tooltip" data-placement="top" title="Editar Usuario" class="btn btn-primary"><i class="mdi mdi-tooltip-edit"></i></span></a>
-       
+       <!--
            <a href="<?=URL::to('dafer/eliminar-producto/');?>/{{$productos->id}}" style="padding: 1px;" onclick="return confirm('¿Está seguro que desea eliminar el registro?')"><button ="button" class="btn btn-danger" data-toggle="tooltip" data-placement="right" title="Eliminar Usuario"><i class="fas fa-trash-alt"></i></button></a>
+       -->
            </div>
           </td>
          </tr>

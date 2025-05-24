@@ -318,13 +318,13 @@ if(!$this->tenantName){
  return view('dresses::empresas.editar')->with('store', $store);
 }
 
-public function editstores() {
+public function editstores($id) {
 
  $input = Input::all();
  if(!$this->tenantName){
  $facturacion = Empresa::find($id);
  }else{
- $facturacion = \DigitalsiteSaaS\Facturacion\Tenant\Empresa::find($id); 
+ $facturacion = \DigitalsiteSaaS\Dresses\Tenant\Tienda::find($id); 
  }
  $facturacion->nombre =  Input::get('nombre');
  $facturacion->direccion = Input::get('direccion');

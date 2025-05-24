@@ -32,7 +32,7 @@
     
     <h4 class="mt-0 header-title">Create Company</h4>
                                         
-     {{ Form::open(array('method' => 'POST','class' => 'form-horizontal','id' => 'defaultForm', 'url' => array('dresses/factura/crear-empresa'))) }}
+     {{ Form::open(array('method' => 'POST','class' => 'form-horizontal','id' => 'defaultForm', 'url' => array('dresses/edit/store',$store->id))) }}
                                         
                                         <div class="form-group">
                                             <label class="col-md-3 control-label" for="example-text-input">Company Name</label>
