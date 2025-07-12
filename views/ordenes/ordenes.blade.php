@@ -61,12 +61,12 @@
                                          @foreach($facturacion as $facturacion)
                                         <tr>
                                            
-                                            <td class="text-center">{{ $facturacion->id }}</td>
-                                            <td class="text-center">{{ $facturacion->created_at->format('Y-m-d h:i A') }}</td>
+                                            <td class="text-center">{{ $facturacion->prefijo }}</td>
+                                            <td class="text-center">{{ $facturacion->created_at->format('m-d-Y') }}</td>
                                             <td class="text-center"><span class="badge bg-info ">{{ $facturacion->fecha_compra->format('Y-m-d') }}</span></td>
                                             @foreach($cliente as $clientes)
                                             @if($facturacion->cliente_id == $clientes->id)
-                                            <td class="text-center">{{ $clientes->nombres}}</td>
+                                            <td class="text-center">{{ $clientes->nombres}} {{ $clientes->apellidos}}</td>
                                             @endif
                                             @endforeach
                                             @foreach($users as $usersa)
@@ -78,7 +78,7 @@
                                              @if($facturacion->status == 'cancel')
                                                <span class="badge bg-danger"> Cancel</span>
                                              @elseif($facturacion->status == 'closed')
-                                             <span class="badge bg-succes"> Closed</span> 
+                                             <span class="badge bg-dark"> Closed</span> 
                                              @elseif($facturacion->status == 'storage') 
                                              <span class="badge bg-info"> Storage</span>
                                              @elseif($facturacion->status == 'open') 

@@ -120,7 +120,7 @@ public function __construct(){
      $facturacion = Orden::all();
      $users = Usuario::all();
     }else{
-     $facturacion = \DigitalsiteSaaS\Dresses\Tenant\Orden::all();
+     $facturacion = \DigitalsiteSaaS\Dresses\Tenant\Orden::orderBy('created_at', 'desc')->get();
      $users = \DigitalsiteSaaS\Usuario\Tenant\Usuario::all();
      $cliente = \DigitalsiteSaaS\Dresses\Tenant\Cliente::all();
     }
@@ -145,6 +145,7 @@ public function edit($id)
         $tienda =  \DigitalsiteSaaS\Dresses\Tenant\Tienda::all();
         $vendedores =  \DigitalsiteSaaS\Usuario\Tenant\Usuario::all();
         $impuestos = \DigitalsiteSaaS\Dresses\Tenant\Impuesto::all();
+
         
         return view('dresses::editspecial', compact('orden', 'tienda', 'vendedores', 'impuestos'));
     }

@@ -162,6 +162,7 @@
             <!-- Espacio para visualizar el contacto seleccionado -->
             <div id="contactDisplay" class="p-2 col-lg-4">
                 <div class="card card-body">
+                    <h3>#Invoice - {{ $orden->prefijo }}</h3>
                     <p><strong><b>Selected Client:</b></strong></p>
                     <p id="selectedContact" style="color:red">
                         @if($orden->cliente)
@@ -217,7 +218,7 @@
                 <th>Quantity</th>
                 <th>Size</th>
                 <th>Color</th>
-                <th>Discount (%)</th>
+                <th>Discount ($)</th>
                 <th>Tax (%)</th>
                 <th>Unit Price</th>
                 <th>Total</th>
@@ -237,9 +238,11 @@
                          <select class="form-control tax" data-index="{{ $loop->index }}">
                         <option value="0" {{ $producto->pivot->impuesto_total == 0 ? 'selected' : '' }}>Sin Taxes (0%)</option>
                         @foreach($impuestos as $impuesto)
-                            <option value="{{ $impuesto->id }}" {{ $producto->pivot->impuesto_total == $impuesto->id ? 'selected' : '' }}>
+                           <option value="{{ $impuesto->valor }}" {{ $producto->pivot->impuesto_total == $impuesto->valor ? 'selected' : '' }}>
                                 {{ $impuesto->ciudad }} {{ $impuesto->sufijo }} ({{ $impuesto->valor }}%)
                             </option>
+
+                            
                         @endforeach
                     </select>
 
@@ -263,7 +266,7 @@
                     <label>Status</label>
                     <select name="payment_status" id="paymentStatus" class="form-control">
                      <option value="open" {{ $orden->status == 'open' ? 'selected' : '' }}>Open</option>
-                     <option value="ordered" {{ $orden->method == 'ordered' ? 'selected' : '' }}>Ordered</option>
+                     <option value="ordered" {{ $orden->status == 'ordered' ? 'selected' : '' }}>Ordered</option>
                      <option value="storage" {{ $orden->status == 'storage' ? 'selected' : '' }}>Storage</option>
                      <option value="closed" {{ $orden->status == 'closed' ? 'selected' : '' }}>Closed</option>
                      <option value="cancel" {{ $orden->status == 'cancel' ? 'selected' : '' }}>Cancel</option>
@@ -281,9 +284,9 @@
                     <input type="number" id="advancePayment" class="form-control" step="0.01" value="{{ $orden->adelanto }}">
                     <label>Method Payment:</label>
                     <select name="payment_method" id="paymentMethod" class="form-control">
-                     <option value="efectivo" {{ $orden->method == 'cash' ? 'selected' : '' }}>Cash</option>
-                     <option value="credito" {{ $orden->method == 'credit' ? 'selected' : '' }}>Credit</option>
-                     <option value="cheque" {{ $orden->method == 'cheque' ? 'selected' : '' }}>Cheque</option>
+                     <option value="cash" {{ $orden->method == 'cash' ? 'selected' : '' }}>Cash</option>
+                     <option value="credit" {{ $orden->method == 'credit' ? 'selected' : '' }}>Credit</option>
+                     <option value="debit" {{ $orden->method == 'debit' ? 'selected' : '' }}>Debit</option>
                      <option value="zelle" {{ $orden->method == 'zelle' ? 'selected' : '' }}>Zelle</option>
                     </select>
                     <br>
@@ -316,10 +319,10 @@
 
                     <label>Method Payment1:</label>
                     <select name="payment_method" id="paymentMethod1" class="form-control">
-                     <option value="cash" {{ $orden->method1 == 'cash' ? 'selected' : '' }}>Efectivo</option>
-                     <option value="debit" {{ $orden->method1 == 'debit' ? 'selected' : '' }}>Debit</option>
-                     <option value="credit" {{ $orden->method1 == 'credit' ? 'selected' : '' }}>Credit</option>
-                     <option value="zelle" {{ $orden->method1 == 'zelle' ? 'selected' : '' }}>Zelle</option>
+                      <option value="cash" {{ $orden->method == 'cash' ? 'selected' : '' }}>Cash</option>
+                     <option value="credit" {{ $orden->method == 'credit' ? 'selected' : '' }}>Credit</option>
+                     <option value="debit" {{ $orden->method == 'debit' ? 'selected' : '' }}>Debit</option>
+                     <option value="zelle" {{ $orden->method == 'zelle' ? 'selected' : '' }}>Zelle</option>
                     </select>
                     </div>
 
@@ -339,10 +342,10 @@
 
                     <label>Method Payment2:</label>
                     <select name="payment_method" id="paymentMethod2" class="form-control">
-                     <option value="cash" {{ $orden->method2 == 'cash' ? 'selected' : '' }}>Efectivo</option>
-                     <option value="debit" {{ $orden->method2 == 'debit' ? 'selected' : '' }}>Debit</option>
-                     <option value="credit" {{ $orden->method2 == 'credit' ? 'selected' : '' }}>Credit</option>
-                     <option value="zelle" {{ $orden->method2 == 'zelle' ? 'selected' : '' }}>Zelle</option>
+                      <option value="cash" {{ $orden->method == 'cash' ? 'selected' : '' }}>Cash</option>
+                     <option value="credit" {{ $orden->method == 'credit' ? 'selected' : '' }}>Credit</option>
+                     <option value="debit" {{ $orden->method == 'debit' ? 'selected' : '' }}>Debit</option>
+                     <option value="zelle" {{ $orden->method == 'zelle' ? 'selected' : '' }}>Zelle</option>
                     </select>
                     
                     </div>
@@ -364,10 +367,10 @@
 
                     <label>Method Payment3:</label>
                     <select name="payment_method" id="paymentMethod3" class="form-control">
-                     <option value="cash" {{ $orden->method3 == 'cash' ? 'selected' : '' }}>Efectivo</option>
-                     <option value="debit" {{ $orden->method3 == 'debit' ? 'selected' : '' }}>Debit</option>
-                     <option value="credit" {{ $orden->method3 == 'credit' ? 'selected' : '' }}>Credit</option>
-                     <option value="zelle" {{ $orden->method3 == 'zelle' ? 'selected' : '' }}>Zelle</option>
+                     <option value="cash" {{ $orden->method == 'cash' ? 'selected' : '' }}>Cash</option>
+                     <option value="credit" {{ $orden->method == 'credit' ? 'selected' : '' }}>Credit</option>
+                     <option value="debit" {{ $orden->method == 'debit' ? 'selected' : '' }}>Debit</option>
+                     <option value="zelle" {{ $orden->method == 'zelle' ? 'selected' : '' }}>Zelle</option>
                     </select>
                 </div>
                    </div>
@@ -617,7 +620,7 @@ $(document).ready(function () {
             const tax = parseFloat(product.tax) || 0;
             
             // Calcular precio con descuento
-            const priceAfterDiscount = price * (1 - discount / 100);
+            const priceAfterDiscount = price - discount;
             
             // Calcular subtotal (precio con descuento * cantidad)
             const productSubtotal = quantity * priceAfterDiscount;
@@ -670,7 +673,7 @@ $(document).ready(function () {
                     <td><input type="number" class="form-control quantity" value="${product.quantity}" min="1" data-index="${index}"></td>
                     <td><input type="text" class="form-control size" value="${product.size}" data-index="${index}"></td>
                     <td><input type="text" class="form-control color" value="${product.color}" data-index="${index}"></td>
-                    <td><input type="number" class="form-control discount" value="${product.discount}" min="0" max="100" step="0.01" data-index="${index}"></td>
+                    <td><input type="number" class="form-control discount" value="${product.discount}" min="0" step="0.01" placeholder="$" data-index="${index}"></td>
                     <td>
                         <select class="form-control tax" data-index="${index}">
                             ${taxOptions}
@@ -821,7 +824,7 @@ $(document).ready(function () {
                                   <b>Total:</b> $${ventaData.total.toFixed(2)}`,
                             icon: 'success'
                         }).then(() => {
-                            window.location.href = "/orders/" + {{ $orden->id }} + "/view/";
+                            window.location.href = "/orders/" + {{ $orden->id }} + "/edit/";
                         });
                     },
                     error: function (xhr) {

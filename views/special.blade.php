@@ -209,7 +209,7 @@
                         <th>Quantity</th>
                         <th>Size</th>
                         <th>Color</th>
-                        <th>Discount (%)</th>
+                        <th>Discount ($)</th>
                         <th>Tax (%)</th>
                         <th>Unit Price</th>
                         <th>Total</th>
@@ -246,9 +246,9 @@
                             <input type="number" id="advancePayment" class="form-control" step="0.01" value="0">
                             <label>Method Payment:</label>
                     <select name="payment_method" id="paymentMethod" class="form-control">
-                     <option value="efectivo">Cash</option>
-                     <option value="credito">Credit</option>
-                     <option value="cheque">Cheque</option>
+                     <option value="cash">Cash</option>
+                     <option value="credit">Credit</option>
+                     <option value="debit">Debit</option>
                       <option value="zelle">Zelle</option>
                     </select>
                     <br>
@@ -657,7 +657,7 @@
     }
 
         function calculateTotal(product) {
-            let priceAfterDiscount = product.price * (1 - product.discount / 100);
+            let priceAfterDiscount = product.price - product.discount;
             let subtotal = product.quantity * priceAfterDiscount;
             let taxAmount = subtotal * (product.tax / 100);
             let total = (subtotal + taxAmount).toFixed(2);
@@ -687,7 +687,8 @@
                             <td><input type="number" class="quantity form-control" value="${product.quantity}" min="1" data-index="${index}"></td>
                             <td><input type="text" class="size form-control" value="${product.size}" data-index="${index}"></td>
                             <td><input type="text" class="color form-control" value="${product.color}" data-index="${index}"></td>
-                            <td><input type="number" class="discount form-control" value="${product.discount}" min="0" data-index="${index}"></td>
+                            <td><input type="number" class="discount form-control" value="${product.discount}" min="0" step="0.01" placeholder="$" data-index="${index}"></td>
+
                             <td>
                                 <select class="tax form-control" data-index="${index}">
                                     ${selectOptions}
@@ -706,13 +707,13 @@
 
         function updateSummary() {
             let subtotal = productList.reduce((sum, p) => {
-                let priceAfterDiscount = p.price * (1 - p.discount / 100);
-                return sum + (p.quantity * priceAfterDiscount);
+            let priceAfterDiscount = p.price - p.discount;
+            return sum + (p.quantity * priceAfterDiscount);
             }, 0);
-            
+
             let taxTotal = productList.reduce((sum, p) => {
-                let priceAfterDiscount = p.price * (1 - p.discount / 100);
-                return sum + (p.quantity * priceAfterDiscount * (p.tax / 100));
+            let priceAfterDiscount = p.price - p.discount;
+            return sum + (p.quantity * priceAfterDiscount * (p.tax / 100));
             }, 0);
             
             let grandTotal = subtotal + taxTotal;
