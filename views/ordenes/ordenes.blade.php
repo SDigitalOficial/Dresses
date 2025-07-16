@@ -63,7 +63,7 @@
                                            
                                             <td class="text-center">{{ $facturacion->prefijo }}</td>
                                             <td class="text-center">{{ $facturacion->created_at->format('m-d-Y') }}</td>
-                                            <td class="text-center"><span class="badge bg-info ">{{ $facturacion->fecha_compra->format('Y-m-d') }}</span></td>
+                                            <td class="text-center"><span style="color:#FF00FF">{{ $facturacion->fecha_compra->format('Y-m-d') }}</span></td>
                                             @foreach($cliente as $clientes)
                                             @if($facturacion->cliente_id == $clientes->id)
                                             <td class="text-center">{{ $clientes->nombres}} {{ $clientes->apellidos}}</td>
@@ -79,6 +79,8 @@
                                                <span class="badge bg-danger"> Cancel</span>
                                              @elseif($facturacion->status == 'closed')
                                              <span class="badge bg-dark"> Closed</span> 
+                                             @elseif($facturacion->status == 'ordered')
+                                             <span class="badge bg-success"> Ordered</span> 
                                              @elseif($facturacion->status == 'storage') 
                                              <span class="badge bg-info"> Storage</span>
                                              @elseif($facturacion->status == 'open') 
@@ -149,10 +151,6 @@
 </div>
 
 
-<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
 
-    <script src="/adminsite/js/pages/tablesDatatables.js"></script>
-        <script>$(function(){ TablesDatatables.init(); });</script>
-  
 
   @stop

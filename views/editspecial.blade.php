@@ -319,10 +319,10 @@
 
                     <label>Method Payment1:</label>
                     <select name="payment_method" id="paymentMethod1" class="form-control">
-                      <option value="cash" {{ $orden->method == 'cash' ? 'selected' : '' }}>Cash</option>
-                     <option value="credit" {{ $orden->method == 'credit' ? 'selected' : '' }}>Credit</option>
-                     <option value="debit" {{ $orden->method == 'debit' ? 'selected' : '' }}>Debit</option>
-                     <option value="zelle" {{ $orden->method == 'zelle' ? 'selected' : '' }}>Zelle</option>
+                      <option value="cash" {{ $orden->method1 == 'cash' ? 'selected' : '' }}>Cash</option>
+                     <option value="credit" {{ $orden->method1 == 'credit' ? 'selected' : '' }}>Credit</option>
+                     <option value="debit" {{ $orden->method1 == 'debit' ? 'selected' : '' }}>Debit</option>
+                     <option value="zelle" {{ $orden->method1 == 'zelle' ? 'selected' : '' }}>Zelle</option>
                     </select>
                     </div>
 
@@ -342,10 +342,10 @@
 
                     <label>Method Payment2:</label>
                     <select name="payment_method" id="paymentMethod2" class="form-control">
-                      <option value="cash" {{ $orden->method == 'cash' ? 'selected' : '' }}>Cash</option>
-                     <option value="credit" {{ $orden->method == 'credit' ? 'selected' : '' }}>Credit</option>
-                     <option value="debit" {{ $orden->method == 'debit' ? 'selected' : '' }}>Debit</option>
-                     <option value="zelle" {{ $orden->method == 'zelle' ? 'selected' : '' }}>Zelle</option>
+                      <option value="cash" {{ $orden->method2 == 'cash' ? 'selected' : '' }}>Cash</option>
+                     <option value="credit" {{ $orden->method2 == 'credit' ? 'selected' : '' }}>Credit</option>
+                     <option value="debit" {{ $orden->method2 == 'debit' ? 'selected' : '' }}>Debit</option>
+                     <option value="zelle" {{ $orden->method2 == 'zelle' ? 'selected' : '' }}>Zelle</option>
                     </select>
                     
                     </div>
@@ -367,10 +367,10 @@
 
                     <label>Method Payment3:</label>
                     <select name="payment_method" id="paymentMethod3" class="form-control">
-                     <option value="cash" {{ $orden->method == 'cash' ? 'selected' : '' }}>Cash</option>
-                     <option value="credit" {{ $orden->method == 'credit' ? 'selected' : '' }}>Credit</option>
-                     <option value="debit" {{ $orden->method == 'debit' ? 'selected' : '' }}>Debit</option>
-                     <option value="zelle" {{ $orden->method == 'zelle' ? 'selected' : '' }}>Zelle</option>
+                     <option value="cash" {{ $orden->method3 == 'cash' ? 'selected' : '' }}>Cash</option>
+                     <option value="credit" {{ $orden->method3 == 'credit' ? 'selected' : '' }}>Credit</option>
+                     <option value="debit" {{ $orden->method3 == 'debit' ? 'selected' : '' }}>Debit</option>
+                     <option value="zelle" {{ $orden->method3 == 'zelle' ? 'selected' : '' }}>Zelle</option>
                     </select>
                 </div>
                    </div>
