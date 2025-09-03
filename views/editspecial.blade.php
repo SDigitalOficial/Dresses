@@ -185,6 +185,8 @@
                     <div class="form-group mt-4">
                         <label><strong>Event Date:</strong></label>
                         <input type="date" id="purchaseDate" class="form-control" value="{{ $orden->fecha_compra->format('Y-m-d') }}">
+                        <label><strong>Order Date:</strong></label>
+                        <input type="date" id="purchaseDate" class="form-control" value="{{ $orden->created_at->format('Y-m-d') }}" disabled>
                         <label><strong>Seller:</strong></label>
                         <select name="vendedor" id="purchaseVendedor" class="form-control">
     @foreach($vendedores as $vendedor)
@@ -222,6 +224,7 @@
                 <th>Tax (%)</th>
                 <th>Unit Price</th>
                 <th>Total</th>
+                <th>Ficha</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -254,6 +257,20 @@
             @endforeach
         </tbody>
     </table>
+
+    {{-- Form oculto para enviar los IDs de productos al backend y descargar el PDF --}}
+<form id="pdfForm" method="POST" action="{{ route('productos.pdf') }}" class="d-none">
+    @csrf
+</form>
+
+<div class="d-flex gap-2 mt-2">
+    <button type="button" id="btnGenerarFichas" class="btn btn-primary">
+        Generar fichas PDF
+    </button>
+    <button type="button" id="btnSelectAllFichas" class="btn btn-outline-secondary">
+        Seleccionar/Deseleccionar todo
+    </button>
+</div>
 
     <div class="container">  
         <div class="row">  
@@ -668,21 +685,24 @@ $(document).ready(function () {
             `;
             
             let row = `
-                <tr data-index="${index}">
-                    <td>${product.name}</td>
-                    <td><input type="number" class="form-control quantity" value="${product.quantity}" min="1" data-index="${index}"></td>
-                    <td><input type="text" class="form-control size" value="${product.size}" data-index="${index}"></td>
-                    <td><input type="text" class="form-control color" value="${product.color}" data-index="${index}"></td>
-                    <td><input type="number" class="form-control discount" value="${product.discount}" min="0" step="0.01" placeholder="$" data-index="${index}"></td>
-                    <td>
-                        <select class="form-control tax" data-index="${index}">
-                            ${taxOptions}
-                        </select>
-                    </td>
-                    <td>$${parseFloat(product.price).toFixed(2)}</td>
-                    <td class="total">$${product.total}</td>
-                    <td><button class="btn btn-danger delete" data-index="${index}">Eliminar</button></td>
-                </tr>`;
+    <tr data-index="${index}">
+        <td>${product.name}</td>
+        <td><input type="number" class="form-control quantity" value="${product.quantity}" min="1" data-index="${index}"></td>
+        <td><input type="text" class="form-control size" value="${product.size}" data-index="${index}"></td>
+        <td><input type="text" class="form-control color" value="${product.color}" data-index="${index}"></td>
+        <td><input type="number" class="form-control discount" value="${product.discount}" min="0" step="0.01" placeholder="$" data-index="${index}"></td>
+        <td>
+            <select class="form-control tax" data-index="${index}">
+                ${taxOptions}
+            </select>
+        </td>
+        <td>$${parseFloat(product.price).toFixed(2)}</td>
+        <td class="total">$${product.total}</td>
+        <td>
+            <input type="checkbox" class="pdf-check" value="${product.id}">
+        </td>
+        <td><button class="btn btn-danger delete" data-index="${index}">Eliminar</button></td>
+    </tr>`;
             tableBody.append(row);
         });
     }
@@ -842,6 +862,36 @@ $(document).ready(function () {
             }
         });
     });
+
+// Seleccionar/deseleccionar todos los checkboxes de fichas
+$("#btnSelectAllFichas").on("click", function () {
+    const checks = $(".pdf-check");
+    const allChecked = checks.length && checks.filter(":checked").length === checks.length;
+    checks.prop("checked", !allChecked);
+});
+
+// Enviar seleccionados al backend (POST normal -> descarga de archivo)
+$("#btnGenerarFichas").on("click", function () {
+    const selected = $(".pdf-check:checked").map(function(){ return $(this).val(); }).get();
+
+    if (selected.length === 0) {
+        return Swal.fire({ icon: 'warning', title: 'Sin selección', text: 'Selecciona al menos un producto.' });
+    }
+    if (selected.length > 3) {
+        return Swal.fire({ icon: 'warning', title: 'Límite excedido', text: 'Solo puedes generar hasta 3 fichas a la vez.' });
+    }
+
+    // Limpia y arma el form oculto
+    const $form = $("#pdfForm");
+    $form.find("input[name='products[]']").remove();
+    selected.forEach(id => {
+        $form.append(`<input type="hidden" name="products[]" value="${id}">`);
+    });
+
+    // Envío normal (no AJAX) para que el navegador descargue el PDF
+    $form.trigger("submit");
+});
+
 });
 </script>
 

@@ -25,6 +25,39 @@ public function __construct(){
  }
 }
 
+public function bulkFicha(Request $request)
+{
+    $data = $request->validate([
+        'products' => ['required', 'array', 'min:1', 'max:4'],
+    ]);
+
+    $products = \DigitalsiteSaaS\Dresses\Tenant\Producto::whereIn('id', $data['products'])
+    ->with([
+        'orders' => function ($query) {
+            $query->select('ordens.id', 'ordens.cliente_id', 'ordens.fecha_compra');
+        },
+        'orders.cliente' => function ($query) {
+            $query->select('dresses_clientes.id', 'dresses_clientes.nombres', 'dresses_clientes.telefono');
+        }
+    ])
+    ->get();
+
+    // Obtener el número de orden del primer producto (asumiendo que todos pertenecen a la misma orden)
+    $orderNumber = $products->isNotEmpty() && $products[0]->orders->isNotEmpty() 
+        ? $products[0]->orders[0]->id 
+        : 'sin-orden';
+
+    $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pdf.fichas-productos', compact('products'))
+        ->setPaper('a4', 'portrait');
+        
+    // Nombre del archivo con el número de orden
+    $filename = 'pick-list-order' . $orderNumber . '.pdf';
+
+    return $pdf->download($filename);
+}
+
+
+
   public function store(Request $request)
     {
   

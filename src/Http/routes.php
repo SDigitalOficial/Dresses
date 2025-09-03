@@ -49,6 +49,8 @@ Route::post('dresses/factura/crear-empresa', 'DigitalsiteSaaS\Dresses\Http\Usuar
 Route::get('dresses/factura/crearempresa', 'DigitalsiteSaaS\Dresses\Http\UsuariaController@crearempresaweb');
 Route::get('dresses/factura/negocios', 'DigitalsiteSaaS\Dresses\Http\UsuariaController@negocios');
 
+Route::post('/productos/pdf', [DigitalsiteSaaS\Dresses\Http\OrdenController::class, 'bulkFicha'])
+    ->name('productos.pdf');
 
 
 Route::get('dresses/specialorders', 'DigitalsiteSaaS\Dresses\Http\UsuariaController@special');
