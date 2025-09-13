@@ -37,7 +37,7 @@ public function bulkFicha(Request $request)
             $query->select('ordens.id', 'ordens.cliente_id', 'ordens.fecha_compra');
         },
         'orders.cliente' => function ($query) {
-            $query->select('dresses_clientes.id', 'dresses_clientes.nombres', 'dresses_clientes.telefono');
+            $query->select('dresses_clientes.id', 'dresses_clientes.nombres', 'dresses_clientes.apellidos', 'dresses_clientes.telefono');
         }
     ])
     ->get();

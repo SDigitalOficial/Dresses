@@ -224,7 +224,7 @@
                 <th>Tax (%)</th>
                 <th>Unit Price</th>
                 <th>Total</th>
-                <th>Ficha</th>
+                <th>Pickup</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -265,7 +265,7 @@
 
 <div class="d-flex gap-2 mt-2">
     <button type="button" id="btnGenerarFichas" class="btn btn-primary">
-        Generar fichas PDF
+        Generar Pickup PDF
     </button>
     <button type="button" id="btnSelectAllFichas" class="btn btn-outline-secondary">
         Seleccionar/Deseleccionar todo

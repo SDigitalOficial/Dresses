@@ -66,16 +66,15 @@
                 <div class="field"><span class="label">Contact:</span> {{ $p->order->cliente->nombre ?? '—' }}</div>
                 <div class="field"><span class="label">Event Date:</span> {{ $p->fecha_evento ?? '—' }}</div>
                 <div class="field"><span class="label">Phone:</span> {{ $p->telefono ?? '—' }}</div>
-                <div class="field"><span class="label">Vendor:</span> {{ $p->vendor ?? '—' }}</div>
-                <div class="field"><span class="label">Desc:</span> {{ $p->sku ?? '—' }}</div>
+
                 <div class="field"><span class="label">Color:</span> {{ $p->color ?? '—' }}</div>
                 <div class="field"><span class="label">Size:</span> {{ $p->talla ?? '—' }}</div>
                 <div class="field"><span class="balance-label">Balance Due:</span> ${{ number_format($p->precio ?? 0, 2) }}</div>
-                <div class="field"><span class="label">Transaction:</span> SO {{ $p->id }}</div>
+               
             </div>
 
             <div class="disclaimer">
-                I have thoroughly inspected the merchandise listed above and I am accepting it in its current condition...
+               I have thoroughly inspected the merchandise listed above and I am accepting it in its current condition. I agree that after signing this I am responsible for any damage or flaws in this merchandise outside of the store. I further understand that there are no warranties on the purchase of this products/items and that I'm fully responsible of anything that can happen to it outside of the store. We do not accept any refunds or exchanges after an item has been deliver and taken out from the store. The Merchandise being picked up/delivered does not include a warranty, either expressed or implied.
             </div>
 
             <div class="signature">
