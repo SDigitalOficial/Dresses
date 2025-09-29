@@ -14,6 +14,7 @@ class Orden extends Model
         'cliente_id',
         'fecha_compra',
         'vendedor',
+        'identidad',
         'observaciones',
         'subtotal',
         'impuesto_total',

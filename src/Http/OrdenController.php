@@ -60,7 +60,7 @@ public function bulkFicha(Request $request)
 
   public function store(Request $request)
     {
-  
+        $urlPath = $request->input('url_path');
         // Validar los datos
         $request->validate([
             'cliente_id' => 'nullable', // Asegurar que el cliente_id exista en la tabla clientes
@@ -77,11 +77,22 @@ public function bulkFicha(Request $request)
             'status' => 'string',
         ]);
 
-        // Crear la orden
-        $tienda = \DigitalsiteSaaS\Dresses\Tenant\Orden::latest()->first();
-        $prefijo = $tienda ? $tienda->prefijo : 0;
-        $prefijoIncrementado = $prefijo + 1;
+        
 
+        if ($urlPath === 'dresses/specialorders') {
+        $identidad = 'SO';
+        } elseif ($urlPath === 'dresses/layaway') {
+          $identidad = 'L';
+        }
+
+        // Crear la orden
+         $ultimaOrden = \DigitalsiteSaaS\Dresses\Tenant\Orden::where('identidad', $identidad)
+        ->orderByDesc('id')
+        ->first();
+
+         $prefijo = $ultimaOrden ? $ultimaOrden->prefijo : 0;
+         $prefijoIncrementado = $prefijo + 1;
+        
         $orden = \DigitalsiteSaaS\Dresses\Tenant\Orden::create([
             'cliente_id' => $request->cliente_id, // Guardar el cliente_id
             'fecha_compra' => $request->fecha_compra,
@@ -92,6 +103,7 @@ public function bulkFicha(Request $request)
             'total' => $request->total,
             'adelanto' => $request->adelanto,
             'prefijo' => $prefijoIncrementado,
+            'identidad'      => $identidad,
             'monto_adeudado' => $request->monto_adeudado,
             'status' => $request->paymentStatus,
         ]);

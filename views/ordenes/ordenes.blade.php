@@ -61,7 +61,7 @@
                                          @foreach($facturacion as $facturacion)
                                         <tr>
                                            
-                                            <td class="text-center">{{ $facturacion->prefijo }}</td>
+                                            <td class="text-center">{{ $facturacion->identidad }} #{{ $facturacion->prefijo }}</td>
                                             <td class="text-center">{{ $facturacion->created_at->format('m-d-Y') }}</td>
                                             <td class="text-center"><span style="color:#FF00FF">{{ $facturacion->fecha_compra->format('m-d-Y') }}</span></td>
                                             @foreach($cliente as $clientes)

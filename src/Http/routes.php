@@ -54,6 +54,7 @@ Route::post('/productos/pdf', [DigitalsiteSaaS\Dresses\Http\OrdenController::cla
 
 
 Route::get('dresses/specialorders', 'DigitalsiteSaaS\Dresses\Http\UsuariaController@special');
+Route::get('dresses/layaway', 'DigitalsiteSaaS\Dresses\Http\UsuariaController@special');
 
 Route::get('dresses/impuestos', 'DigitalsiteSaaS\Dresses\Http\OrdenController@impuestos');
 

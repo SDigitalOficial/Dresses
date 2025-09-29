@@ -55,7 +55,11 @@
     </style>
 </head>
 <body class="container mt-5">
-
+    @if(Request::path() == 'dresses/layaway')
+    <h1>Layaway</h1>
+    @elseif(Request::path() == 'dresses/specialorders')
+    <h1>Especial Order</h1>
+    @endif
     <div class="card-body">
         <div id="exampleModalLive" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLiveLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg" role="document">
@@ -180,6 +184,7 @@
                             <div class="form-group  mt-4">
                                 <label><strong>Event Date:</strong></label>
                                 <input type="date" id="purchaseDate" class="form-control">
+                                <input type="hidden" id="currentPath" value="{{ Request::path() }}">
                                 <label><strong>Seller:</strong></label>
                                 <select id="purchaseVendedor" class="form-control">
                                     @foreach($user as $user)
@@ -783,6 +788,7 @@
                 observaciones: $("#observations").val(),
                 paymentStatus: $("#paymentStatus").val(),
                 paymentMethod: $("#paymentMethod").val(),
+                url_path: $("#currentPath").val(), // 👈 aquí mandas el path
                 productos: productList.map(p => ({
                     id: p.id || null,
                     name: p.name,
