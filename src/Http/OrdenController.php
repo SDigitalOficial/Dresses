@@ -9,6 +9,7 @@ use Hyn\Tenancy\Models\Website;
 use Hyn\Tenancy\Repositories\HostnameRepository;
 use Hyn\Tenancy\Repositories\WebsiteRepository;
 use Barryvdh\DomPDF\Facade\Pdf;
+use DigitalsiteSaaS\Dresses\Tenant\Producto;
 use Input;
 
 class OrdenController extends Controller
@@ -28,7 +29,7 @@ public function __construct(){
 public function bulkFicha(Request $request)
 {
     $data = $request->validate([
-        'products' => ['required', 'array', 'min:1', 'max:4'],
+        'products' => ['required', 'array', 'min:1', 'max:20'],
     ]);
 
     $products = \DigitalsiteSaaS\Dresses\Tenant\Producto::whereIn('id', $data['products'])
@@ -200,7 +201,7 @@ public function edit($id)
      */
    public function update(Request $request, $id)
 {
-    // Validación mejorada
+    // Validación mejorada con campos opcionales
     $validated = $request->validate([
         'cliente_id' => 'required',
         'fecha_compra' => 'required|date',
@@ -214,27 +215,27 @@ public function edit($id)
         'impuesto_total' => 'required|numeric|min:0',
         'total' => 'required|numeric|min:0',
         'adelanto' => 'required|numeric|min:0',
-        'adelanto1' => 'required|numeric|min:0',
-        'adelanto2' => 'required|numeric|min:0',
-        'adelanto3' => 'required|numeric|min:0',
-        'date1' => 'string',
-        'date2' => 'string',
-        'date3' => 'string',
-        'user1' => 'string',
-        'user2' => 'string',
-        'user3' => 'string',
-        'method' => 'string',
-        'method1' => 'string',
-        'method2' => 'string',
-        'method3' => 'string',
-        'status' => 'string',
+        'adelanto1' => 'nullable|numeric|min:0', // Cambiado a nullable
+        'adelanto2' => 'nullable|numeric|min:0', // Cambiado a nullable
+        'adelanto3' => 'nullable|numeric|min:0', // Cambiado a nullable
+        'date1' => 'nullable|string',
+        'date2' => 'nullable|string',
+        'date3' => 'nullable|string',
+        'user1' => 'nullable|string',
+        'user2' => 'nullable|string',
+        'user3' => 'nullable|string',
+        'method' => 'nullable|string',
+        'method1' => 'nullable|string',
+        'method2' => 'nullable|string',
+        'method3' => 'nullable|string',
+        'status' => 'nullable|string',
         'monto_adeudado' => 'required|numeric|min:0'
     ]);
 
     try {
         $orden = \DigitalsiteSaaS\Dresses\Tenant\Orden::findOrFail($id);
         
-        // Actualizar datos principales
+        // Actualizar datos principales con valores por defecto para campos nullable
         $orden->update([
             'cliente_id' => $validated['cliente_id'],
             'fecha_compra' => $validated['fecha_compra'],
@@ -244,56 +245,59 @@ public function edit($id)
             'impuesto_total' => $validated['impuesto_total'],
             'total' => $validated['total'],
             'adelanto' => $validated['adelanto'],
-            'adelanto1' => $validated['adelanto1'],
-            'adelanto2' => $validated['adelanto2'],
-            'adelanto3' => $validated['adelanto3'],
-            'user1' => $validated['user1'],
-            'user2' => $validated['user2'],
-            'user3' => $validated['user3'],
-            'date1' => $validated['date1'],
-            'date2' => $validated['date2'],
-            'date3' => $validated['date3'],
-            'method' => $validated['method'],
-            'method1' => $validated['method1'],
-            'method2' => $validated['method2'],
-            'method3' => $validated['method3'],
-            'status' => $validated['status'],
+            'adelanto1' => $validated['adelanto1'] ?? 0,
+            'adelanto2' => $validated['adelanto2'] ?? 0,
+            'adelanto3' => $validated['adelanto3'] ?? 0,
+            'user1' => $validated['user1'] ?? null,
+            'user2' => $validated['user2'] ?? null,
+            'user3' => $validated['user3'] ?? null,
+            'date1' => $validated['date1'] ?? null,
+            'date2' => $validated['date2'] ?? null,
+            'date3' => $validated['date3'] ?? null,
+            'method' => $validated['method'] ?? 'cash',
+            'method1' => $validated['method1'] ?? 'cash',
+            'method2' => $validated['method2'] ?? 'cash',
+            'method3' => $validated['method3'] ?? 'cash',
+            'status' => $validated['status'] ?? 'open',
             'monto_adeudado' => $validated['monto_adeudado']
         ]);
 
-        // Sincronizar productos
+        // Sincronizar productos - LÓGICA CORREGIDA
         $productosSync = [];
+        
         foreach ($validated['productos'] as $producto) {
             $productoId = $producto['id'] ?? null;
             
-            if ($productoId) {
-                // Actualizar producto existente
+            // Si el ID es numérico y mayor que 1000, es un ID real de la base de datos
+            // Si es null o un número temporal grande, es un producto manual
+            if ($productoId && $productoId < 1000000) { // ID real de base de datos
                 $productosSync[$productoId] = [
                     'cantidad' => $producto['quantity'],
-                    'talla' => $producto['size'],
-                    'color' => $producto['color'],
-                    'descuento' => $producto['discount'],
-                    'impuesto' => $producto['tax'],
+                    'talla' => $producto['size'] ?? '',
+                    'color' => $producto['color'] ?? '',
+                    'descuento' => $producto['discount'] ?? 0,
+                    'impuesto' => $producto['tax'] ?? 0,
                     'precio_unitario' => $producto['price'],
-                    'total' => $producto['total']
+                    'total' => $producto['total'] ?? $producto['price'] * $producto['quantity']
                 ];
             } else {
-                // Crear nuevo producto
+                // Crear nuevo producto manual
                 $nuevoProducto = Producto::create([
                     'nombre' => $producto['name'],
                     'precio' => $producto['price'],
-                    'talla' => $producto['size'],
-                    'color' => $producto['color']
+                    'talla' => $producto['size'] ?? '',
+                    'color' => $producto['color'] ?? '',
+                    'es_manual' => true // Si tienes este campo
                 ]);
                 
                 $productosSync[$nuevoProducto->id] = [
                     'cantidad' => $producto['quantity'],
-                    'talla' => $producto['size'],
-                    'color' => $producto['color'],
-                    'descuento' => $producto['discount'],
-                    'impuesto' => $producto['tax'],
+                    'talla' => $producto['size'] ?? '',
+                    'color' => $producto['color'] ?? '',
+                    'descuento' => $producto['discount'] ?? 0,
+                    'impuesto' => $producto['tax'] ?? 0,
                     'precio_unitario' => $producto['price'],
-                    'total' => $producto['total']
+                    'total' => $producto['total'] ?? $producto['price'] * $producto['quantity']
                 ];
             }
         }
@@ -302,16 +306,21 @@ public function edit($id)
 
         return response()->json([
             'message' => 'Orden actualizada correctamente',
-            'orden_id' => $orden->id
+            'orden_id' => $orden->id,
+            'id' => $orden->id // Añade esto para que coincida con lo que espera el frontend
         ], 200);
 
     } catch (\Exception $e) {
+        \Log::error('Error updating order: ' . $e->getMessage());
+        \Log::error('Request data: ', $request->all());
+        
         return response()->json([
             'message' => 'Error al actualizar la orden',
             'error' => $e->getMessage()
         ], 500);
     }
 }
+
 
     /**
      * Muestra una orden específica.

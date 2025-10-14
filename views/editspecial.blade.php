@@ -412,6 +412,7 @@
  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 $(document).ready(function () {
+
     // Función para mostrar notificación
     function showNotification(title, text, icon) {
         Swal.fire({
@@ -426,8 +427,91 @@ $(document).ready(function () {
         });
     }
 
+    // AUTOCOMPLETE SEARCH PARA CLIENTES (AÑADIR ESTO)
+    $("#searchClient").on("keyup", function () {
+        let query = $(this).val();
+        if (query.length > 1) {
+            $.ajax({
+                url: "{{ route('dresses.client') }}",
+                type: "GET",
+                data: { query: query },
+                success: function (data) {
+                    let suggestions = $("#contactSuggestions");
+                    suggestions.empty().show();
+                    data.forEach(client => {
+                        suggestions.append("<div class='contactSuggestion' data-id='" + client.id + "' data-name='" + client.nombres + "' data-email='" + client.email + "' data-phone='" + client.telefono + "'>" + client.nombres + "</div>");
+                    });
+                }
+            });
+        } else {
+            $("#contactSuggestions").hide();
+        }
+    });
+
+    // SELECCIONAR CLIENTE DESDE AUTOCOMPLETE (AÑADIR ESTO)
+    $(document).on("click", ".contactSuggestion", function () {
+        let id = $(this).data("id");
+        let name = $(this).data("name");
+        let phone = $(this).data("phone");
+        selectedContact = { id, name, phone };
+        $("#selectedContact").text(`${name} - ${phone}`);
+        $("#cliente_id").val(id);
+        $("#contactSuggestions").hide();
+        
+        showNotification('Cliente seleccionado', `Se ha seleccionado a ${name}`, 'info');
+    });
+
+    // GUARDAR CONTACTO MANUALMENTE (AÑADIR ESTO)
+    $("#saveContactBtn").click(function () {
+        let name = $("#contactName").val().trim();
+        let lastName = $("#contactLastName").val().trim();
+        let phone = $("#contactPhone").val().trim();
+        let email = $("#contactEmail").val().trim();
+        let city = $("#contactCity").val().trim();
+        let address = $("#contactAddress").val().trim();
+        let store = $("#contactStore").val().trim();
+        let eventType = $("#contactEventType").val().trim();
+        let eventDate = $("#contactEventDate").val().trim();
+
+        $.ajax({
+            url: "{{ route('clientes.store') }}",
+            type: "POST",
+            data: {
+                nombres: name,
+                apellidos: lastName,
+                telefono: phone,
+                ciudad: city,
+                email: email,
+                direccion: address,
+                tienda: store,
+                tipo_evento: eventType,
+                fecha_evento: eventDate
+            },
+            success: function (response) {
+                selectedContact = {
+                    id: response.id,
+                    name: response.nombres + " " + response.apellidos,
+                    phone: response.telefono
+                };
+                $("#selectedContact").text(`${selectedContact.name} - ${selectedContact.phone}`);
+                $("#cliente_id").val(response.id);
+                var modal = bootstrap.Modal.getInstance(document.getElementById('exampleModalLive'));
+                modal.hide();
+                $("#contactName, #contactLastName, #contactPhone, #contactEmail, #contactCity, #contactAddress, #contactStore, #contactEventType, #contactEventDate").val("");
+                
+                showNotification('Éxito', 'Cliente creado correctamente', 'success');
+            },
+            error: function (xhr) {
+                let errorMessage = "Error al guardar el cliente";
+                if (xhr.responseJSON && xhr.responseJSON.errors) {
+                    errorMessage += ": " + Object.values(xhr.responseJSON.errors).join(", ");
+                }
+                showNotification('Error', errorMessage, 'error');
+            }
+        });
+    });
+
     // AUTOCOMPLETE SEARCH PARA PRODUCTOS
-    // AUTOCOMPLETE SEARCH PARA PRODUCTOS (MODIFICADO)
     $("#search").on("keyup", function () {
         let query = $(this).val();
         if (query.length > 1) {
@@ -466,7 +550,7 @@ $(document).ready(function () {
         }
     });
 
-    // SELECCIONAR PRODUCTO DESDE AUTOCOMPLETE (MODIFICADO)
+    // SELECCIONAR PRODUCTO DESDE AUTOCOMPLETE
     $(document).on("click", ".suggestion:not(.bloqueado)", function () {
         let id = $(this).data("id");
         let name = $(this).data("name");
@@ -475,17 +559,7 @@ $(document).ready(function () {
         $("#suggestions").hide();
     });
 
-    // MOSTRAR POPUP PARA NUEVO PRODUCTO
-    $("#addProductBtn").click(function () {
-        $("#overlay, #popup").show();
-    });
-
-    // OCULTAR POPUP DE PRODUCTO
-    $("#closePopupBtn").click(function () {
-        $("#overlay, #popup").hide();
-    });
-
-    // Validar campos del producto
+    // Validar campos del producto (AÑADIR ESTA FUNCIÓN)
     function validateProductFields() {
         let isValid = true;
         let missingFields = [];
@@ -516,81 +590,90 @@ $(document).ready(function () {
         return isValid;
     }
 
-    $("#saveProductBtn").click(function () {
-        if (!validateProductFields()) {
+    // GUARDAR PRODUCTO MANUALMENTE (CORREGIR ESTA FUNCIÓN)
+    // GUARDAR PRODUCTO MANUALMENTE - VERSIÓN CORREGIDA
+$("#saveProductBtn").click(function () {
+    if (!validateProductFields()) {
+        return;
+    }
+
+    let name = $("#productName").val().trim();
+    let color = $("#productColor").val().trim();
+    let size = $("#productSize").val().trim();
+    let price = parseFloat($("#productPrice").val()) || 0;
+
+    // Para productos manuales, envía null explícitamente
+    addProductToTable(name, price, null, color, size);
+
+    var modal = bootstrap.Modal.getInstance(document.getElementById('exampleModalLivec'));
+    modal.hide();
+
+    $("#productName, #productColor, #productSize, #productPrice").val("");
+    
+    showNotification('Éxito', 'Producto agregado correctamente', 'success');
+});
+
+    // FUNCIÓN PARA AGREGAR PRODUCTO A LA TABLA (DEFINIR AL PRINCIPIO)
+    // FUNCIÓN CORREGIDA PARA AGREGAR PRODUCTO A LA TABLA
+// FUNCIÓN MEJORADA PARA AGREGAR PRODUCTO A LA TABLA
+// FUNCIÓN CORREGIDA PARA AGREGAR PRODUCTO A LA TABLA
+function addProductToTable(name, price, id = null, color = "", size = "") {
+    console.log('Agregando producto:', { name, price, id, color, size });
+    
+    // Verificar si el producto ya existe en la orden (SOLO para productos con ID real)
+    if (id !== null) {
+        const productoExistente = productList.find(p => p.id === id);
+        if (productoExistente) {
+            showNotification('Producto duplicado', `${name} ya está en la orden. Modifica la cantidad si necesitas más.`, 'warning');
             return;
         }
-
-        let name = $("#productName").val();
-        let color = $("#productColor").val();
-        let size = $("#productSize").val();
-        let price = parseFloat($("#productPrice").val()) || 0;
-        let tax = parseFloat($("#productTax").val()) || 0;
-
-        $.ajax({
-            url: "{{ route('dresses.venta') }}",
-            type: "POST",
-            data: {
-                nombre: name,
-                precio: price,
-                color: color,
-                talla: size
-            },
-            success: function (response) {
-                addProductToTable(name, price, response.id, color, size, tax);
-                $("#overlay, #popup").hide();
-                $("#productName, #productColor, #productSize, #productPrice").val("");
-                
-                showNotification('Éxito', 'Producto creado correctamente', 'success');
-            },
-            error: function (xhr) {
-                let errorMessage = "Error al crear el producto";
-                if (xhr.responseJSON && xhr.responseJSON.message) {
-                    errorMessage += ": " + xhr.responseJSON.message;
-                }
-                showNotification('Error', errorMessage, 'error');
-            }
-        });
-    });
-
-    // FUNCIÓN PARA AGREGAR PRODUCTO A LA TABLA
-    // FUNCIÓN PARA AGREGAR PRODUCTO A LA TABLA (MODIFICADA)
-    function addProductToTable(name, price, id = null, color = "#000000", size = "0", tax = 0) {
-        // Verificar si el producto ya existe en la orden
-        if (id !== null) {
-            const productoExistente = productList.find(p => p.id === id);
-            if (productoExistente) {
-                showNotification('Producto duplicado', `${name} ya está en la orden. Modifica la cantidad si necesitas más.`, 'warning');
-                return;
-            }
-        }
-
-        let existingProduct = productList.find(p => 
-            p.id === id || (p.name === name && p.size === size && p.color === color)
-        );
-        
-        if (existingProduct) {
-            existingProduct.quantity += 1;
-            calculateTotals();
-            showNotification('Cantidad actualizada', `${name} - Cantidad aumentada a ${existingProduct.quantity}`, 'info');
-        } else {
-            productList.push({
-                id: id || Date.now(),
-                name,
-                price,
-                quantity: 1,
-                size,
-                color,
-                discount: 0,
-                tax: tax,
-                total: 0
-            });
-            showNotification('Producto agregado', `${name} - $${price}`, 'success');
-        }
-        
-        calculateTotals();
-        renderProductTable();
     }
+
+    // PARA PRODUCTOS MANUALES (id: null): Buscar por nombre, tamaño y color EXACTOS
+    let existingProduct = null;
+    
+    if (id === null) {
+        // Para productos manuales, buscar coincidencia exacta
+        existingProduct = productList.find(p => 
+            p.id === null && 
+            p.name === name && 
+            p.size === size && 
+            p.color === color
+        );
+    } else {
+        // Para productos con ID, buscar por ID
+        existingProduct = productList.find(p => p.id === id);
+    }
+    
+    if (existingProduct) {
+        existingProduct.quantity += 1;
+        showNotification('Cantidad actualizada', `${name} - Cantidad aumentada a ${existingProduct.quantity}`, 'info');
+    } else {
+        // Crear NUEVO producto
+        const newProduct = {
+            id: id,
+            name: name,
+            price: price,
+            quantity: 1,
+            size: size,
+            color: color,
+            discount: 0,
+            tax: 0,
+            total: price
+        };
+        
+        productList.push(newProduct);
+        showNotification('Producto agregado', `${name} - $${price}`, 'success');
+    }
+    
+    // Calcular totales ANTES de renderizar
+    calculateTotals();
+    // Renderizar la tabla completa
+    renderProductTable();
+    
+    console.log('ProductList después de agregar:', productList);
+    console.log('Total de productos:', productList.length);
+}
 
     // Preparar los datos en PHP primero
     <?php
@@ -604,7 +687,7 @@ $(document).ready(function () {
             'size' => $producto->pivot->talla,
             'color' => $producto->pivot->color,
             'discount' => $producto->pivot->descuento,
-            'tax' => $producto->pivot->impuesto,
+            'tax' => $producto->pivot->impuesto_total, // Cambiado de 'impuesto' a 'impuesto_total'
             'total' => $producto->pivot->total
         ];
     }
@@ -626,50 +709,127 @@ $(document).ready(function () {
     });
 
     // Función para calcular totales con descuentos e impuestos
-    function calculateTotals() {
-        let subtotal = 0;
-        let taxTotal = 0;
+    // Función para calcular totales - VERSIÓN MÁS ROBUSTA
+function calculateTotals() {
+    let subtotal = 0;
+    let taxTotal = 0;
+    
+    productList.forEach((product, index) => {
+        // Asegurar que todos los valores sean números válidos
+        const price = parseFloat(product.price) || 0;
+        const quantity = parseInt(product.quantity) || 1; // Mínimo 1
+        const discount = parseFloat(product.discount) || 0;
+        const tax = parseFloat(product.tax) || 0;
         
-        productList.forEach(product => {
-            const price = parseFloat(product.price) || 0;
-            const quantity = parseInt(product.quantity) || 0;
-            const discount = parseFloat(product.discount) || 0;
-            const tax = parseFloat(product.tax) || 0;
-            
-            // Calcular precio con descuento
-            const priceAfterDiscount = price - discount;
-            
-            // Calcular subtotal (precio con descuento * cantidad)
-            const productSubtotal = quantity * priceAfterDiscount;
-            
-            // Calcular impuestos sobre el subtotal con descuento
-            const productTax = productSubtotal * (tax / 100);
-            
-            subtotal += productSubtotal;
-            taxTotal += productTax;
-            
-            // Actualizar total del producto (subtotal + impuestos)
-            product.total = (productSubtotal + productTax).toFixed(2);
-        });
+        // Calcular precio con descuento
+        const priceAfterDiscount = Math.max(0, price - discount); // No negativo
         
-        const grandTotal = subtotal + taxTotal;
-        const advance = parseFloat($("#advancePayment").val()) || 0;
-        const advance1 = parseFloat($("#advancePayment1").val()) || 0;
-        const advance2 = parseFloat($("#advancePayment2").val()) || 0;
-        const advance3 = parseFloat($("#advancePayment3").val()) || 0;
-        const amountDue = grandTotal - advance - advance1 - advance2 - advance3;
+        // Calcular subtotal (precio con descuento * cantidad)
+        const productSubtotal = quantity * priceAfterDiscount;
         
-        $("#subtotal").text(subtotal.toFixed(2));
-        $("#taxTotal").text(taxTotal.toFixed(2));
-        $("#grandTotal").text(grandTotal.toFixed(2));
-        $("#amountDue").text(amountDue.toFixed(2));
+        // Calcular impuestos sobre el subtotal con descuento
+        const productTax = productSubtotal * (tax / 100);
         
-        $(".total").each(function(index) {
-            $(this).text(productList[index].total);
-        });
-    }
+        subtotal += productSubtotal;
+        taxTotal += productTax;
+        
+        // Actualizar total del producto (subtotal + impuestos)
+        product.total = (productSubtotal + productTax).toFixed(2);
+    });
+    
+    const grandTotal = subtotal + taxTotal;
+    const advance = parseFloat($("#advancePayment").val()) || 0;
+    const advance1 = parseFloat($("#advancePayment1").val()) || 0;
+    const advance2 = parseFloat($("#advancePayment2").val()) || 0;
+    const advance3 = parseFloat($("#advancePayment3").val()) || 0;
+    const amountDue = Math.max(0, grandTotal - advance - advance1 - advance2 - advance3); // No negativo
+    
+    $("#subtotal").text(subtotal.toFixed(2));
+    $("#taxTotal").text(taxTotal.toFixed(2));
+    $("#grandTotal").text(grandTotal.toFixed(2));
+    $("#amountDue").text(amountDue.toFixed(2));
+    
+    // Actualizar totales en cada fila
+    $(".total").each(function(index) {
+        if (productList[index]) {
+            $(this).text('$' + productList[index].total);
+        }
+    });
+}
 
     // Función para renderizar la tabla de productos
+        // Función para attach/detach eventos - AÑADE ESTA FUNCIÓN
+   // Función para attach/detach eventos - VERSIÓN CORREGIDA
+function attachEventListeners() {
+    // Remover eventos anteriores para evitar duplicados
+    $(document).off('input', '.quantity, .discount, .tax');
+    $(document).off('change', '.size, .color');
+    $(document).off('click', '.delete');
+
+    // Eventos para actualización automática - CORREGIDOS (SIN renderProductTable)
+    $(document).on('input', '.quantity, .discount, .tax, #advancePayment, #advancePayment1, #advancePayment2, #advancePayment3', function() {
+        const index = $(this).data('index');
+        // Verificar que el índice sea válido
+        if (index >= 0 && index < productList.length) {
+            const value = $(this).val();
+            
+            if ($(this).hasClass('quantity')) {
+                productList[index].quantity = parseInt(value) || 1;
+            } else if ($(this).hasClass('discount')) {
+                productList[index].discount = parseFloat(value) || 0;
+            } else if ($(this).hasClass('tax')) {
+                productList[index].tax = parseFloat(value) || 0;
+            }
+            
+            // SOLO calcularTotals, NO renderProductTable (evita bucle infinito)
+            calculateTotals();
+            
+            // Actualizar solo la fila afectada en lugar de re-renderizar toda la tabla
+            updateProductRow(index);
+        }
+    });
+
+    $(document).on('change', '.size, .color', function() {
+        const index = $(this).data('index');
+        if (index >= 0 && index < productList.length) {
+            const value = $(this).val();
+            
+            if ($(this).hasClass('size')) {
+                productList[index].size = value;
+            } else {
+                productList[index].color = value;
+            }
+        }
+    });
+
+    $(document).on('click', '.delete', function() {
+        const index = $(this).data('index');
+        if (index >= 0 && index < productList.length) {
+            const productName = productList[index].name;
+            productList.splice(index, 1);
+            renderProductTable(); // ✅ Esta llamada está bien aquí
+            calculateTotals();
+            
+            showNotification('Eliminado', `${productName} fue removido`, 'warning');
+        }
+    });
+}
+
+// AÑADE esta función para actualizar solo una fila (OPCIONAL, mejora rendimiento)
+function updateProductRow(index) {
+    if (index >= 0 && index < productList.length) {
+        const product = productList[index];
+        const $row = $(`tr[data-index="${index}"]`);
+        
+        // Actualizar solo el total de esa fila
+        $row.find('.total').text(`$${product.total}`);
+        
+        // Actualizar los totales generales
+        calculateTotals();
+    }
+}
+  
+    // Función para renderizar la tabla de productos - MEJORADA
     function renderProductTable() {
         let tableBody = $("#productTable");
         tableBody.empty();
@@ -705,62 +865,25 @@ $(document).ready(function () {
     </tr>`;
             tableBody.append(row);
         });
+        
+        // Re-attach eventos después de renderizar
+        attachEventListeners();
     }
-
-    // Eventos para actualización automática
-    $(document).on('input', '.quantity, .discount, .tax, #advancePayment, #advancePayment1, #advancePayment2, #advancePayment3', function() {
-        const index = $(this).data('index');
-        const value = $(this).val();
-        
-        if ($(this).hasClass('quantity')) {
-            productList[index].quantity = parseInt(value) || 0;
-        } else if ($(this).hasClass('discount')) {
-            productList[index].discount = parseFloat(value) || 0;
-        } else if ($(this).hasClass('tax')) {
-            productList[index].tax = parseFloat(value) || 0;
-        }
-        
-        calculateTotals();
-    });
-
-    $(document).on('change', '.size, .color', function() {
-        const index = $(this).data('index');
-        const value = $(this).val();
-        
-        if ($(this).hasClass('size')) {
-            productList[index].size = value;
-        } else {
-            productList[index].color = value;
-        }
-    });
-
-    $(document).on('click', '.delete', function() {
-        const index = $(this).data('index');
-        const productName = productList[index].name;
-        productList.splice(index, 1);
-        renderProductTable();
-        calculateTotals();
-        
-        showNotification('Eliminado', `${productName} fue removido`, 'warning');
-    });
 
     // Inicializar la tabla y los totales
     renderProductTable();
     calculateTotals();
 
-    // Evento para guardar la venta
+    // Evento para guardar la venta - VERSIÓN MEJORADA
     $("#guardarVentaBtn").click(function () {
+        console.log('Iniciando actualización...');
+        console.log('Product list:', productList);
+        
         const vendedorId = $("#purchaseVendedor").val();
         const vendedorId1 = $("#advanceReceivedBy1").val();
 
-        
         if (!vendedorId || isNaN(vendedorId)) {
             showNotification('Error', 'Por favor selecciona un vendedor válido', 'error');
-            return;
-        }
-
-        if (!vendedorId1 || isNaN(vendedorId1)) {
-            showNotification('Error', 'Por favor selecciona un vendedor válido para el primer pago', 'error');
             return;
         }
 
@@ -774,17 +897,24 @@ $(document).ready(function () {
             return;
         }
 
-        let productosData = productList.map(p => ({
-            id: p.id || null,
-            name: p.name,
-            price: parseFloat(p.price),
-            quantity: parseInt(p.quantity),
-            size: p.size,
-            color: p.color,
-            discount: parseFloat(p.discount),
-            tax: parseFloat(p.tax),
-            total: parseFloat(p.total)
-        }));
+        // Preparar datos de productos - MEJORADO
+        let productosData = productList.map(p => {
+            // Para productos manuales (id = null), enviar estructura correcta
+            const productData = {
+                id: p.id, // Puede ser null para productos manuales
+                name: p.name,
+                price: parseFloat(p.price) || 0,
+                quantity: parseInt(p.quantity) || 1,
+                size: p.size || '',
+                color: p.color || '',
+                discount: parseFloat(p.discount) || 0,
+                tax: parseFloat(p.tax) || 0,
+                total: parseFloat(p.total) || 0
+            };
+            
+            console.log('Producto a enviar:', productData);
+            return productData;
+        });
 
         let ventaData = {
             cliente_id: selectedContact.id,
@@ -797,22 +927,23 @@ $(document).ready(function () {
             user1: $("#advanceReceivedBy1").val() || 0,
             user2: $("#advanceReceivedBy2").val() || 0,
             user3: $("#advanceReceivedBy3").val() || 0,
-            method: $("#paymentMethod").val() || 0,
-            meth: $("#paymentMethod1").val() || 0,
-            method1: $("#paymentMethod1").val() || 0,
-            method2: $("#paymentMethod2").val() || 0,
-            method3: $("#paymentMethod3").val() || 0,
-            status: $("#paymentStatus").val() || 0,
+            method: $("#paymentMethod").val() || 'cash',
+            method1: $("#paymentMethod1").val() || 'cash',
+            method2: $("#paymentMethod2").val() || 'cash',
+            method3: $("#paymentMethod3").val() || 'cash',
+            status: $("#paymentStatus").val() || 'open',
             productos: productosData,
-            subtotal: parseFloat($("#subtotal").text()),
-            impuesto_total: parseFloat($("#taxTotal").text()),
-            total: parseFloat($("#grandTotal").text()),
+            subtotal: parseFloat($("#subtotal").text()) || 0,
+            impuesto_total: parseFloat($("#taxTotal").text()) || 0,
+            total: parseFloat($("#grandTotal").text()) || 0,
             adelanto: parseFloat($("#advancePayment").val()) || 0,
             adelanto1: parseFloat($("#advancePayment1").val()) || 0,
             adelanto2: parseFloat($("#advancePayment2").val()) || 0,
             adelanto3: parseFloat($("#advancePayment3").val()) || 0,
-            monto_adeudado: parseFloat($("#amountDue").text())
+            monto_adeudado: parseFloat($("#amountDue").text()) || 0
         };
+
+        console.log('Datos completos a enviar:', ventaData);
 
         Swal.fire({
             title: 'Confirmar actualización',
@@ -844,10 +975,15 @@ $(document).ready(function () {
                                   <b>Total:</b> $${ventaData.total.toFixed(2)}`,
                             icon: 'success'
                         }).then(() => {
-                            window.location.href = "/orders/" + {{ $orden->id }} + "/edit/";
+                            // Recargar la página para asegurar consistencia
+                            window.location.reload();
                         });
                     },
                     error: function (xhr) {
+                        console.log('Error completo:', xhr);
+                        console.log('Status:', xhr.status);
+                        console.log('Response text:', xhr.responseText);
+                        
                         let errorMessage = "Error al actualizar la orden";
                         if (xhr.responseJSON) {
                             if (xhr.responseJSON.message) {
@@ -855,7 +991,15 @@ $(document).ready(function () {
                             } else if (xhr.responseJSON.error) {
                                 errorMessage += ": " + xhr.responseJSON.error;
                             }
+                        } else if (xhr.responseText) {
+                            try {
+                                const response = JSON.parse(xhr.responseText);
+                                if (response.message) errorMessage += ": " + response.message;
+                            } catch (e) {
+                                errorMessage += ": " + xhr.responseText.substring(0, 100);
+                            }
                         }
+                        
                         showNotification('Error', errorMessage, 'error');
                     }
                 });
@@ -863,35 +1007,34 @@ $(document).ready(function () {
         });
     });
 
-// Seleccionar/deseleccionar todos los checkboxes de fichas
-$("#btnSelectAllFichas").on("click", function () {
-    const checks = $(".pdf-check");
-    const allChecked = checks.length && checks.filter(":checked").length === checks.length;
-    checks.prop("checked", !allChecked);
-});
-
-// Enviar seleccionados al backend (POST normal -> descarga de archivo)
-$("#btnGenerarFichas").on("click", function () {
-    const selected = $(".pdf-check:checked").map(function(){ return $(this).val(); }).get();
-
-    if (selected.length === 0) {
-        return Swal.fire({ icon: 'warning', title: 'Sin selección', text: 'Selecciona al menos un producto.' });
-    }
-    if (selected.length > 3) {
-        return Swal.fire({ icon: 'warning', title: 'Límite excedido', text: 'Solo puedes generar hasta 3 fichas a la vez.' });
-    }
-
-    // Limpia y arma el form oculto
-    const $form = $("#pdfForm");
-    $form.find("input[name='products[]']").remove();
-    selected.forEach(id => {
-        $form.append(`<input type="hidden" name="products[]" value="${id}">`);
+    // Seleccionar/deseleccionar todos los checkboxes de fichas
+    $("#btnSelectAllFichas").on("click", function () {
+        const checks = $(".pdf-check");
+        const allChecked = checks.length && checks.filter(":checked").length === checks.length;
+        checks.prop("checked", !allChecked);
     });
 
-    // Envío normal (no AJAX) para que el navegador descargue el PDF
-    $form.trigger("submit");
-});
+    // Enviar seleccionados al backend (POST normal -> descarga de archivo)
+    $("#btnGenerarFichas").on("click", function () {
+        const selected = $(".pdf-check:checked").map(function(){ return $(this).val(); }).get();
 
+        if (selected.length === 0) {
+            return Swal.fire({ icon: 'warning', title: 'Sin selección', text: 'Selecciona al menos un producto.' });
+        }
+        if (selected.length > 20) {
+            return Swal.fire({ icon: 'warning', title: 'Límite excedido', text: 'Solo puedes generar hasta 20 fichas a la vez.' });
+        }
+
+        // Limpia y arma el form oculto
+        const $form = $("#pdfForm");
+        $form.find("input[name='products[]']").remove();
+        selected.forEach(id => {
+            $form.append(`<input type="hidden" name="products[]" value="${id}">`);
+        });
+
+        // Envío normal (no AJAX) para que el navegador descargue el PDF
+        $form.trigger("submit");
+    });
 });
 </script>
 
