@@ -687,7 +687,7 @@ function addProductToTable(name, price, id = null, color = "", size = "") {
             'size' => $producto->pivot->talla,
             'color' => $producto->pivot->color,
             'discount' => $producto->pivot->descuento,
-            'tax' => $producto->pivot->impuesto_total, // Cambiado de 'impuesto' a 'impuesto_total'
+            'tax' => $producto->pivot->impuesto, // Cambiado de 'impuesto' a 'impuesto_total'
             'total' => $producto->pivot->total
         ];
     }
