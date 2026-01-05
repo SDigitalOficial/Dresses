@@ -8,6 +8,10 @@ Route::get('dresses/empresa', function () {
 
 });
 
+// O si ya tienes un resource para clientes, puedes usar:
+Route::resource('clientes', ClienteController::class);
+// Esto automáticamente crea la ruta 'clientes.update'
+
 Route::get('dresses/usuarios', 'DigitalsiteSaaS\Dresses\Http\UsuariaController@index');
 Route::get('dresses/crear-usuario', 'DigitalsiteSaaS\Dresses\Http\UsuariaController@crearusuario');
 Route::get('dresses/editar/{id}', 'DigitalsiteSaaS\Dresses\Http\UsuariaController@editar');
@@ -17,8 +21,11 @@ Route::post('dresses/actualizar/{id}', 'DigitalsiteSaaS\Dresses\Http\UsuariaCont
 
 Route::get('dresses/clientes', 'DigitalsiteSaaS\Dresses\Http\UsuariaController@clientes');
 Route::get('dresses/editar/cliente/{id}', 'DigitalsiteSaaS\Dresses\Http\UsuariaController@editarclientes');
+Route::get('dresses/editar/clientepos/{id}', 'DigitalsiteSaaS\Dresses\Http\UsuariaController@editarclientespos');
 Route::get('dresses/editar/orden/{id}', 'DigitalsiteSaaS\Dresses\Http\OrdenController@editarorden');
 Route::post('dresses/dresses/eidtar-clienteweb/{id}', 'DigitalsiteSaaS\Dresses\Http\UsuariaController@editarclienteweb');
+
+Route::post('dresses/dresses/eidtar-clientewebpos/{id}', 'DigitalsiteSaaS\Dresses\Http\UsuariaController@editarclientewebpos');
 
 Route::get('dresses/editar/producto/{id}', 'DigitalsiteSaaS\Dresses\Http\UsuariaController@editarproductosweb');
 Route::post('dresses/editar/producto/{id}', 'DigitalsiteSaaS\Dresses\Http\UsuariaController@editarproductoswebs');

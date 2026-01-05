@@ -3,19 +3,63 @@
 namespace DigitalsiteSaaS\Dresses\Http;
 
 use Illuminate\Http\Request;
-use App\Cliente;
-
+use DigitalsiteSaaS\Dresses\Tenant\Cliente;
 use App\Http\Controllers\Controller;
-use Hyn\Tenancy\Models\Hostname;
-use Hyn\Tenancy\Models\Website;
-use Hyn\Tenancy\Repositories\HostnameRepository;
-use Hyn\Tenancy\Repositories\WebsiteRepository;
-
-
-
 
 class ClienteController extends Controller
 {
+    /**
+     * Actualizar el cliente especificado
+     */
+    public function update(Request $request, $id)
+    {
+        // Validar los datos
+        $request->validate([
+            'nombres' => 'required|string|max:255',
+            'apellidos' => 'required|string|max:255',
+            'telefono' => 'nullable|string|max:20',
+            'telefono2' => 'nullable|string|max:20',
+            'email' => 'nullable|email|max:255',
+            'direccion' => 'nullable|string|max:500',
+            'ciudad' => 'nullable|string|max:100',
+            'tienda' => 'nullable|integer',
+            'tipo_evento' => 'nullable|string|max:100',
+            'fecha_evento' => 'nullable|date',
+        ]);
+        
+        try {
+            // Buscar el cliente - usando el modelo de tu namespace
+            $cliente = Cliente::findOrFail($id);
+            
+            // Actualizar los datos
+            $cliente->update([
+                'nombres' => $request->nombres,
+                'apellidos' => $request->apellidos,
+                'telefono' => $request->telefono,
+                'telefono2' => $request->telefono2,
+                'email' => $request->email,
+                'direccion' => $request->direccion,
+                'ciudad' => $request->ciudad,
+                'tienda' => $request->tienda,
+                'tipo_evento' => $request->tipo_evento,
+                'fecha_evento' => $request->fecha_evento,
+            ]);
+            
+            // Retornar respuesta JSON
+            return response()->json([
+                'success' => true,
+                'message' => 'Cliente actualizado correctamente',
+                'cliente' => $cliente
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al actualizar el cliente: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+    
     public function store(Request $request)
     {
         // Validar los datos
@@ -32,8 +76,8 @@ class ClienteController extends Controller
             'fecha_evento' => 'nullable|date',
         ]);
 
-        // Crear el cliente
-        $cliente = \DigitalsiteSaaS\Dresses\Tenant\Cliente::create([
+        // Crear el cliente - usando el modelo de tu namespace
+        $cliente = Cliente::create([
             'nombres' => $request->nombres,
             'apellidos' => $request->apellidos,
             'telefono' => $request->telefono,

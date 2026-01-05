@@ -67,7 +67,11 @@
     <div class="header">
     
         <div style="float: left; width: 70%;">
-            <h1 style="color: #ea2205; font-size: 25px">#Order - {{$orden->prefijo}}</h1>
+            @if($orden->identidad == 'SO')
+            <h1 style="color: #000000; font-size: 25px">#Special Order - {{$orden->prefijo}}</h1>
+            @elseif($orden->identidad == 'L')
+            <h1 style="color: #000000; font-size: 25px">#Layaway - {{$orden->prefijo}}</h1>
+            @endif
             <br>
             <h1>{{$tienda->nombre}} | {{$tienda->website}}</h1>
             <p class="compact">{{$tienda->direccion}}</p>

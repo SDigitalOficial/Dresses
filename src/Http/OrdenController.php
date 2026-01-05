@@ -66,6 +66,7 @@ public function bulkFicha(Request $request)
         $request->validate([
             'cliente_id' => 'nullable', // Asegurar que el cliente_id exista en la tabla clientes
             'fecha_compra' => 'required|date',
+            'fecha_compraO' => 'required|date',
             'observaciones' => 'nullable|string',
             'vendedor' => 'nullable|string',
             'productos' => 'required|array',
@@ -97,6 +98,7 @@ public function bulkFicha(Request $request)
         $orden = \DigitalsiteSaaS\Dresses\Tenant\Orden::create([
             'cliente_id' => $request->cliente_id, // Guardar el cliente_id
             'fecha_compra' => $request->fecha_compra,
+            'fecha_compraO' => $request->fecha_compraO,
             'vendedor' => $request->vendedor,
             'observaciones' => $request->observaciones,
             'subtotal' => $request->subtotal,
@@ -141,7 +143,10 @@ public function bulkFicha(Request $request)
             }
         }
 
-        return response()->json(['message' => 'Orden guardada correctamente'], 201);
+       return response()->json([
+    'id' => $orden->id,
+    'message' => 'Orden guardada correctamente'
+], 201);
     }
 
 
@@ -191,9 +196,9 @@ public function edit($id)
         $tienda =  \DigitalsiteSaaS\Dresses\Tenant\Tienda::all();
         $vendedores =  \DigitalsiteSaaS\Usuario\Tenant\Usuario::all();
         $impuestos = \DigitalsiteSaaS\Dresses\Tenant\Impuesto::all();
-
+        $cliente = $orden->cliente; // 👈 aquí se define
         
-        return view('dresses::editspecial', compact('orden', 'tienda', 'vendedores', 'impuestos'));
+        return view('dresses::editspecial', compact('orden', 'tienda', 'vendedores', 'impuestos', 'cliente'));
     }
 
     /**
@@ -205,6 +210,7 @@ public function edit($id)
     $validated = $request->validate([
         'cliente_id' => 'required',
         'fecha_compra' => 'required|date',
+        'fecha_compraO' => 'required|date',
         'vendedor' => 'required',
         'observaciones' => 'nullable|string|max:500',
         'productos' => 'required|array|min:1',
@@ -239,6 +245,7 @@ public function edit($id)
         $orden->update([
             'cliente_id' => $validated['cliente_id'],
             'fecha_compra' => $validated['fecha_compra'],
+            'fecha_compraO' => $validated['fecha_compraO'],
             'vendedor' => $validated['vendedor'],
             'observaciones' => $validated['observaciones'],
             'subtotal' => $validated['subtotal'],

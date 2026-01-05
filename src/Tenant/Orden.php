@@ -13,6 +13,7 @@ class Orden extends Model
     protected $fillable = [
         'cliente_id',
         'fecha_compra',
+        'fecha_compraO',
         'vendedor',
         'identidad',
         'observaciones',
@@ -39,7 +40,7 @@ class Orden extends Model
 
     ];
 
-    protected $dates = ['fecha_compra'];
+    protected $dates = ['fecha_compra','fecha_compraO'];
 
     // Relación con cliente
     public function cliente()

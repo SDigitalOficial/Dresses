@@ -227,6 +227,17 @@ public function editarclientes($id){
  return view('dresses::clientes.editar-clientes')->with('cliente', $cliente)->with('tienda', $tienda);
 }
 
+public function editarclientespos($id){
+ if(!$this->tenantName){
+ $cliente = Cliente::find($id);
+ $tienda = Tienda::all();
+ }else{
+ $cliente = \DigitalsiteSaaS\Dresses\Tenant\Cliente::find($id);
+ $tienda = \DigitalsiteSaaS\Dresses\Tenant\Tienda::all();
+ }
+ return view('dresses::clientes.editar-clientespos')->with('cliente', $cliente)->with('tienda', $tienda);
+}
+
 
 public function crearusuario(){
  if(!$this->tenantName){
@@ -258,6 +269,30 @@ public function editarclienteweb($id) {
  $facturacion->save();
 
  return Redirect('dresses/clientes')->with('status', 'ok_create');
+}
+
+
+public function editarclientewebpos($id) {
+ $input = Input::all();
+ $redireccion = Input::get('redireccion');
+ if(!$this->tenantName){
+ $facturacion = Cliente::find($id);
+ }else{
+ $facturacion = \DigitalsiteSaaS\Dresses\Tenant\Cliente::find($id); 
+ }
+ $facturacion->nombres = Input::get('nombres');
+ $facturacion->apellidos = Input::get('apellidos');
+ $facturacion->email = Input::get('email');
+ $facturacion->telefono = Input::get('telefono');
+ $facturacion->telefono2 = Input::get('telefono2');
+ $facturacion->ciudad = Input::get ('ciudad');
+ $facturacion->direccion = Input:: get ('direccion');
+ $facturacion->tienda = Input:: get ('tienda');
+ $facturacion->tipo_evento = Input:: get ('tipo_evento');
+ $facturacion->fecha_evento = Input:: get ('fecha_evento');
+ $facturacion->save();
+
+ return Redirect($redireccion)->with('status', 'ok_create');
 }
 
 public function updates($id) {

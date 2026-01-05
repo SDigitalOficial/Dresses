@@ -101,10 +101,12 @@
                                     <label>Event Type:</label>
                                     <input type="text" id="contactEventType" class="form-control">
                                 </div>
+                                <!--
                                 <div class="form-group col-md-6">
                                     <label>Event Date:</label>
                                     <input type="date" id="contactEventDate" class="form-control">
                                 </div>
+                                -->
                             </div>
                         </div>
                     </div>
@@ -162,11 +164,15 @@
             <!-- Espacio para visualizar el contacto seleccionado -->
             <div id="contactDisplay" class="p-2 col-lg-4">
                 <div class="card card-body">
-                    <h3>#Invoice - {{ $orden->prefijo }}</h3>
-                    <p><strong><b>Selected Client:</b></strong></p>
-                    <p id="selectedContact" style="color:red">
+                    @if($orden->identidad == 'SO')
+                    <h3>#Special Order - {{ $orden->prefijo }}</h3>
+                    @elseif($orden->identidad == 'L')
+                    <h3>#Layaway - {{ $orden->prefijo }}</h3>
+                    @endif
+                    <p id="selectedContact" style="color:#262626">
+                        <span style="color: black !important; font-weight: 900;">Selected Client:</span>
                         @if($orden->cliente)
-                            {{ $orden->cliente->nombres }} {{ $orden->cliente->apellidos }} - {{ $orden->cliente->telefono }}
+                            {{ $orden->cliente->nombres }} {{ $orden->cliente->apellidos }} - <br>{{ substr($orden->cliente->telefono, 0, 3) }}-{{ substr($orden->cliente->telefono, 3) }} <a href="/dresses/editar/clientepos/{{ $orden->cliente->id}}">edit client</a>
                         @else
                             No client selected.
                         @endif
@@ -186,7 +192,11 @@
                         <label><strong>Event Date:</strong></label>
                         <input type="date" id="purchaseDate" class="form-control" value="{{ $orden->fecha_compra->format('Y-m-d') }}">
                         <label><strong>Order Date:</strong></label>
+                        <input type="date" id="purchaseDateO" class="form-control" value="{{ $orden->fecha_compraO->format('Y-m-d') }}">
+                        <!--
+                        <label><strong>Order Date SyS:</strong></label>
                         <input type="date" id="purchaseDate" class="form-control" value="{{ $orden->created_at->format('Y-m-d') }}" disabled>
+                        -->
                         <label><strong>Seller:</strong></label>
                         <select name="vendedor" id="purchaseVendedor" class="form-control">
     @foreach($vendedores as $vendedor)
@@ -919,6 +929,7 @@ function updateProductRow(index) {
         let ventaData = {
             cliente_id: selectedContact.id,
             fecha_compra: $("#purchaseDate").val(),
+            fecha_compraO: $("#purchaseDateO").val(),
             vendedor: $("#purchaseVendedor").val(),
             observaciones: $("#observations").val(),
             date1: $("#advanceDate1").val() || '0000-00-00',

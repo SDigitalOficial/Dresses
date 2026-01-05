@@ -111,10 +111,12 @@
                                     <label>Event Type:</label>
                                     <input type="text" id="contactEventType" class="form-control">
                                 </div>
+                                <!--
                                 <div class="form-group col-md-6">
                                     <label>Event Date:</label>
                                     <input type="date" id="contactEventDate" class="form-control">
                                 </div>
+                                -->
                                 <div class="invalid-feedback client-error" id="contactNameError"></div>
                                 <div class="invalid-feedback client-error" id="contactPhoneError"></div>
                                 <div class="invalid-feedback client-error" id="contactEmailError"></div>
@@ -184,6 +186,7 @@
                             <div class="form-group  mt-4">
                                 <label><strong>Event Date:</strong></label>
                                 <input type="date" id="purchaseDate" class="form-control">
+                                <input type="date" id="purchaseDateO" class="form-control">
                                 <input type="hidden" id="currentPath" value="{{ Request::path() }}">
                                 <label><strong>Seller:</strong></label>
                                 <select id="purchaseVendedor" class="form-control">
@@ -771,84 +774,102 @@
         }
 
         $("#guardarVentaBtn").click(function () {
-            if (!selectedContact || !selectedContact.id) {
-                showNotification('Falta cliente', 'Por favor, selecciona o crea un cliente antes de guardar la venta.', 'error');
-                return;
-            }
 
-            if (productList.length === 0) {
-                showNotification('Faltan productos', 'Por favor, agrega al menos un producto a la venta.', 'error');
-                return;
-            }
+    if (!selectedContact || !selectedContact.id) {
+        showNotification(
+            'Falta cliente',
+            'Por favor, selecciona o crea un cliente antes de guardar la venta.',
+            'error'
+        );
+        return;
+    }
 
-            let ventaData = {
-                cliente_id: selectedContact.id,
-                fecha_compra: $("#purchaseDate").val(),
-                vendedor: $("#purchaseVendedor").val(),
-                observaciones: $("#observations").val(),
-                paymentStatus: $("#paymentStatus").val(),
-                paymentMethod: $("#paymentMethod").val(),
-                url_path: $("#currentPath").val(), // 👈 aquí mandas el path
-                productos: productList.map(p => ({
-                    id: p.id || null,
-                    name: p.name,
-                    price: p.price,
-                    quantity: p.quantity,
-                    size: p.size,
-                    color: p.color,
-                    discount: p.discount,
-                    tax: p.tax,
-                    total: p.total
-                })),
-                subtotal: parseFloat($("#subtotal").text()),
-                impuesto_total: parseFloat($("#taxTotal").text()),
-                total: parseFloat($("#grandTotal").text()),
-                adelanto: parseFloat($("#advancePayment").val()),
-                monto_adeudado: parseFloat($("#amountDue").text()),
-            };
+    if (productList.length === 0) {
+        showNotification(
+            'Faltan productos',
+            'Por favor, agrega al menos un producto a la venta.',
+            'error'
+        );
+        return;
+    }
 
-            Swal.fire({
-                title: 'Confirmar venta',
-                html: `¿Estás seguro de guardar esta venta para <b>${selectedContact.name}</b> por un total de <b>$${ventaData.total.toFixed(2)}</b>?`,
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonText: 'Sí, guardar',
-                cancelButtonText: 'Cancelar'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: "{{ route('dresses.venta') }}",
-                        type: "POST",
-                        data: JSON.stringify(ventaData),
-                        contentType: "application/json",
-                        success: function (response) {
-                            Swal.fire({
-                                title: '¡Venta guardada!',
-                                html: `Venta #${response.id} registrada exitosamente<br>Total: $${ventaData.total.toFixed(2)}`,
-                                icon: 'success'
-                            });
-                            
-                            productList = [];
-                            selectedContact = null;
-                            $("#selectedContact").text("Ningún cliente seleccionado.");
-                            $("#purchaseDate").val("");
-                            $("#observations").val("");
-                            $("#advancePayment").val(0);
-                            renderTable();
-                            updateSummary();
-                        },
-                        error: function (xhr) {
-                            let errorMessage = "Error al guardar la venta";
-                            if (xhr.responseJSON && xhr.responseJSON.message) {
-                                errorMessage += ": " + xhr.responseJSON.message;
-                            }
-                            showNotification('Error', errorMessage, 'error');
-                        }
+    let ventaData = {
+        cliente_id: selectedContact.id,
+        fecha_compra: $("#purchaseDate").val(),
+        fecha_compraO: $("#purchaseDateO").val(),
+        vendedor: $("#purchaseVendedor").val(),
+        observaciones: $("#observations").val(),
+        paymentStatus: $("#paymentStatus").val(),
+        paymentMethod: $("#paymentMethod").val(),
+        url_path: $("#currentPath").val(),
+        productos: productList.map(p => ({
+            id: p.id || null,
+            name: p.name,
+            price: p.price,
+            quantity: p.quantity,
+            size: p.size,
+            color: p.color,
+            discount: p.discount,
+            tax: p.tax,
+            total: p.total
+        })),
+        subtotal: parseFloat($("#subtotal").text()),
+        impuesto_total: parseFloat($("#taxTotal").text()),
+        total: parseFloat($("#grandTotal").text()),
+        adelanto: parseFloat($("#advancePayment").val()),
+        monto_adeudado: parseFloat($("#amountDue").text()),
+    };
+
+    Swal.fire({
+        title: 'Confirmar venta',
+        html: `¿Estás seguro de guardar esta venta para 
+               <b>${selectedContact.name}</b> 
+               por un total de 
+               <b>$${ventaData.total.toFixed(2)}</b>?`,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, guardar',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+
+        if (result.isConfirmed) {
+
+            $.ajax({
+                url: "{{ route('dresses.venta') }}",
+                type: "POST",
+                data: JSON.stringify(ventaData),
+                contentType: "application/json",
+
+                success: function (response) {
+
+                    Swal.fire({
+                        title: '¡Venta guardada!',
+                        html: `Venta #${response.id} registrada exitosamente<br>
+                               Total: $${ventaData.total.toFixed(2)}`,
+                        icon: 'success',
+                        confirmButtonText: 'Ir a la orden'
+                    }).then(() => {
+
+                        // 🔁 REDIRECCIÓN FINAL
+                        window.location.href = `/orders/${response.id}/edit`;
+
                     });
+                },
+
+                error: function (xhr) {
+                    let errorMessage = "Error al guardar la venta";
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMessage += ": " + xhr.responseJSON.message;
+                    }
+                    showNotification('Error', errorMessage, 'error');
                 }
             });
-        });
-        renderTable();
+        }
+    });
+});
+
+renderTable();
+
     });
 </script>
 </body>
