@@ -55,6 +55,11 @@ class Orden extends Model
     return $this->belongsTo(\DigitalsiteSaaS\Usuario\Tenant\Usuario::class, 'users');
 }
 
+public function vendedorRelacion()
+    {
+        return $this->belongsTo(\DigitalsiteSaaS\Usuario\Tenant\Usuario::class, 'vendedor'); // Cambia 'vendedor' por el nombre correcto del campo
+    }
+
     // Relación muchos a muchos con productos
     public function productos()
     {

@@ -44,11 +44,14 @@
             border-top: 1px solid #000; 
             margin: 3px 0; 
         }
+        p{
+            font-size: 10px;
+        }
         .compact { margin: 2px 0; }
         .logo { height: 60px; }
         h1 { margin: 0; font-size: 14px; }
         h2 { margin: 2px 0; font-size: 12px; }
-        h3 { margin: 5px 0; font-size: 11px; }
+        h3 { margin: 5px 0; font-size: 11px}
         ul { 
             padding-left: 15px; 
             margin: 5px 0;
@@ -71,6 +74,8 @@
             <h1 style="color: #000000; font-size: 25px">#Special Order - {{$orden->prefijo}}</h1>
             @elseif($orden->identidad == 'L')
             <h1 style="color: #000000; font-size: 25px">#Layaway - {{$orden->prefijo}}</h1>
+            @elseif($orden->identidad == 'RENTAL')
+            <h1 style="color: #000000; font-size: 25px">#RENTAL ORDER - R{{$orden->prefijo}}</h1>
             @endif
             <br>
             <h1>{{$tienda->nombre}} | {{$tienda->website}}</h1>
@@ -80,8 +85,10 @@
             <p class="compact">{{$tienda->email}}</p>
             @foreach($tienda as $tienda)
             @endforeach
-            <p style="color:#ff7410"><b>Pick up Date:</b> {{ $orden->pickDate }} <br>
-            <p style="color:#ff7410"><b>Return Date:</b> {{ $orden->returnDate }} </p>
+            @if($orden->identidad == 'RENTAL')
+            <p style="color:#ff7410"><b>Pick up Date:</b>{{ $orden->pickDate ? $orden->pickDate->format('m/d/Y') : 'N/A' }} <br>
+            <p style="color:#ff7410"><b>Return Date:</b>{{ $orden->returnDate ? $orden->returnDate->format('m/d/Y') : 'N/A' }} </p>
+            @ENDIF
         </div>
 
         <div style="float: right; width: 30%; text-align: right;">
@@ -98,6 +105,7 @@
         <p class="compact">Phone: {{ $orden->cliente->telefono }}</p>
         <p class="compact">Event Date: {{ $orden->fecha_compra ? $orden->fecha_compra->format('m/d/Y') : 'N/A' }}</p>
         <p class="compact">Order Date: {{ $orden->fecha_compraO ? $orden->fecha_compraO->format('m/d/Y') : 'N/A' }}</p>
+        <p class="compact">Seller: {{ $orden->vendedorRelacion->name }} {{ $orden->vendedorRelacion->last_name }}</p>
     </div>
 </div>
         <div style="clear: both;"></div>
@@ -206,7 +214,34 @@
 
 
     <div style="clear: both;"></div>
+    @if($orden->identidad == 'RENTAL')
 
+     <h3 style="text-align: center;">RENTAL AGREEMENT / CONTRATO DE RENTA DE VESTIDO</h3>
+
+<p>1. Gowns will be returned in the same condition that it was given to the customer, with the exception of slight wear (dust/dirt on underside of hem/train and slight perspiration only.) Tears/Rips/Cuts or Missing pieces such as sleeves, shawls, capes, will be deducted from the deposit of gown. If the condition of a ripped gown can't be repaired due to location, large size of rip/cut the entire deposit will be forfeit and the gown will be declared unusable.</p>
+
+<p>2. Gown stains (like motor oil, grease, blood, food, chemicals etc) and any bodice stains inside or outside of the gown will result in a hold of deposit until the garment is returned from a professional dry cleaner/vendor. Costs associated with the repair or stain removal would be charged or deducted from customers' deposit. Should the damage be so severe that the gown can not be cleaned or repaired to its original state, the full retail price of the gown will be charged to the customer.</p>
+
+<p>3. <span style="color:red">The rental period is from ______ to ______ and, ______ (Client Name)</span> understands the responsibility for the return of the gown within this period. Any changes the client must notify "Quince Dresses" if they need to extend the rental time period.</p>
+
+<p>4. f a customer fails to return the gown within the allotted time period. A charge of $80 per late day will be charged until the gown is returned.</p>
+
+<p>5. Should the gown fail to be returned after 4 days of its due date, the deposit will be forfeit and we will charge the full retail price of the gown. These charges will be applied to clients credit card if the retail amount exceeds more than the deposit amount left at the store. At this point the gown will be written off as a theft and not returnable.</p>
+
+<p>6. I understand that all deposits and payments for this transaction are to be paid in <span style="color:red">CASH ONLY.</span> Due to credit card fees, and risk of gowns not returning on time, we will only work rentals on a Cash Only basis. No Checks or Credit Cards are allowed as a form of payment for the rental or deposit of the gown.</p>
+
+<p>7. Please note we will need proof of identification, a <span style="color:red">VALID ID</span> is required in order to rent any gown from our premises.</p>
+
+<p>8. Please NOTE we are not responsible for any issues with gown that could happen from previous rentals. For example: If the gown was rented a few weeks prior and it's now in an unusable state, we will not be able to find or purchase another identical gown in the same style, color and size in order to fulfill your rental. If this situation ever happens we will only be held liable to return your entire deposit and rental fee paid until that point and not be held responsible for anything else caused by this issue. We are also not responsible for any slight changes/repairs or alterations in the gown being rented due to repairs from previous rentals. Please NOTE you are renting a gown, and not Buying a brand New one. Chances are it has been rented before or will be rented again after you use it.</p>
+
+Gown inspected by: _________________
+Comments: ____________________
+
+Client Print Name: ______________________
+Signature: __________________
+Date: ________________   
+
+    @else
     <!-- Acuerdo de ventas -->
     <h3>Sales Agreement</h3>
     <p style="font-weight: bold; margin: 3px 0; font-size: 9px; color: #ea2205;">ALL IN STORE SALES ARE FINAL. NO REFUNDS OR EXCHANGES. SPECIAL ORDERS READ CANCELLATION POLICY.</p>
@@ -229,5 +264,6 @@
         <p>X________________________ (Signature) _______________ (Date)</p>
         <p class="footer">{{ now()->format('m/d/Y h:i A') }} | Page 1</p>
     </div>
+        @endif
 </body>
 </html>
