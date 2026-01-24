@@ -57,6 +57,18 @@ public function bulkFicha(Request $request)
     return $pdf->download($filename);
 }
 
+public function print($id)
+{
+    $orden = \DigitalsiteSaaS\Dresses\Tenant\Orden::with(['cliente', 'productos', 'vendedor'])->findOrFail($id);
+    $tienda = \DigitalsiteSaaS\Dresses\Tenant\Tienda::find(1);
+    $totalAdvances = $orden->adelanto + $orden->adelanto1 + $orden->adelanto2 + $orden->adelanto3;
+    
+    $pdf = PDF::loadView('dresses::ordenes.pdf', compact('orden', 'totalAdvances', 'tienda'));
+    $pdf->setOption('jpegQuality', 100);
+    $pdf->setOption('javascript-delay', 2000); // Esperar que se ejecute el JavaScript
+    
+    return $pdf->stream('orden_'.$orden->id.'.pdf');
+}
 
 
   public function store(Request $request)
@@ -67,6 +79,8 @@ public function bulkFicha(Request $request)
             'cliente_id' => 'nullable', // Asegurar que el cliente_id exista en la tabla clientes
             'fecha_compra' => 'required|date',
             'fecha_compraO' => 'required|date',
+            'pickDate' => 'date',
+            'returnDate' => 'date',
             'observaciones' => 'nullable|string',
             'vendedor' => 'nullable|string',
             'productos' => 'required|array',
@@ -85,27 +99,48 @@ public function bulkFicha(Request $request)
         $identidad = 'SO';
         } elseif ($urlPath === 'dresses/layaway') {
           $identidad = 'L';
+        } elseif ($urlPath === 'dresses/rentals') {
+          $identidad = 'RENTAL';
         }
 
-        // Crear la orden
-         $ultimaOrden = \DigitalsiteSaaS\Dresses\Tenant\Orden::where('identidad', $identidad)
-        ->orderByDesc('id')
-        ->first();
+        
 
-         $prefijo = $ultimaOrden ? $ultimaOrden->prefijo : 0;
-         $prefijoIncrementado = $prefijo + 1;
+        // Obtener el último prefijo numérico para ESTA identidad específica
+$ultimaOrden = \DigitalsiteSaaS\Dresses\Tenant\Orden::where('identidad', $identidad)
+    ->orderByRaw('CAST(prefijo AS UNSIGNED) DESC')
+    ->first();
+
+if (!$ultimaOrden || !$ultimaOrden->prefijo) {
+    $prefijo = '0001';
+} else {
+    // Convertir el prefijo actual a número (solo los dígitos)
+    // Esto maneja casos como "0001", "0254", etc.
+    $numeroActual = (int) $ultimaOrden->prefijo;
+    $nuevoNumero = $numeroActual + 1;
+    
+    // Determinar cuántos ceros necesitamos
+    if ($identidad === 'RENTAL') {
+        // Para RENTAL, mantener 4 dígitos
+        $prefijo = str_pad($nuevoNumero, 4, '0', STR_PAD_LEFT);
+    } else {
+        // Para SO y L, no forzar ceros a la izquierda o mantener según necesidad
+        $prefijo = (string) $nuevoNumero;
+    }
+}
         
         $orden = \DigitalsiteSaaS\Dresses\Tenant\Orden::create([
             'cliente_id' => $request->cliente_id, // Guardar el cliente_id
             'fecha_compra' => $request->fecha_compra,
             'fecha_compraO' => $request->fecha_compraO,
+            'pickDate' => $request->pickDate,
+            'returnDate' => $request->returnDate,
             'vendedor' => $request->vendedor,
             'observaciones' => $request->observaciones,
             'subtotal' => $request->subtotal,
             'impuesto_total' => $request->impuesto_total,
             'total' => $request->total,
             'adelanto' => $request->adelanto,
-            'prefijo' => $prefijoIncrementado,
+            'prefijo' => $prefijo,
             'identidad'      => $identidad,
             'monto_adeudado' => $request->monto_adeudado,
             'status' => $request->paymentStatus,
@@ -211,6 +246,8 @@ public function edit($id)
         'cliente_id' => 'required',
         'fecha_compra' => 'required|date',
         'fecha_compraO' => 'required|date',
+        'pickDate' => 'date',
+        'returnDate' => 'date',
         'vendedor' => 'required',
         'observaciones' => 'nullable|string|max:500',
         'productos' => 'required|array|min:1',
@@ -328,6 +365,135 @@ public function edit($id)
     }
 }
 
+
+
+public function updatea(Request $request, $id)
+{
+    // Validación mejorada con campos opcionales
+    $validated = $request->validate([
+        'cliente_id' => 'required',
+        'fecha_compra' => 'required|date',
+        'fecha_compraO' => 'required|date',
+        'pickDate' => 'date',
+        'returnDate' => 'date',
+        'vendedor' => 'required',
+        'observaciones' => 'nullable|string|max:500',
+        'productos' => 'required|array|min:1',
+        'productos.*.name' => 'required|string|max:255',
+        'productos.*.price' => 'required|numeric|min:0',
+        'productos.*.quantity' => 'required|integer|min:1',
+        'subtotal' => 'required|numeric|min:0',
+        'impuesto_total' => 'required|numeric|min:0',
+        'total' => 'required|numeric|min:0',
+        'adelanto' => 'required|numeric|min:0',
+        'adelanto1' => 'nullable|numeric|min:0', // Cambiado a nullable
+        'adelanto2' => 'nullable|numeric|min:0', // Cambiado a nullable
+        'adelanto3' => 'nullable|numeric|min:0', // Cambiado a nullable
+        'date1' => 'nullable|string',
+        'date2' => 'nullable|string',
+        'date3' => 'nullable|string',
+        'user1' => 'nullable|string',
+        'user2' => 'nullable|string',
+        'user3' => 'nullable|string',
+        'method' => 'nullable|string',
+        'method1' => 'nullable|string',
+        'method2' => 'nullable|string',
+        'method3' => 'nullable|string',
+        'status' => 'nullable|string',
+        'monto_adeudado' => 'required|numeric|min:0'
+    ]);
+
+    try {
+        $orden = \DigitalsiteSaaS\Dresses\Tenant\Orden::findOrFail($id);
+        
+        // Actualizar datos principales con valores por defecto para campos nullable
+        $orden->update([
+            'cliente_id' => $validated['cliente_id'],
+            'fecha_compra' => $validated['fecha_compra'],
+            'fecha_compraO' => $validated['fecha_compraO'],
+            'pickDate' => $validated['pickDate'],
+            'returnDate' => $validated['returnDate'],
+            'vendedor' => $validated['vendedor'],
+            'observaciones' => $validated['observaciones'],
+            'subtotal' => $validated['subtotal'],
+            'impuesto_total' => $validated['impuesto_total'],
+            'total' => $validated['total'],
+            'adelanto' => $validated['adelanto'],
+            'adelanto1' => $validated['adelanto1'] ?? 0,
+            'adelanto2' => $validated['adelanto2'] ?? 0,
+            'adelanto3' => $validated['adelanto3'] ?? 0,
+            'user1' => $validated['user1'] ?? null,
+            'user2' => $validated['user2'] ?? null,
+            'user3' => $validated['user3'] ?? null,
+            'date1' => $validated['date1'] ?? null,
+            'date2' => $validated['date2'] ?? null,
+            'date3' => $validated['date3'] ?? null,
+            'method' => $validated['method'] ?? 'cash',
+            'method1' => $validated['method1'] ?? 'cash',
+            'method2' => $validated['method2'] ?? 'cash',
+            'method3' => $validated['method3'] ?? 'cash',
+            'status' => $validated['status'] ?? 'open',
+            'monto_adeudado' => $validated['monto_adeudado']
+        ]);
+
+        // Sincronizar productos - LÓGICA CORREGIDA
+        $productosSync = [];
+        
+        foreach ($validated['productos'] as $producto) {
+            $productoId = $producto['id'] ?? null;
+            
+            // Si el ID es numérico y mayor que 1000, es un ID real de la base de datos
+            // Si es null o un número temporal grande, es un producto manual
+            if ($productoId && $productoId < 1000000) { // ID real de base de datos
+                $productosSync[$productoId] = [
+                    'cantidad' => $producto['quantity'],
+                    'talla' => $producto['size'] ?? '',
+                    'color' => $producto['color'] ?? '',
+                    'descuento' => $producto['discount'] ?? 0,
+                    'impuesto' => $producto['tax'] ?? 0,
+                    'precio_unitario' => $producto['price'],
+                    'total' => $producto['total'] ?? $producto['price'] * $producto['quantity']
+                ];
+            } else {
+                // Crear nuevo producto manual
+                $nuevoProducto = Producto::create([
+                    'nombre' => $producto['name'],
+                    'precio' => $producto['price'],
+                    'talla' => $producto['size'] ?? '',
+                    'color' => $producto['color'] ?? '',
+                    'es_manual' => true // Si tienes este campo
+                ]);
+                
+                $productosSync[$nuevoProducto->id] = [
+                    'cantidad' => $producto['quantity'],
+                    'talla' => $producto['size'] ?? '',
+                    'color' => $producto['color'] ?? '',
+                    'descuento' => $producto['discount'] ?? 0,
+                    'impuesto' => $producto['tax'] ?? 0,
+                    'precio_unitario' => $producto['price'],
+                    'total' => $producto['total'] ?? $producto['price'] * $producto['quantity']
+                ];
+            }
+        }
+
+        $orden->productos()->sync($productosSync);
+
+        return response()->json([
+            'message' => 'Orden actualizada correctamente',
+            'orden_id' => $orden->id,
+            'id' => $orden->id // Añade esto para que coincida con lo que espera el frontend
+        ], 200);
+
+    } catch (\Exception $e) {
+        \Log::error('Error updating order: ' . $e->getMessage());
+        \Log::error('Request data: ', $request->all());
+        
+        return response()->json([
+            'message' => 'Error al actualizar la orden',
+            'error' => $e->getMessage()
+        ], 500);
+    }
+}
 
     /**
      * Muestra una orden específica.

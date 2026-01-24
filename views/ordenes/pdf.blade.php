@@ -80,6 +80,8 @@
             <p class="compact">{{$tienda->email}}</p>
             @foreach($tienda as $tienda)
             @endforeach
+            <p style="color:#ff7410"><b>Pick up Date:</b> {{ $orden->pickDate }} <br>
+            <p style="color:#ff7410"><b>Return Date:</b> {{ $orden->returnDate }} </p>
         </div>
 
         <div style="float: right; width: 30%; text-align: right;">
@@ -95,6 +97,7 @@
         <h2>Bill To: {{ $orden->cliente->nombres }} {{ $orden->cliente->apellidos }}</h2>
         <p class="compact">Phone: {{ $orden->cliente->telefono }}</p>
         <p class="compact">Event Date: {{ $orden->fecha_compra ? $orden->fecha_compra->format('m/d/Y') : 'N/A' }}</p>
+        <p class="compact">Order Date: {{ $orden->fecha_compraO ? $orden->fecha_compraO->format('m/d/Y') : 'N/A' }}</p>
     </div>
 </div>
         <div style="clear: both;"></div>
@@ -136,7 +139,6 @@
             @endforeach
         </tbody>
     </table>
-
     <table style="width: 100%;">
   <tr>
     <!-- Columna izquierda: Observaciones -->
@@ -144,7 +146,7 @@
       <strong>Observations:</strong><br><br>
       {{ $orden->observaciones }}
     </td>
-
+         
     <!-- Columna derecha: Resumen de pagos -->
     <td style="width: 50%; vertical-align: top; padding-left: 10px; border: 0px solid red">
       <table style="width: 100%; border: 1px solid blue" class="totals-table">
@@ -163,28 +165,28 @@
 
         @if($orden->adelanto > 0)
           <tr>
-            <td class="text-right">Advancement</td>
+            <td class="text-right">Deposit</td>
             <td class="text-right">${{ number_format($orden->adelanto, 2) }}</td>
           </tr>
         @endif
 
         @if($orden->adelanto1 > 0)
           <tr>
-            <td class="text-right">Advancement 1</td>
+            <td class="text-right">Deposit 2</td>
             <td class="text-right">${{ number_format($orden->adelanto1, 2) }}</td>
           </tr>
         @endif
 
         @if($orden->adelanto2 > 0)
           <tr>
-            <td class="text-right">Advancement 2</td>
+            <td class="text-right">Deposit 3</td>
             <td class="text-right">${{ number_format($orden->adelanto2, 2) }}</td>
           </tr>
         @endif
 
         @if($orden->adelanto3 > 0)
           <tr>
-            <td class="text-right">Advancement 3</td>
+            <td class="text-right">Deposit 4</td>
             <td class="text-right">${{ number_format($orden->adelanto3, 2) }}</td>
           </tr>
         @endif

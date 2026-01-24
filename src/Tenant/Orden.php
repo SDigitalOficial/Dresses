@@ -14,6 +14,8 @@ class Orden extends Model
         'cliente_id',
         'fecha_compra',
         'fecha_compraO',
+        'pickDate',
+        'returnDate',
         'vendedor',
         'identidad',
         'observaciones',
@@ -40,7 +42,7 @@ class Orden extends Model
 
     ];
 
-    protected $dates = ['fecha_compra','fecha_compraO'];
+    protected $dates = ['fecha_compra','fecha_compraO','pickDate','returnDate'];
 
     // Relación con cliente
     public function cliente()

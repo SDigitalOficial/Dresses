@@ -1,6 +1,7 @@
 @extends ('LayoutDresses.layout')
  @section('ContenidoSite-01')
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
  <div class="container">
   <?php $status=Session::get('status'); ?>
@@ -38,7 +39,7 @@
                                     </div>
                                     <div class="card-body">
                                         <div class="dt-responsive table-responsive">
-                                            <table id="basic-btn" class="table table-striped table-bordered nowrap">
+                                            <table id="basics-btn" class="table table-striped table-bordered nowrap">
                                                 <thead>
                                                     <tr>
                                                     
@@ -99,8 +100,14 @@
                                           </td>
                                      
                                             <td class="text-center">
-                                              <a href="<?=URL::to('orders/'. $facturacion->id.'/edit');?>" class="btn drp-icon btn-rounded btn-primary"
+
+                                            @if($facturacion->identidad == 'RENTAL')
+                                              <a href="<?=URL::to('ordersa/'. $facturacion->id.'/edit');?>" class="btn drp-icon btn-rounded btn-primary"
                                                 type="button"><i class="fas fa-receipt"></i></a>
+                                                @else
+                                                <a href="<?=URL::to('orders/'. $facturacion->id.'/edit');?>" class="btn drp-icon btn-rounded btn-primary"
+                                                type="button"><i class="fas fa-receipt"></i></a>
+                                                @endif
 
                                              @if($facturacion->t_persona =='natural')
                                                <a href="<?=URL::to('/gestion/factura/editar-cliente');?>/{{ $facturacion->id }}" class="btn drp-icon btn-rounded btn-secondary"
@@ -151,6 +158,95 @@
 </div>
 
 
+
+<script>
+$(document).ready(function() {
+    $('#basics-btn').DataTable({
+        // Ordenar por la columna 1 (Order Date) de más reciente a más antigua
+        "order": [[1, "desc"]],
+        
+        // Configuración para manejar fechas en formato m-d-Y
+        "columnDefs": [
+            {
+                "targets": [1], // Columna Order Date (índice 1, segunda columna)
+                "type": "date",
+                "render": function(data, type, row) {
+                    // Para ordenación: convertir m-d-Y a Y-m-d
+                    if (type === 'sort' || type === 'type') {
+                        if (data && data.includes('-')) {
+                            var parts = data.split('-');
+                            if (parts.length === 3) {
+                                // Formato m-d-Y a Y-m-d
+                                return parts[2] + '-' + parts[0] + '-' + parts[1];
+                            }
+                        }
+                    }
+                    // Para visualización: mantener formato original
+                    return data;
+                }
+            },
+            {
+                "targets": [2], // Columna Event Date (índice 2, tercera columna)
+                "type": "date",
+                "render": function(data, type, row) {
+                    if (type === 'sort' || type === 'type') {
+                        if (data && data.includes('-')) {
+                            var parts = data.split('-');
+                            if (parts.length === 3) {
+                                return parts[2] + '-' + parts[0] + '-' + parts[1];
+                            }
+                        }
+                    }
+                    return data;
+                }
+            }
+        ],
+        
+        // Idioma en español
+        "language": {
+            "decimal": ",",
+            "thousands": ".",
+            "processing": "Procesando...",
+            "lengthMenu": "Mostrar _MENU_ registros",
+            "zeroRecords": "No se encontraron resultados",
+            "emptyTable": "Ningún dato disponible en esta tabla",
+            "info": "Mostrando _START_ a _END_ de _TOTAL_ registros",
+            "infoEmpty": "Mostrando 0 a 0 de 0 registros",
+            "infoFiltered": "(filtrado de _MAX_ registros totales)",
+            "search": "Buscar:",
+            "loadingRecords": "Cargando...",
+            "paginate": {
+                "first": "Primero",
+                "last": "Último",
+                "next": "Siguiente",
+                "previous": "Anterior"
+            },
+            "aria": {
+                "sortAscending": ": Activar para ordenar la columna ascendente",
+                "sortDescending": ": Activar para ordenar la columna descendente"
+            }
+        },
+        
+        // Configuración responsive
+        "responsive": true,
+        
+        // Número de registros por página
+        "pageLength": 15,
+        
+        // Botones de exportación (si los tienes habilitados)
+        //"dom": 'Bfrtip',
+        //"buttons": [
+        //    'copy', 'csv', 'excel', 'pdf', 'print'
+        //],
+        
+        // Mantener estado (página, orden, filtro) entre sesiones
+        "stateSave": true,
+        
+        // Orden inicial alternativa si quieres por Event Date
+        // "order": [[2, "desc"]]
+    });
+});
+</script>
 
 
   @stop

@@ -1354,6 +1354,20 @@ public function special(Request $request){
  }
 
 
+public function rentals(Request $request){
+
+  $query = $request->input('query');
+
+   if(!$this->tenantName){
+ $empresas = Empresa::all();
+ }else{
+ $user = \DigitalsiteSaaS\Usuario\Tenant\Usuario::all();
+ $empresas = \DigitalsiteSaaS\Facturacion\Tenant\Empresa::where('r_social','LIKE',"%{$query}%")->get();
+  $tienda = \DigitalsiteSaaS\Dresses\Tenant\Tienda::where('nombre','LIKE',"%{$query}%")->get();
+ }
+
+  return view('dresses::rentals')->with('empresas', $empresas)->with('user', $user)->with('tienda', $tienda);
+ }
 
  public function specialedit($id)
 {

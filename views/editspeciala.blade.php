@@ -991,7 +991,7 @@ function updateProductRow(index) {
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: "/orders/" + {{ $orden->id }},
+                    url: "/ordersa/" + {{ $orden->id }},
                     type: "PUT",
                     data: JSON.stringify(ventaData),
                     contentType: "application/json",

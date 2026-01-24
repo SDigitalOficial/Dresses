@@ -186,14 +186,11 @@
                             <div class="form-group  mt-4">
                                 <label><strong>Event Date:</strong></label>
                                 <input type="date" id="purchaseDate" class="form-control">
+                            </div>
+                            <div class="form-group  mt-4">
+                                <label><strong>Order Date:</strong></label>
                                 <input type="date" id="purchaseDateO" class="form-control">
                                 <input type="hidden" id="currentPath" value="{{ Request::path() }}">
-                                <label><strong>Seller:</strong></label>
-                                <select id="purchaseVendedor" class="form-control">
-                                    @foreach($user as $user)
-                                        <option value="{{$user->id}}">{{$user->name}} {{$user->last_name}}</option>
-                                    @endforeach
-                                </select>
                             </div>
                         </div>
                     </div>
@@ -205,6 +202,12 @@
                                 <div id="suggestions"></div>
                                 <button type="button" id="addProductBtn" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#exampleModalLivec">Add Product Manually</button>
                             </div>
+                            <label><strong>Seller:</strong></label>
+                                <select id="purchaseVendedor" class="form-control">
+                                    @foreach($user as $user)
+                                        <option value="{{$user->id}}">{{$user->name}} {{$user->last_name}}</option>
+                                    @endforeach
+                                </select>
                         </div>
                     </div>
                 </div>
@@ -227,11 +230,20 @@
                 <tbody id="productTable"></tbody>
             </table>
             <div class="container">
+             <div class="row">
+              <div id="contactDisplay" class="p-2 mt-4 col-lg-6">
+               <div class="card card-body">
                 <div class="row">
-
-                    <div id="contactDisplay" class="p-2 mt-4 col-lg-6">
-                        <div class="card card-body">
-                            
+                <div class="col-lg-6">
+                             <label><strong>Pick Up Date:</strong></label>
+                             <input type="date" id="pickDate" class="form-control">
+                            </div>
+                            <div class="col-lg-6">
+                             <label><strong>Return Date:</strong></label>
+                             <input type="date" id="returnDate" class="form-control">
+                            </div>
+                        </div>
+                            <br><br>
                             <label><strong>Observations:</strong></label>
                             <textarea id="observations" class="form-control" rows="3" placeholder="Write any observations here.."></textarea>
                              <label>Status</label>
@@ -251,7 +263,7 @@
                             <p><strong>Subtotal:</strong> $<span id="subtotal">0.00</span></p>
                             <p><strong>Total Tax:</strong> $<span id="taxTotal">0.00</span></p>
                             <p><strong>Total:</strong> $<span id="grandTotal">0.00</span></p>
-                            <label><strong>Advancement:</strong></label>
+                            <label><strong>Deposit:</strong></label>
                             <input type="number" id="advancePayment" class="form-control" step="0.01" value="0">
                             <label>Method Payment:</label>
                     <select name="payment_method" id="paymentMethod" class="form-control">
@@ -798,6 +810,8 @@
         cliente_id: selectedContact.id,
         fecha_compra: $("#purchaseDate").val(),
         fecha_compraO: $("#purchaseDateO").val(),
+        pickDate: $("#pickDate").val(),
+        returnDate: $("#returnDate").val(),
         vendedor: $("#purchaseVendedor").val(),
         observaciones: $("#observations").val(),
         paymentStatus: $("#paymentStatus").val(),

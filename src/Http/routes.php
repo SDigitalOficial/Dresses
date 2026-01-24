@@ -62,6 +62,7 @@ Route::post('/productos/pdf', [DigitalsiteSaaS\Dresses\Http\OrdenController::cla
 
 Route::get('dresses/specialorders', 'DigitalsiteSaaS\Dresses\Http\UsuariaController@special');
 Route::get('dresses/layaway', 'DigitalsiteSaaS\Dresses\Http\UsuariaController@special');
+Route::get('dresses/rentals', 'DigitalsiteSaaS\Dresses\Http\UsuariaController@rentals');
 
 Route::get('dresses/impuestos', 'DigitalsiteSaaS\Dresses\Http\OrdenController@impuestos');
 
@@ -99,12 +100,15 @@ Route::get('/buscar-productos', [DigitalsiteSaaS\Dresses\Http\OrdenController::c
 Route::post('/clientes', [DigitalsiteSaaS\Dresses\Http\ClienteController::class, 'store'])->name('clientes.store');
 
 Route::get('/orders/{id}/edit', [DigitalsiteSaaS\Dresses\Http\OrdenController::class, 'edit'])->name('orders.edit');
+Route::get('/ordersa/{id}/edit', [DigitalsiteSaaS\Dresses\Http\OrdenController::class, 'edit'])->name('orders.edita');
 Route::put('/orders/{id}', [DigitalsiteSaaS\Dresses\Http\OrdenController::class, 'update'])->name('orders.update');
+Route::put('/ordersa/{id}', [DigitalsiteSaaS\Dresses\Http\OrdenController::class, 'updatea'])->name('orders.updatea');
 Route::get('/orders/{id}', [DigitalsiteSaaS\Dresses\Http\OrdenController::class, 'show'])->name('orders.show');
 
 
 Route::get('/orders/{id}/pdf', [DigitalsiteSaaS\Dresses\Http\OrdenController::class, 'generatePDF'])->name('orders.pdf');
 
+Route::get('/orders/{id}/print', [DigitalsiteSaaS\Dresses\Http\OrdenController::class, 'print'])->name('orders.print');
 
 // Para visualizar en navegador
 Route::get('/orders/{id}/view', [DigitalsiteSaaS\Dresses\Http\OrdenController::class, 'generatePDF'])->name('orders.view');
