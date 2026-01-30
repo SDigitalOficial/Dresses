@@ -71,11 +71,11 @@
     
         <div style="float: left; width: 70%;">
             @if($orden->identidad == 'SO')
-            <h1 style="color: #000000; font-size: 25px">#Special Order - {{$orden->prefijo}}</h1>
+            <h1 style="color: #000000; font-size: 18px">#Special Order - {{$orden->prefijo}}</h1>
             @elseif($orden->identidad == 'L')
-            <h1 style="color: #000000; font-size: 25px">#Layaway - {{$orden->prefijo}}</h1>
+            <h1 style="color: #000000; font-size: 18px">#Layaway - {{$orden->prefijo}}</h1>
             @elseif($orden->identidad == 'RENTAL')
-            <h1 style="color: #000000; font-size: 25px">#RENTAL ORDER - R{{$orden->prefijo}}</h1>
+            <h1 style="color: #000000; font-size: 18px">#RENTAL ORDER - R{{$orden->prefijo}}</h1>
             @endif
             <br>
             <h1>{{$tienda->nombre}} | {{$tienda->website}}</h1>
@@ -86,8 +86,8 @@
             @foreach($tienda as $tienda)
             @endforeach
             @if($orden->identidad == 'RENTAL')
-            <p style="color:#ff7410"><b>Pick up Date:</b>{{ $orden->pickDate ? $orden->pickDate->format('m/d/Y') : 'N/A' }} <br>
-            <p style="color:#ff7410"><b>Return Date:</b>{{ $orden->returnDate ? $orden->returnDate->format('m/d/Y') : 'N/A' }} </p>
+            <p style="color:#ff7410"><b>Pick up Date:</b>{{ $orden->pickDate ? $orden->pickDate->format('m/d/Y') : 'N/A' }}<br>
+            <b>Return Date:</b>{{ $orden->returnDate ? $orden->returnDate->format('m/d/Y') : 'N/A' }} </p>
             @ENDIF
         </div>
 
@@ -105,7 +105,7 @@
         <p class="compact">Phone: {{ $orden->cliente->telefono }}</p>
         <p class="compact">Event Date: {{ $orden->fecha_compra ? $orden->fecha_compra->format('m/d/Y') : 'N/A' }}</p>
         <p class="compact">Order Date: {{ $orden->fecha_compraO ? $orden->fecha_compraO->format('m/d/Y') : 'N/A' }}</p>
-        <p class="compact">Seller: {{ $orden->vendedorRelacion->name }} {{ $orden->vendedorRelacion->last_name }}</p>
+        <p class="compact">Sales Associate: {{ $orden->vendedorRelacion->name }} {{ $orden->vendedorRelacion->last_name }}</p>
     </div>
 </div>
         <div style="clear: both;"></div>
@@ -234,12 +234,12 @@
 
 <p>8. Please NOTE we are not responsible for any issues with gown that could happen from previous rentals. For example: If the gown was rented a few weeks prior and it's now in an unusable state, we will not be able to find or purchase another identical gown in the same style, color and size in order to fulfill your rental. If this situation ever happens we will only be held liable to return your entire deposit and rental fee paid until that point and not be held responsible for anything else caused by this issue. We are also not responsible for any slight changes/repairs or alterations in the gown being rented due to repairs from previous rentals. Please NOTE you are renting a gown, and not Buying a brand New one. Chances are it has been rented before or will be rented again after you use it.</p>
 
-Gown inspected by: _________________
+<p style="margin-bottom: 30px; margin-top: 30px; ">Gown inspected by: _________________
 Comments: ____________________
 
-Client Print Name: ______________________
-Signature: __________________
-Date: ________________   
+Client Print Name: ______________________</p>
+<p>Signature: __________________
+Date: ________________</p>   
 
     @else
     <!-- Acuerdo de ventas -->
@@ -260,7 +260,7 @@ Date: ________________
 
     <!-- Firma del cliente -->
     <div class="signature-area">
-        <p style="margin-bottom: 15px;">Customer Print Name: ___________________________</p>
+        <p style="margin-bottom: 15px; ">Customer Print Name: ___________________________</p>
         <p>X________________________ (Signature) _______________ (Date)</p>
         <p class="footer">{{ now()->format('m/d/Y h:i A') }} | Page 1</p>
     </div>

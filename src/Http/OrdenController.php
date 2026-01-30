@@ -249,7 +249,7 @@ public function edit($id)
         'pickDate' => 'date',
         'returnDate' => 'date',
         'vendedor' => 'required',
-        'observaciones' => 'nullable|string|max:500',
+        'observaciones' => 'nullable|string',
         'productos' => 'required|array|min:1',
         'productos.*.name' => 'required|string|max:255',
         'productos.*.price' => 'required|numeric|min:0',
